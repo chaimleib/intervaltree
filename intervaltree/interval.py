@@ -72,7 +72,8 @@ class Interval:
         return str(unicode(self))
     
     def __unicode__(self):
-        return u"<Interval: "+ repr([self.begin, self.end, self.data])+u">"
+        fields = map(repr, [self.begin, self.end, self.data])
+        return u"Interval({}, {}, {})".format(*fields)
     
     def __repr__(self):
         fields = map(repr, [self.begin, self.end, self.data])

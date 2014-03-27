@@ -467,7 +467,26 @@ class IntervalTree:
             isinstance(other, IntervalTree) and 
             self.all_intervals == other.all_intervals
         )
-
+        
+    def __str__(self):
+        return str(unicode(self))
+        
+    def __unicode__(self):
+        ivs = sorted(self)
+        if not ivs:
+            return u"IntervalTree()"
+        else:
+            ivs = u", ".join(map(unicode, ivs))
+            return u"IntervalTree([{}])".format(ivs)
+    
+    def __repr__(self):
+        ivs = sorted(self)
+        if not ivs:
+            return "IntervalTree()"
+        else:
+            ivs = ", ".join(map(repr, ivs))
+            return "IntervalTree([{}])".format(ivs)
+    
     def __reduce__(self):
         """
         For pickle-ing.
