@@ -50,7 +50,7 @@ Examples
 --------
 * Getting started
 * 
-        from PyIntervalTree import Interval, IntervalTree
+        from intervaltree import Interval, IntervalTree
         t = IntervalTree()
 
 * Adding intervals - you don't have to use strings!

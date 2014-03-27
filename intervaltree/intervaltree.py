@@ -10,17 +10,22 @@ class IntervalTree:
     A binary lookup tree of intervals.
     
     Features:
-        * Initialize blank or from an iterable of Intervals in O(n * log n).
+        * Initialize blank or from an iterable of Intervals in 
+          O(n * log n).
         * Insertions
             * tree[a:b] = value
             * tree.add(Interval(a, b, value))
             * tree.extend(list_of_interval_objs)
         * Deletions
-            * tree.remove(interval)             # raises if not present
-            * tree.discard(interval)            # quiet if not present
+            * tree.remove(interval)
+              raises ValueError if not present
+            * tree.discard(interval)
+              quiet if not present
             * tree.remove_overlap(point)
-            * tree.remove_overlap(begin, end)   # removes all overlapping the range
-            * tree.remove_envelop(begin, end)   # removes all enveloped in the range
+            * tree.remove_overlap(begin, end)
+              removes all overlapping the range
+            * tree.remove_envelop(begin, end)
+              removes all enveloped in the range
         * Overlap queries:
             * tree[point]
             * tree[begin, end]
@@ -29,7 +34,8 @@ class IntervalTree:
         * Envelop queries:
             * tree.search(begin, end, strict = True)
         * Membership queries:
-            * interval_obj in tree              # this is fastest
+            * interval_obj in tree
+              this is fastest
             * tree.overlaps(point)
             * tree.overlaps(begin, end)
         * Sizing:
@@ -42,27 +48,37 @@ class IntervalTree:
             * for interval_obj in tree:
             * tree.items()
         * Copy- and typecast-able:
-            * IntervalTree(tree)    # Interval objects are same as those in tree
-            * tree.copy()           # Interval objects are shallow copies of those in tree
-            * set(tree)             # can later be fed into IntervalTree()
-            * list(tree)            # ditto
+            * IntervalTree(tree)
+              Interval objects are same as those in tree
+            * tree.copy()
+              Interval objects are shallow copies of those in tree
+            * set(tree)
+              can later be fed into IntervalTree()
+            * list(tree)
+              ditto
         * Equal-able
         * Hashable
         * Pickle-friendly
         * Automatic AVL balancing.
     
     Based on:
-        * AVL tree, from http://www.eternallyconfuzzled.com/tuts/datastructures/jsw_tut_avl.aspx
-        * "Interval Tree", from http://en.wikipedia.org/wiki/Interval_tree
-        * Heavily modified from Tyler Kahn's "Interval Tree implementation in Python," from
+        * AVL tree, from 
+          http://www.eternallyconfuzzled.com/tuts/datastructures/jsw_tut_avl.aspx
+        * "Interval Tree", from 
+          http://en.wikipedia.org/wiki/Interval_tree
+        * Heavily modified from Tyler Kahn's "Interval Tree 
+          implementation in Python," from
           http://forrst.com/posts/Interval_Tree_implementation_in_python-e0K
     """
-    def __init__(self, intervals = []):
+    
+    def __init__(self, intervals=None):
         """
-        Set up a tree. If intervals is set, add all the intervals to the tree.
+        Set up a tree. If intervals is set, add all the intervals to 
+        the tree.
         
         Completes in O(n*log n) time.
         """
+        intervals = intervals if intervals is not None else []
         self.all_intervals = set(intervals)
         self.top_node = Node.from_intervals(self.all_intervals)
         self.boundary_table = {}
@@ -77,7 +93,8 @@ class IntervalTree:
         """
         Records the boundaries of the interval in the boundary table.
         """
-        begin, end = interval.begin, interval.end
+        begin = interval.begin
+        end = interval.end
         if begin in self.boundary_table: 
             self.boundary_table[begin] += 1
         else:
@@ -92,7 +109,8 @@ class IntervalTree:
         """
         Removes the boundaries of the interval from the boundary table.
         """
-        begin, end = interval.begin, interval.end
+        begin = interval.begin
+        end = interval.end
         if self.boundary_table[begin] == 1:
             del self.boundary_table[begin]
         else:
@@ -109,11 +127,12 @@ class IntervalTree:
         
         Completes in O(log n) time.
         """
-        if interval in self: return
+        if interval in self: 
+            return
         
         #self.verify()
         
-        debug = True
+        debug = False
         if debug and self.top_node:
             assert(interval not in self.top_node.search_point(interval.begin, set()))
         self.all_intervals.add(interval)
@@ -132,14 +151,16 @@ class IntervalTree:
         """
         Given an iterable of intervals, add them to the tree.
         
-        Completes in O(m*log(n+m), where m = number of intervals to add.
+        Completes in O(m*log(n+m), where m = number of intervals to 
+        add.
         """
         for iv in intervals:
             self.add(iv)
     
     def remove(self, interval):
         """
-        Removes an interval from the tree, if present. If not, raises ValueError.
+        Removes an interval from the tree, if present. If not, raises 
+        ValueError.
         
         Completes in O(log n) time.
         """
@@ -154,7 +175,8 @@ class IntervalTree:
         
     def discard(self, interval):
         """
-        Removes an interval from the tree, if present. If not, does nothing.
+        Removes an interval from the tree, if present. If not, does 
+        nothing.
         
         Completes in O(log n) time.
         """
@@ -187,14 +209,14 @@ class IntervalTree:
           * m = number of matches
           * r = size of the search range (this is 1 for a point)
         """
-        hitlist = self.search(begin, end, strict = True)
+        hitlist = self.search(begin, end, strict=True)
         for iv in hitlist:
             self.remove(iv)
         
     def find_nested(self):
         """
-        Returns a dictionary mapping parent intervals to sets of intervals 
-        overlapped by and contained in the parent.
+        Returns a dictionary mapping parent intervals to sets of 
+        intervals overlapped by and contained in the parent.
         
         Completes in O(n^2) time.
         """
@@ -214,11 +236,13 @@ class IntervalTree:
         return result
         
     
-    def overlaps(self, begin, end = None):
+    def overlaps(self, begin, end=None):
         """
-        Returns whether some interval in the tree overlaps the given point or range.
+        Returns whether some interval in the tree overlaps the given
+        point or range.
         
-        Completes in O(r*log n) time, where r is the size of the search range.
+        Completes in O(r*log n) time, where r is the size of the
+        search range.
         """
         if end is not None:
             return self.overlaps_range(begin, end)
@@ -239,7 +263,8 @@ class IntervalTree:
     
     def overlaps_range(self, begin, end):
         """
-        Returns whether some interval in the tree overlaps the given range.
+        Returns whether some interval in the tree overlaps the given
+        range.
         
         Completes in O(r*log n) time.
         """
@@ -247,7 +272,11 @@ class IntervalTree:
             return False
         elif self.overlaps_point(begin):
             return True
-        return any(self.overlaps_point(bound) for bound in self.boundary_table if begin<=bound<end)
+        return any(
+            self.overlaps_point(bound) 
+            for bound in self.boundary_table 
+            if begin <= bound < end
+            )
 
     def items(self):
         """
@@ -265,7 +294,7 @@ class IntervalTree:
         """
         return len(self) == 0
     
-    def search(self, begin, end=None, strict = False):
+    def search(self, begin, end=None, strict=False):
         """
         Returns a set of all intervals overlapping the given range. Or,
         if strict is True, returns the set of all intervals fully
@@ -281,12 +310,20 @@ class IntervalTree:
                 return self.top_node.search_point(begin, set())
             else:
                 iv = begin
-                return self.search(iv.begin, iv.end, strict = strict)
+                return self.search(iv.begin, iv.end, strict=strict)
         elif isinstance(end, Number):
             result = self.top_node.search_point(begin, set())
-            result = result.union(self.top_node.search_overlap(bound for bound in self.boundary_table if begin<bound<end))
+            result = result.union(self.top_node.search_overlap(
+                bound 
+                for bound in self.boundary_table 
+                if begin < bound < end
+                ))
             if strict:
-                result = set(iv for iv in result if iv.begin>=begin and iv.end<=end)
+                result = set(
+                    iv 
+                    for iv in result 
+                    if iv.begin >= begin and iv.end <= end
+                    )
             return result
         else: # duck-typed interval
             return self.search(begin.begin, begin.end, strict)
@@ -327,7 +364,8 @@ class IntervalTree:
             try:
                 assert self.top_node.all_children() == self.all_intervals
             except Exception as e:
-                print('Error: the tree and the membership set are out of sync!')
+                print('Error: the tree and the membership set are out' \
+                    ' of sync!')
                 tivs = set(self.top_node.all_children())
                 print('top_node.all_children() - all_intervals:')
                 pprint(tivs - self.all_intervals)
@@ -344,20 +382,25 @@ class IntervalTree:
                     bound_check[iv.end] += 1
                 else:
                     bound_check[iv.end] = 1
-            assert set(self.boundary_table.keys()) == set(bound_check.keys()), \
-                'Error: boundary_table is out of sync with the intervals in the tree!'
+            assert set(self.boundary_table.keys()) == set(bound_check.keys()),\
+                'Error: boundary_table is out of sync with ' \
+                'the intervals in the tree!'
             for key,val in self.boundary_table.iteritems():
                 assert bound_check[key] == val, \
-                    'Error: boundary_table[{}] should be {}, but is {}!'.format(
-                    key, bound_check[key], val)
+                    'Error: boundary_table[{}] should be {},' \
+                    ' but is {}!'.format(
+                        key, bound_check[key], val)
             self.top_node.verify(set())
         else:
-            assert not self.boundary_table, "Error: boundary table should be empty!"
-            assert self.top_node is None, "Error: top_node isn't None!"
+            assert not self.boundary_table, \
+                "Error: boundary table should be empty!"
+            assert self.top_node is None, \
+                "Error: top_node isn't None!"
     
     def __getitem__(self, index):
         """
-        Returns a set of all intervals overlapping the given index or slice.
+        Returns a set of all intervals overlapping the given index or 
+        slice.
         
         Completes in O(k * log(n) + m) time, where:
           * n = size of the tree
@@ -373,7 +416,8 @@ class IntervalTree:
         """
         Adds a new interval to the tree.
         
-        If an identical Interval object with the same range and data already exists, does nothing.
+        If an identical Interval object with the same range and data 
+        already exists, does nothing.
         
         Completes in O(log n) time.
         """
@@ -387,8 +431,8 @@ class IntervalTree:
         
         Completes in O(1) time.
         """
-        # Removed point-checking code; it might trick the user into thinking
-        # that this is O(1), which it isn't.
+        # Removed point-checking code; it might trick the user into
+        # thinking that this is O(1), which point-checking isn't.
         #if isinstance(item, Interval):
         return item in self.all_intervals
         #else:
@@ -480,7 +524,10 @@ class Node:
         return interval.contains_point(self.x_center)
     
     def hit_branch(self, interval):
-        """Assuming not center_hit(interval), return which branch interval is in."""
+        """
+        Assuming not center_hit(interval), return which branch 
+        (left=0, right=1) interval is in.
+        """
         return 1 if interval.begin > self.x_center else 0
     
     def refresh_balance(self):
@@ -494,7 +541,10 @@ class Node:
             self.balance += 1 if (self[1][0] or self[1][1]) else 0
     
     def rotate(self):
-        """Does rotating, if necessary, to balance this node, and returns the new top node."""
+        """
+        Does rotating, if necessary, to balance this node, and 
+        returns the new top node.
+        """
         self.refresh_balance()
         if abs(self.balance) < 2:
             return self
@@ -579,8 +629,11 @@ class Node:
         
         If interval is not present, raise ValueError.
         """
-        done = []     # since this is a list, called methods can set this to [1], making it true
-        return self.remove_interval_helper(interval, done, shouldRaiseError = True)
+        # since this is a list, called methods can set this to [1],
+        # making it true
+        done = []     
+        return self.remove_interval_helper(interval, done, 
+                                           shouldRaiseError=True)
 
     def discard(self, interval):
         """
@@ -589,19 +642,23 @@ class Node:
         If interval is not present, do nothing.
         """
         done = []
-        return self.remove_interval_helper(interval, done, shouldRaiseError = False)
+        return self.remove_interval_helper(interval, done, 
+                                           shouldRaiseError=False)
     
     def remove_interval_helper(self, interval, done, shouldRaiseError):
         """
         Returns self after removing interval and balancing. 
         If interval doesn't exist, raise ValueError.
         
-        This method may set done to [1] to tell all callers that rebalancing has completed.
-        See Eternally Confuzzled's jsw_remove_r function (lines 1-32) in his AVL tree article 
-        for reference.
+        This method may set done to [1] to tell all callers that 
+        rebalancing has completed.
+        
+        See Eternally Confuzzled's jsw_remove_r function (lines 1-32) 
+        in his AVL tree article for reference.
         """
         trace = interval.begin == 347 and interval.end == 353
-        #if trace: print('\nRemoving from {} interval {}'.format(self.x_center, interval))
+        #if trace: print('\nRemoving from {} interval {}'.format(
+        #   self.x_center, interval))
         if self.center_hit(interval):
             #if trace: print('Hit at {}'.format(self.x_center))
             if not shouldRaiseError and interval not in self.s_center:
@@ -609,7 +666,9 @@ class Node:
                 #if trace: print('Doing nothing.')
                 return self
             try:
-                self.s_center.remove(interval) # raises error if interval not present - this is desired.
+                # raises error if interval not present - this is 
+                # desired.
+                self.s_center.remove(interval) 
             except:
                 self.print_structure()
                 raise KeyError(interval)
@@ -618,7 +677,7 @@ class Node:
                 #if trace: print('Removed, no rebalancing.')
                 return self
             
-            # If we reach here, no intervals are left in self.s_center. 
+            # If we reach here, no intervals are left in self.s_center.
             # So, prune self.
             return self.prune()
         else: # interval not in s_center
@@ -630,13 +689,18 @@ class Node:
                 done.append(1)
                 return self
             
-            #if trace: print('Descending to {} branch'.format(['left', 'right'][direction]))
-            self[direction] = self[direction].remove_interval_helper(interval, done, shouldRaiseError)
+            #if trace: 
+            #   print('Descending to {} branch'.format(
+            #       ['left', 'right'][direction]
+            #       ))
+            self[direction] = self[direction].remove_interval_helper(
+                interval, done, shouldRaiseError)
             
             # Clean up
             if not done:
-                #if trace: print('Rotating {}'.format(self.x_center))
-                #if trace: self.print_structure()
+                #if trace: 
+                #    print('Rotating {}'.format(self.x_center))
+                #    self.print_structure()
                 return self.rotate()
             return self
     
@@ -669,7 +733,9 @@ class Node:
         """
         if not self[0] or not self[1]:    # if I have an empty branch
             direction = not self[0]       # graft the other branch here
-            #if trace: print('Grafting {} branch'.format('right' if direction else 'left'))
+            #if trace:
+            #    print('Grafting {} branch'.format(
+            #       'right' if direction else 'left'))
             
             result = self[direction]
             #if result: result.verify()
@@ -677,9 +743,12 @@ class Node:
         else:
             # Replace the root node with the greatest predecessor.
             (heir, self[0]) = self[0].pop_greatest_child()
-            #if trace: print('Replacing {} with {}.'.format(self.x_center, heir.x_center))
-            #if trace: print('Removed greatest predecessor:')
-            #if trace: self.print_structure()
+            #if trace: 
+            #    print('Replacing {} with {}.'.format(
+            #        self.x_center, heir.x_center
+            #        ))
+            #    print('Removed greatest predecessor:')
+            #    self.print_structure()
             
             #if self[0]: self[0].verify()
             #if self[1]: self[1].verify()
@@ -689,7 +758,8 @@ class Node:
             #if trace: print('Setting up the heir:')
             #if trace: heir.print_structure()
             
-            # popping the predecessor may have unbalanced this node; fix it
+            # popping the predecessor may have unbalanced this node; 
+            # fix it
             heir.refresh_balance()
             heir = heir.rotate()
             #heir.verify()
@@ -707,23 +777,29 @@ class Node:
               - balancing
               - moving overlapping nodes into greatest_child
         
-        See Eternally Confuzzled's jsw_remove_r function (lines 34-54) in his AVL tree article
-        for reference.
+        See Eternally Confuzzled's jsw_remove_r function (lines 34-54)
+        in his AVL tree article for reference.
         """
         #print('Popping from {}'.format(self.x_center))
         if self[1] is None:         # This node is the greatest child.
-            # To reduce the chances of an overlap with a parent, return a 
-            # child node containing the smallest possible number of intervals,
-            # as close as possible to the maximum bound. 
+            # To reduce the chances of an overlap with a parent, return
+            # a child node containing the smallest possible number of 
+            # intervals, as close as possible to the maximum bound. 
             ivs = set(self.s_center)
             # Create a new node with the largest x_center possible.
             max_iv = max(self.s_center, key=attrgetter('end'))
-            child_x_center = max_iv.begin if (max_iv.end - max_iv.begin <= 1) else max_iv.end - 1
-            child = Node.from_intervals([iv for iv in ivs if iv.contains_point(child_x_center)])
+            max_iv_len = max_iv.end - max_iv.begin
+            child_x_center = max_iv.begin if (max_iv_len <= 1) \
+                else max_iv.end - 1
+            child = Node.from_intervals(
+                [iv for iv in ivs if iv.contains_point(child_x_center)]
+                )
             child.x_center = child_x_center
             self.s_center = ivs - child.s_center
             
-            #print('Pop hit! Returning child   = {}'.format( child.print_structure(tostring=True) ) )
+            #print('Pop hit! Returning child   = {}'.format( 
+            #    child.print_structure(tostring=True)
+            #    ))
             assert not child[0]
             assert not child[1]
             
@@ -748,14 +824,20 @@ class Node:
                     new_self.s_center.remove(iv)
                     greatest_child.add(iv)
                     
-            #print('Pop Returning child   = {}'.format( greatest_child.print_structure(tostring=True) ) )
+            #print('Pop Returning child   = {}'.format( 
+            #    greatest_child.print_structure(tostring=True)
+            #    ))
             if new_self.s_center:
-                #print('and returning newnode = {}'.format( new_self.print_structure(tostring=True) ) )
+                #print('and returning newnode = {}'.format(
+                #    new_self.print_structure(tostring=True)
+                #    ))
                 #new_self.verify()
                 return (greatest_child, new_self)
             else:
                 new_self = new_self.prune()
-                #print('and returning prune = {}'.format( new_self.print_structure(tostring=True) ) )
+                #print('and returning prune = {}'.format( 
+                #    new_self.print_structure(tostring=True)
+                #    ))
                 #if new_self: new_self.verify()
                 return (greatest_child, new_self)
     
@@ -783,33 +865,51 @@ class Node:
     def verify(self, parents = set()):
         """
         ## DEBUG ONLY ##
-        Recursively ensures that the invariants of an interval subtree hold.
+        Recursively ensures that the invariants of an interval subtree 
+        hold.
         """
         assert(isinstance(self.s_center, set))
         
         bal = self.balance
-        assert abs(bal) < 2, "Error: Rotation should have happened, but didn't! \n{}".format(self.print_structure(tostring=True))
+        assert abs(bal) < 2, \
+            "Error: Rotation should have happened, but didn't! \n{}".format(
+                self.print_structure(tostring=True)
+                )
         self.refresh_balance()
-        assert bal == self.balance, "Error: self.balance not set correctly! \n{}".format(self.print_structure(tostring=True))
+        assert bal == self.balance, \
+            "Error: self.balance not set correctly! \n{}".format(
+                self.print_structure(tostring=True)
+                )
         
-        assert self.s_center, "Error: s_center is empty! \n{}".format(self.print_structure(tostring=True))
+        assert self.s_center, \
+            "Error: s_center is empty! \n{}".format(
+                self.print_structure(tostring=True)
+                )
         for iv in self.s_center:
-            assert(hasattr(iv, 'begin'))
-            assert(hasattr(iv, 'end'))
-            assert(iv.begin < iv.end)
-            assert(iv.overlaps(self.x_center))
+            assert hasattr(iv, 'begin')
+            assert hasattr(iv, 'end')
+            assert iv.begin < iv.end
+            assert iv.overlaps(self.x_center)
             for parent in sorted(parents):
-                assert not iv.contains_point(parent), "Error: Overlaps ancestor ({})! \n{}\n\n".format(parent, iv, self.print_structure(to_string=True))
+                assert not iv.contains_point(parent), \
+                    "Error: Overlaps ancestor ({})! \n{}\n\n{}".format(
+                        parent, iv, self.print_structure(to_string=True)
+                        )
         if self[0]:
-            assert self[0].x_center < self.x_center, "Error: Out-of-order left child! {}".format(self.x_center)
+            assert self[0].x_center < self.x_center, \
+                "Error: Out-of-order left child! {}".format(self.x_center)
             self[0].verify(parents.union([self.x_center]))
         if self[1]:
-            assert self[1].x_center > self.x_center, "Error: Out-of-order right child! {}".format(self.x_center)
+            assert self[1].x_center > self.x_center, \
+                "Error: Out-of-order right child! {}".format(self.x_center)
             self[1].verify(parents.union([self.x_center]))
             
     
     def __getitem__(self, index):
-        """Returns the left child if input is equivalent to False, or the right side otherwise.""" 
+        """
+        Returns the left child if input is equivalent to False, or 
+        the right side otherwise.
+        """ 
         if index:
             return self.right_node
         else:
@@ -826,8 +926,8 @@ class Node:
         """
         Shows info about this node.
         
-        Since Nodes are internal data structures not revealed to the user,
-        I'm not bothering to make this copy-paste-executable as a
+        Since Nodes are internal data structures not revealed to the 
+        user, I'm not bothering to make this copy-paste-executable as a
         constructor.
         """
         return "Node<{}, balance={}>".format(self.x_center, self.balance)
@@ -839,7 +939,7 @@ class Node:
         #fields = [self.x_center, self.balance, fieldcount]
         #return "Node({}, b={}, {})".format(*fields)
     
-    def print_structure(self, indent=0, tostring = False):
+    def print_structure(self, indent=0, tostring=False):
         """
         For debugging.
         """
@@ -862,15 +962,15 @@ class Node:
         result = ''.join(rlist)
         if tostring:
             return result
-        print(result)
-        return
+        else:
+            print(result)
 
 
 if __name__ == "__main__":
     try:
         from util.pprint import pprint
     except Exception as e:
-        if 1:
+        if True:
             from pprint import pprint
         else:
             raise e
@@ -894,7 +994,7 @@ if __name__ == "__main__":
     #t.print_structure()
     orig = t.print_structure(True)
         
-    assert(orig == 
+    assert orig == \
     """Node<8, balance=0>
 ||||:
  Interval(5, 9, '5-9')
@@ -917,60 +1017,59 @@ if __name__ == "__main__":
         ||||:
          Interval(14, 15, '14-15')
 """
-    )
     
     data = lambda s: set(map(attrgetter('data'), s))
     # Query tests
     print('Query tests...')
-    assert( data(t[4])          == set(['4-7']) )
-    assert( data(t[4:5])        == set(['4-7']) )
-    assert( data(t[4:6])        == set(['4-7', '5-9']) )
-    assert( data(t[9])          == set(['6-10', '8-10', '8-15']) )
-    assert( data(t[15])         == set() )
-    assert( data(t.search(5))   == set(['4-7', '5-9']))
-    assert( data(t.search(6, 11, strict = True)) == set(['6-10', '8-10']))
+    assert data(t[4])          == set(['4-7'])
+    assert data(t[4:5])        == set(['4-7'])
+    assert data(t[4:6])        == set(['4-7', '5-9'])
+    assert data(t[9])          == set(['6-10', '8-10', '8-15'])
+    assert data(t[15])         == set()
+    assert data(t.search(5))   == set(['4-7', '5-9'])
+    assert data(t.search(6, 11, strict = True)) == set(['6-10', '8-10'])
     
     print('    passed')
     
     # Membership tests
     print('Membership tests...')
-    assert( ivs[1] in t )
-    assert( Interval(1,3, '1-3') not in t )
-    assert( t.overlaps(4) )
-    assert( t.overlaps(9) )
-    assert( not t.overlaps(15) )
-    assert( t.overlaps(0,4) )
-    assert( t.overlaps(1,2) )
-    assert( t.overlaps(1,3) )
-    assert( t.overlaps(8,15) )
-    assert( not t.overlaps(15, 16) )
-    assert( not t.overlaps(-1, 0) )
-    assert( not t.overlaps(2,4) )
+    assert ivs[1] in t
+    assert Interval(1,3, '1-3') not in t
+    assert t.overlaps(4)
+    assert t.overlaps(9)
+    assert not t.overlaps(15)
+    assert t.overlaps(0,4)
+    assert t.overlaps(1,2)
+    assert t.overlaps(1,3)
+    assert t.overlaps(8,15)
+    assert not t.overlaps(15, 16)
+    assert not t.overlaps(-1, 0)
+    assert not t.overlaps(2,4)
     print('    passed')
     
     # Insertion tests
     print('Insertion tests...')
     t.add( makeinterval([1,2]) )  # adding duplicate should do nothing
-    assert( data(t[1])        == set(['1-2']) )
-    assert( orig == t.print_structure(True) )
+    assert data(t[1])        == set(['1-2'])
+    assert orig == t.print_structure(True)
     
     t[1:2] = '1-2'                # adding duplicate should do nothing
-    assert( data(t[1])        == set(['1-2']) )
-    assert( orig == t.print_structure(True) )
+    assert data(t[1])        == set(['1-2'])
+    assert orig == t.print_structure(True)
     
     t.add(makeinterval([2,4]))
-    assert( data(t[2])        == set(['2-4']) )
+    assert data(t[2])        == set(['2-4'])
     t.verify()
     
     t[13:15] = '13-15'
-    assert( data(t[14])       == set(['8-15', '13-15', '14-15']) )
+    assert data(t[14])       == set(['8-15', '13-15', '14-15'])
     t.verify()
     print('    passed')
     
     # Duplication tests
     print('Interval duplication tests...')
     t.add(Interval(14,15,'14-15####'))
-    assert( data(t[14])        == set(['8-15', '13-15', '14-15', '14-15####']) )
+    assert data(t[14])        == set(['8-15', '13-15', '14-15', '14-15####'])
     t.verify()
     print('    passed')
     
@@ -978,53 +1077,57 @@ if __name__ == "__main__":
     print('Tree copying and casting...')
     tcopy = IntervalTree(t)
     tcopy.verify()
-    assert(t == tcopy)
+    assert t == tcopy
     
     tlist = list(t)
     for iv in tlist:
-        assert(iv in t)
+        assert iv in t
     for iv in t:
-        assert(iv in tlist)
+        assert iv in tlist
     
     tset = set(t)
-    assert(tset == t.items())
+    assert tset == t.items()
     print('    passed')
     
     # Deletion tests
     print('Deletion tests...')
     try:
-        t.remove( Interval(1,3, "Doesn't exist") )
+        t.remove(
+            Interval(1,3, "Doesn't exist")
+            )
     except ValueError:
         pass
     else:
-        assert(False)
+        raise AssertionError("Expected ValueError")
     
     try:
-        t.remove( Interval(500, 1000, "Doesn't exist") )
-    except:
+        t.remove(
+            Interval(500, 1000, "Doesn't exist")
+            )
+    except ValueError:
         pass
     else:
-        assert(False)
+        raise AssertionError("Expected ValueError")
     
     orig = t.print_structure(True)
     t.discard( Interval(1,3, "Doesn't exist") )
     t.discard( Interval(500, 1000, "Doesn't exist") )
-    assert(orig == t.print_structure(True))
+    assert orig == t.print_structure(True)
     
-    assert( data(t[14])        == set(['8-15', '13-15', '14-15', '14-15####']) )
+    assert data(t[14])        == set(['8-15', '13-15', '14-15', '14-15####'])
     t.remove( Interval(14,15,'14-15####') )
-    assert( data(t[14])        == set(['8-15', '13-15', '14-15']) )
+    assert data(t[14])        == set(['8-15', '13-15', '14-15'])
     t.verify()
     
-    assert( data(t[2])        == set(['2-4']) )
+    assert data(t[2])        == set(['2-4'])
     t.discard( makeinterval([2,4]) )
-    assert( data(t[2])        == set() )
+    assert data(t[2])        == set()
     t.verify()
     
-    assert( t[14] )
+    assert t[14]
     t.remove_overlap(14)
     t.verify()
-    assert( not t[14] )
+    assert not t[14]
     
     # Emptying the tree
     #t.print_structure()
@@ -1034,9 +1137,9 @@ if __name__ == "__main__":
         #t.print_structure()
         t.verify()
         #print('')
-    assert(len(t) == 0)
-    assert(t.is_empty())
-    assert(not t)
+    assert len(t) == 0
+    assert t.is_empty()
+    assert not t
     
     t = IntervalTree(ivs)
     #t.print_structure()
@@ -1048,7 +1151,7 @@ if __name__ == "__main__":
     #t.print_structure()    
     print('    passed')
     
-    import cPickle as pickle
-    p = pickle.dumps(t)
-    print(p)
+    #import cPickle as pickle
+    #p = pickle.dumps(t)
+    #print(p)
     
