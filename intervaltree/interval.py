@@ -50,7 +50,8 @@ class Interval:
         return self.end - self.begin
     
     def __hash__(self):
-        #data_hash = hash(self.data) if hasattr('__hash__', self.data) else id(self.data)
+        #data_hash = hash(self.data) if hasattr('__hash__', self.data) \
+        #    else id(self.data)
         return hash( self.begin * self.end )
     
     def __cmp__(self, other):
@@ -63,7 +64,8 @@ class Interval:
         if c == 0:
             c = self.end - other.end
         if c == 0:
-            c = -1 if self.data < other.data else (1 if self.data > other.data else 0)
+            c = -1 if self.data < other.data \
+                else (1 if self.data > other.data else 0)
         return c
     
     def __str__(self):
