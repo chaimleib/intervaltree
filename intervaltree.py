@@ -2,7 +2,8 @@ from interval import *
 from numbers import Number
 from operator import attrgetter
 
-from util.pprint import pprint
+if 0:
+    from util.pprint import pprint
     
 class IntervalTree:
     """
@@ -869,7 +870,7 @@ if __name__ == "__main__":
     try:
         from util.pprint import pprint
     except Exception as e:
-        if 0:
+        if 1:
             from pprint import pprint
         else:
             raise e
