@@ -1,9 +1,6 @@
 from interval import *
 from numbers import Number
 from operator import attrgetter
-
-if 0:
-    from util.pprint import pprint
     
 class IntervalTree:
     """
@@ -84,7 +81,7 @@ class IntervalTree:
         self.boundary_table = {}
         for iv in self.all_intervals:
             self._add_boundaries(iv)
-        self.verify()
+        #self.verify()
     
     def copy(self):
         return IntervalTree(iv.copy() for iv in self)
@@ -266,7 +263,8 @@ class IntervalTree:
         Returns whether some interval in the tree overlaps the given
         range.
         
-        Completes in O(r*log n) time.
+        Completes in O(r*log n) time, where r is the range length and n
+        is the table size.
         """
         if self.is_empty():
             return False
@@ -277,7 +275,40 @@ class IntervalTree:
             for bound in self.boundary_table 
             if begin <= bound < end
             )
-
+    
+    def split_overlaps(self):
+        """
+        Finds all intervals with overlapping ranges and splits them
+        along the range boundaries.
+        
+        Completes in O(n*log n) time.
+        """
+        if not self:
+            return
+        if len(self.boundary_table) == 2:
+            return
+        temp = IntervalTree()
+        
+        bounds = sorted(self.boundary_table) # get bound locations
+        # if strict:
+        for i in xrange(len(bounds)-1):
+            lbound = bounds[i]
+            ubound = bounds[i+1]
+            for iv in self[lbound]:
+                temp[lbound:ubound] = iv.data
+        # else:
+        #     subbounds = []
+        #     for i in xrange(len(bounds)-1):
+        #         bound = bounds[i]
+        #         if not self.overlaps_point(bound):
+        #             subbounds.append(bound)
+        #     lbound = self.begin()
+        
+            
+        self.all_intervals = temp.all_intervals
+        self.top_node = temp.top_node
+        # self.boundary_table unchanged
+        
     def items(self):
         """
         Constructs and returns a set of all intervals in the tree. 
@@ -987,15 +1018,20 @@ class Node:
 
 if __name__ == "__main__":
     try:
+        # My version of pprint formats Intervals and IntervalTrees
+        # more nicely
         from util.pprint import pprint
     except Exception as e:
-        if True:
-            from pprint import pprint
-        else:
-            raise e
+        from pprint import pprint
     from operator import attrgetter
     
-    makeinterval = lambda l: Interval(l[0], l[1], "{}-{}".format(*l))
+    def makeinterval(lst):
+        return Interval(
+            lst[0], 
+            lst[1], 
+            "{}-{}".format(*lst)
+            )
+    
     ivs = map(makeinterval, [
         [1,2],
         [4,7],
@@ -1037,7 +1073,9 @@ if __name__ == "__main__":
          Interval(14, 15, '14-15')
 """
     
-    data = lambda s: set(map(attrgetter('data'), s))
+    def data(s): 
+        return set(map(attrgetter('data'), s))
+    
     # Query tests
     print('Query tests...')
     assert data(t[4])          == set(['4-7'])
@@ -1170,6 +1208,10 @@ if __name__ == "__main__":
     #t.print_structure()    
     print('    passed')
     
+    t = IntervalTree(ivs)
+    pprint(t)
+    t.split_overlaps()
+    pprint(t)
     #import cPickle as pickle
     #p = pickle.dumps(t)
     #print(p)
