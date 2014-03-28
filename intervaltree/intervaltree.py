@@ -141,9 +141,16 @@ class IntervalTree:
         if debug:
             assert(interval in self.top_node.search_point(interval.begin, set()))
         #self.verify()
-    
     append = add
     
+    def addi(self, begin, end, data=None):
+        """
+        Shortcut for add(Interval(begin, end, data)).
+        
+        Completes in O(log n) time.
+        """
+        return self.add(Interval(begin, end, data))
+        
     def extend(self, intervals):
         """
         Given an iterable of intervals, add them to the tree.
@@ -169,7 +176,15 @@ class IntervalTree:
         self.all_intervals.remove(interval)
         self._remove_boundaries(interval)
         #self.verify()
+    
+    def removei(self, begin, end, data=None):
+        """
+        Shortcut for remove(Interval(begin, end, data)).
         
+        Completes in O(log n) time.
+        """
+        return self.remove(Interval(begin, end, data))
+    
     def discard(self, interval):
         """
         Removes an interval from the tree, if present. If not, does 
@@ -183,6 +198,13 @@ class IntervalTree:
         self.top_node = self.top_node.discard(interval)
         self._remove_boundaries(interval)
     
+    def discardi(self, begin, end, data=None):
+        """
+        Shortcut for discard(Interval(begin, end, data)).
+        
+        Completes in O(log n) time.
+        """
+        return self.discard(Interval(begin, end, data))
     
     def remove_overlap(self, begin, end=None):
         """
@@ -468,6 +490,14 @@ class IntervalTree:
         return item in self.all_intervals
         #else:
         #    return self.contains_point(item)
+    
+    def containsi(self, begin, end, data=None):
+        """
+        Shortcut for Interval(begin, end, data) in tree.
+        
+        Completes in O(1) time.
+        """
+        return Interval(begin, end, data) in self
     
     def __iter__(self):
         """
