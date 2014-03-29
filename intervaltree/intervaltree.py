@@ -129,17 +129,15 @@ class IntervalTree:
         
         #self.verify()
         
-        debug = False
-        if debug and self.top_node:
-            assert(interval not in self.top_node.search_point(interval.begin, set()))
+        #if self.top_node:
+        #    assert(interval not in self.top_node.search_point(interval.begin, set()))
         self.all_intervals.add(interval)
         if self.top_node is None:
             self.top_node = Node.from_interval(interval)
         else:
             self.top_node = self.top_node.add(interval)
         self._add_boundaries(interval)        
-        if debug:
-            assert(interval in self.top_node.search_point(interval.begin, set()))
+        #assert(interval in self.top_node.search_point(interval.begin, set()))
         #self.verify()
     append = add
     
@@ -292,6 +290,7 @@ class IntervalTree:
             return False
         elif self.overlaps_point(begin):
             return True
+        # TODO: add support for open and closed intervals
         return any(
             self.overlaps_point(bound) 
             for bound in self.boundary_table 
@@ -303,7 +302,7 @@ class IntervalTree:
         Finds all intervals with overlapping ranges and splits them
         along the range boundaries.
         
-        Completes in O(n*log n) time.
+        Completes in worst-case O(n^2*log n) time, average O(n*log n) time.
         """
         if not self:
             return
@@ -366,6 +365,8 @@ class IntervalTree:
                 return self.search(iv.begin, iv.end, strict=strict)
         elif isinstance(end, Number):
             result = self.top_node.search_point(begin, set())
+            
+            # TODO: add support for open and closed intervals
             result = result.union(self.top_node.search_overlap(
                 bound 
                 for bound in self.boundary_table 
@@ -469,7 +470,7 @@ class IntervalTree:
         """
         Adds a new interval to the tree.
         
-        If an identical Interval object with the same range and data 
+        If an identical Interval object with equal range and data 
         already exists, does nothing.
         
         Completes in O(log n) time.
@@ -481,6 +482,8 @@ class IntervalTree:
     def __contains__(self, item):
         """
         Returns whether item exists as an Interval in the tree.
+        This method only returns true for exact matches; for
+        overlaps, see the overlaps() method.
         
         Completes in O(1) time.
         """
@@ -493,7 +496,7 @@ class IntervalTree:
     
     def containsi(self, begin, end, data=None):
         """
-        Shortcut for Interval(begin, end, data) in tree.
+        Shortcut for (Interval(begin, end, data) in tree).
         
         Completes in O(1) time.
         """
@@ -565,7 +568,7 @@ class Node:
     
     @classmethod
     def from_interval(cls, interval):
-        if not interval:
+        if interval is None:
             return None
         center = interval.begin #+ (interval.end-interval.begin)/2;
         #print(center)
@@ -587,6 +590,7 @@ class Node:
         self.s_center = set()
         s_left = []
         s_right = []
+        # TODO: add support for open and closed intervals
         for k in intervals:
             if k.end <= self.x_center:
                 s_left.append(k)
@@ -608,6 +612,7 @@ class Node:
         Assuming not center_hit(interval), return which branch 
         (left=0, right=1) interval is in.
         """
+        # TODO: add support for open and closed intervals
         return 1 if interval.begin > self.x_center else 0
     
     def refresh_balance(self):
@@ -797,6 +802,7 @@ class Node:
         """
         Returns all intervals that contain point.
         """
+        # TODO: add support for open and closed intervals
         for k in self.s_center:
             if k.begin <= point and point < k.end:
                 result.add(k)
@@ -968,6 +974,7 @@ class Node:
         for iv in self.s_center:
             assert hasattr(iv, 'begin')
             assert hasattr(iv, 'end')
+            # TODO: add support for open and closed intervals
             assert iv.begin < iv.end
             assert iv.overlaps(self.x_center)
             for parent in sorted(parents):

@@ -1,7 +1,14 @@
 PyIntervalTree
 ==============
 
-A mutable, self-balancing interval tree. Queries may be by point, by range overlap, or by range envelopment.
+A mutable, self-balancing interval tree. Queries may be by point, by range 
+overlap, or by range envelopment.
+
+This library was designed to allow tagging text and time intervals, where the
+intervals include the lower bound but not the upper bound. Support for open, 
+closed, half-open and infinite intervals is planned for future versions, using
+the [`interval`](https://pypi.python.org/pypi/interval) package available from
+[PyPI](https://pypi.python.org).
 
 Features
 --------
@@ -80,7 +87,8 @@ Examples
   
 * Query by range
 
-  Note that ranges are inclusive of the lower limit, but non-inclusive of the upper limit. So:
+  Note that ranges are inclusive of the lower limit, but non-inclusive of the
+  upper limit. So:
 
         t[2:4]    # set([])
 
@@ -109,13 +117,17 @@ Examples
         t.remove_overlap(5)   
         list(t)     # []
 
-  We could also empty a tree by removing all intervals, from the lowest bound to the highest bound of the `IntervalTree`:
+  We could also empty a tree by removing all intervals, from the lowest bound
+  to the highest bound of the `IntervalTree`:
   
         t.remove_overlap(t.begin(), t.end())
 
 Based on
 --------
 
-  * Eternally Confuzzled's [AVL tree](http://www.eternallyconfuzzled.com/tuts/datastructures/jsw_tut_avl.aspx)
+  * Eternally Confuzzled's 
+  [AVL tree](http://www.eternallyconfuzzled.com/tuts/datastructures/jsw_tut_avl.aspx)
   * Wikipedia's [Interval Tree](http://en.wikipedia.org/wiki/Interval_tree)
-  * Heavily modified from Tyler Kahn's [Interval Tree implementation in Python](http://forrst.com/posts/Interval_Tree_implementation_in_python-e0K)
+  * Heavily modified from Tyler Kahn's 
+  [Interval Tree implementation in Python](http://forrst.com/posts/Interval_Tree_implementation_in_python-e0K) ([GitHub project](https://github.com/tylerkahn/intervaltree-python))
+
