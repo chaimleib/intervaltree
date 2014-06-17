@@ -22,70 +22,70 @@ The easiest way to install most Python packages is via ``easy_install`` or ``pip
 Features
 --------
 
-  * Initialize blank or from an iterable of Intervals in O(n * log n).
-  * Insertions
+* Initialize blank or from an iterable of Intervals in O(n * log n).
+* Insertions
 
-    * ``tree[begin:end] = data``
-    * ``tree.add(interval)``
-    * ``tree.addi(begin, end, data)``
-    * ``tree.extend(list_of_interval_objs)``
+  * ``tree[begin:end] = data``
+  * ``tree.add(interval)``
+  * ``tree.addi(begin, end, data)``
+  * ``tree.extend(list_of_interval_objs)``
 
-  * Deletions
+* Deletions
 
-    * ``tree.remove(interval)``             (raises ``ValueError`` if not present)
-    * ``tree.discard(interval)``            (quiet if not present)
-    * ``tree.removei(begin, end, data)``
-    * ``tree.discardi(begin, end, data)``
-    * ``tree.remove_overlap(point)``
-    * ``tree.remove_overlap(begin, end)``   (removes all overlapping the range)
-    * ``tree.remove_envelop(begin, end)``   (removes all enveloped in the range)
+  * ``tree.remove(interval)``             (raises ``ValueError`` if not present)
+  * ``tree.discard(interval)``            (quiet if not present)
+  * ``tree.removei(begin, end, data)``
+  * ``tree.discardi(begin, end, data)``
+  * ``tree.remove_overlap(point)``
+  * ``tree.remove_overlap(begin, end)``   (removes all overlapping the range)
+  * ``tree.remove_envelop(begin, end)``   (removes all enveloped in the range)
 
-  * Overlap queries:
+* Overlap queries:
 
-    * ``tree[point]``
-    * ``tree[begin, end]``
-    * ``tree.search(point)``
-    * ``tree.search(begin, end)``
+  * ``tree[point]``
+  * ``tree[begin, end]``
+  * ``tree.search(point)``
+  * ``tree.search(begin, end)``
 
-  * Envelop queries:
+* Envelop queries:
 
-    * ``tree.search(begin, end, strict = True)``
+  * ``tree.search(begin, end, strict = True)``
 
-  * Membership queries:
+* Membership queries:
 
-    * ``interval_obj in tree``              (this is fastest, O(1))
-    * ``tree.containsi(begin, end, data)``
-    * ``tree.overlaps(point)``
-    * ``tree.overlaps(begin, end)``
+  * ``interval_obj in tree``              (this is fastest, O(1))
+  * ``tree.containsi(begin, end, data)``
+  * ``tree.overlaps(point)``
+  * ``tree.overlaps(begin, end)``
 
-  * Iterable:
+* Iterable:
 
-    * ``for interval_obj in tree:``
-    * ``tree.items()``
+  * ``for interval_obj in tree:``
+  * ``tree.items()``
 
-  * Sizing:
+* Sizing:
 
-    * ``len(tree)``
-    * ``tree.is_empty()``
-    * ``not tree``
-    * ``tree.begin()``
-    * ``tree.end()``
+  * ``len(tree)``
+  * ``tree.is_empty()``
+  * ``not tree``
+  * ``tree.begin()``
+  * ``tree.end()``
 
-  * Restructuring
+* Restructuring
 
-    * ``split_overlaps()``
+  * ``split_overlaps()``
 
-  * Copy- and typecast-able:
+* Copy- and typecast-able:
 
-    * ``IntervalTree(tree)``    (``Interval`` objects are same as those in tree)
-    * ``tree.copy()``           (``Interval`` objects are shallow copies of those in tree)
-    * ``set(tree)``             (can later be fed into ``IntervalTree()``)
-    * ``list(tree)``            (ditto)
+  * ``IntervalTree(tree)``    (``Interval`` objects are same as those in tree)
+  * ``tree.copy()``           (``Interval`` objects are shallow copies of those in tree)
+  * ``set(tree)``             (can later be fed into ``IntervalTree()``)
+  * ``list(tree)``            (ditto)
 
-  * Equal-able
-  * Hashable
-  * Pickle-friendly
-  * Automatic AVL balancing
+* Equal-able
+* Hashable
+* Pickle-friendly
+* Automatic AVL balancing
     
 Examples
 --------
