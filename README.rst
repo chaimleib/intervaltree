@@ -3,14 +3,15 @@ PyIntervalTree
 ==============
 
     NB: This is a straight fork of `PyIntervalTree by Chaim-Leib Halbert <https://github.com/MusashiAharon/PyIntervalTree>`_.
-    This fork adds some tests and registers the package at PyPI as `PyIntervalTree <https://pypi.python.org/PyIntervalTree>`_. Some further maintenance or updates might still be possible, and eventually the fork could merge into the original (depending on the original author's opinion).
-    
+    This fork adds some tests, fixes some bugs, registers the package at PyPI as `PyIntervalTree <https://pypi.python.org/PyIntervalTree>`_,
+    adds a ``intervaltree.bio`` package with some utilities for bioinformatics needs (see below).
+    Some further maintenance or updates might still be possible, and eventually the fork could merge into the original (depending on the original author's opinion).
+
 A mutable, self-balancing interval tree. Queries may be by point, by range 
 overlap, or by range envelopment.
 
 This library was designed to allow tagging text and time intervals, where the
 intervals include the lower bound but not the upper bound.
-
 
 Installation
 ------------
@@ -43,7 +44,7 @@ Features
 * Overlap queries:
 
   * ``tree[point]``
-  * ``tree[begin, end]``
+  * ``tree[begin:end]``
   * ``tree.search(point)``
   * ``tree.search(begin, end)``
 
@@ -68,8 +69,8 @@ Features
   * ``len(tree)``
   * ``tree.is_empty()``
   * ``not tree``
-  * ``tree.begin()``
-  * ``tree.end()``
+  * ``tree.begin()`` (the smallest coordinate of the leftmost interval)
+  * ``tree.end()`` (the ``end`` coordinate of the rightmost interval)
 
 * Restructuring
 
@@ -83,7 +84,6 @@ Features
   * ``list(tree)``            (ditto)
 
 * Equal-able
-* Hashable
 * Pickle-friendly
 * Automatic AVL balancing
     
@@ -148,6 +148,34 @@ Examples
   to the highest bound of the ``IntervalTree``::
   
         t.remove_overlap(t.begin(), t.end())
+
+Usage with Genomic Data
+-----------------------
+
+Interval trees are especially commonly used in bioinformatics, where intervals correspond to genes or various features along the genome. Such intervals are commonly stored in ``BED``-format files. To simplify working with such data, the package ``intervaltree.bio`` provides a ``GenomeIntervalTree`` class.
+
+``GenomeIntervalTree`` is essentially a ``dict`` of ``IntervalTree``-s, indexed by chromosome names::
+
+    gtree = GenomeIntervalTree()
+    gtree['chr1'].addi(10000, 20000)
+    
+There is a convenience function for adding intervals::
+
+    gtree.addi('chr2', 20000, 30000)
+    
+You can create a ``GenomeIntervalTree`` instance from a ``BED`` file::
+
+    test_url = 'http://hgdownload.cse.ucsc.edu/goldenPath/hg19/encodeDCC/wgEncodeAwgTfbsUniform/wgEncodeAwgTfbsBroadDnd41Ezh239875UniPk.narrowPeak.gz'
+    data = zlib.decompress(urlopen(test_url).read(), 16+zlib.MAX_WBITS)
+    gtree = GenomeIntervalTree.from_bed(StringIO(data))
+    
+In addition, special functions are offered to read in `UCSC tables of gene positions <https://genome.ucsc.edu/cgi-bin/hgTables>`_:
+
+* ``knownGene = GenomeIntervalTree.from_table()`` (loads the UCSC knownGene table with each interval corresponding to gene's transcribed region)
+* ``refGene = GenomeIntervalTree.from_table(parser=UCSCTable.REF_GENE, mode='cds')`` (loads the UCSC ``refGene`` table with each interval corresponding to gene's coding region)
+* ``ensGene = GenomeIntervalTree.from_table(parser=UCSCTable.ENS_GENE, mode='exons')`` (loads the UCSC ``ensGene`` table with each interval corresponding to a gene's exon).
+
+You may add methods for parsing your own tabular files with genomic intervals, see the documentation for ``GenomeIntervalTree.from_table``.
 
 Based on
 --------
