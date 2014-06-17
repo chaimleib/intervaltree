@@ -1,3 +1,14 @@
+'''
+PyIntervalTree: A mutable, self-balancing interval tree.
+
+Interval class.
+
+Copyright 2014, Chaim-Leib Halbert et al.
+Most recent fork and modifications by Konstantin Tretyakov
+
+Licensed under LGPL.
+'''
+
 from numbers import Number
 
 class Interval:

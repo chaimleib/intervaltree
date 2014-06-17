@@ -1,71 +1,204 @@
+'''
+PyIntervalTree: A mutable, self-balancing interval tree.
+
+Core logic.
+
+Copyright 2014, Chaim-Leib Halbert et al.
+Most recent fork and modifications by Konstantin Tretyakov
+
+Licensed under LGPL.
+'''
+
 from interval import *
 from numbers import Number
 from operator import attrgetter
     
-class IntervalTree:
+class IntervalTree(object):
     """
     A binary lookup tree of intervals.
+    The intervals contained in the tree are represented using ``Interval(a, b, data)`` objects.
+    Each such object represents a half-open interval ``[a, b)`` with optional data.
     
-    Features:
-        * Initialize blank or from an iterable of Intervals in 
-          O(n * log n).
-        * Insertions
-            * tree[a:b] = value
-            * tree.add(Interval(a, b, value))
-            * tree.extend(list_of_interval_objs)
-        * Deletions
-            * tree.remove(interval)
-              raises ValueError if not present
-            * tree.discard(interval)
-              quiet if not present
-            * tree.remove_overlap(point)
-            * tree.remove_overlap(begin, end)
-              removes all overlapping the range
-            * tree.remove_envelop(begin, end)
-              removes all enveloped in the range
-        * Overlap queries:
-            * tree[point]
-            * tree[begin, end]
-            * tree.search(point)
-            * tree.search(begin, end)
-        * Envelop queries:
-            * tree.search(begin, end, strict = True)
-        * Membership queries:
-            * interval_obj in tree
-              this is fastest
-            * tree.overlaps(point)
-            * tree.overlaps(begin, end)
-        * Sizing:
-            * len(tree)
-            * tree.is_empty()
-            * not tree
-            * tree.begin()
-            * tree.end()
-        * Iterable:
-            * for interval_obj in tree:
-            * tree.items()
-        * Copy- and typecast-able:
-            * IntervalTree(tree)
-              Interval objects are same as those in tree
-            * tree.copy()
-              Interval objects are shallow copies of those in tree
-            * set(tree)
-              can later be fed into IntervalTree()
-            * list(tree)
-              ditto
-        * Equal-able
-        * Hashable
-        * Pickle-friendly
-        * Automatic AVL balancing.
+    Examples:
+    ---------
     
-    Based on:
-        * AVL tree, from 
-          http://www.eternallyconfuzzled.com/tuts/datastructures/jsw_tut_avl.aspx
-        * "Interval Tree", from 
-          http://en.wikipedia.org/wiki/Interval_tree
-        * Heavily modified from Tyler Kahn's "Interval Tree 
-          implementation in Python," from
-          http://forrst.com/posts/Interval_Tree_implementation_in_python-e0K
+    Initialize a blank tree::
+    
+        >>> itree = IntervalTree()
+        >>> len(itree)
+        0
+    
+    Initialize a tree from an iterable set of Intervals in O(n * log n)::
+    
+        >>> itree = IntervalTree([Interval(-10, 10), Interval(-10.0, 10.0)])
+        >>> len(itree)
+        1
+    
+    Note that this is a set, i.e. repeated intervals are ignored. However, intervals with different data fields are regarded as different::
+    
+        >>> itree = IntervalTree([Interval(-10, 10), Interval(-10, 10), Interval(-10, 10, "x")])
+        >>> len(itree)
+        2
+    
+    Insertions::
+    
+        >>> itree[-10:20] = "arbitrary data"
+        >>> itree[-10:20] = None  # Note that this is also an insertion
+        >>> len(itree)
+        4
+        >>> itree[-10:20] = None  # This won't change anything
+        >>> itree[-10:20] = "arbitrary data" # Neither will this
+        >>> len(itree)
+        4
+        >>> itree.add(Interval(10, 20))
+        >>> itree.addi(19.9, 20)
+        >>> len(itree)
+        6
+        >>> itree.extend([Interval(19.9, 20.1), Interval(20.1, 30)])
+        >>> len(itree)
+        8
+        >>> itree.extend([Interval(19.9, 20.1), Interval(20.1, 30)]) # Note the set-like logic again
+        >>> len(itree)
+        8
+
+    Deletions::
+    
+        >>> itree.remove(Interval(-10, 10))
+        >>> len(itree)
+        7
+        >>> itree.remove(Interval(-10, 10))
+        Traceback (most recent call last):
+        ...
+        ValueError
+        >>> itree.discard(Interval(-10, 10)) # Same as remove, but no exception on failure
+        >>> len(itree)
+        7
+        
+    Delete intervals, overlapping a given point::
+    
+        >>> itree = IntervalTree([Interval(-1.1, 1.1), Interval(-0.5, 1.5), Interval(0.5, 1.7)])
+        >>> itree.remove_overlap(1.1)
+        >>> list(itree)
+        [Interval(-1.1, 1.1, None)]
+        
+    Delete intervals, overlapping an interval::
+    
+        >>> itree = IntervalTree([Interval(-1.1, 1.1), Interval(-0.5, 1.5), Interval(0.5, 1.7)])
+        >>> itree.remove_overlap(0, 0.5)
+        >>> list(itree)
+        [Interval(0.5, 1.7, None)]
+        >>> itree.remove_overlap(1.7, 1.8)
+        >>> list(itree)
+        [Interval(0.5, 1.7, None)]
+        >>> itree.remove_overlap(1.6, 1.6) # Empty interval still works
+        >>> list(itree)
+        []
+        
+    Delete intervals, enveloped in the range::
+    
+        >>> itree = IntervalTree([Interval(-1.1, 1.1), Interval(-0.5, 1.5), Interval(0.5, 1.7)])
+        >>> itree.remove_envelop(-1.0, 1.5)
+        >>> list(itree)
+        [Interval(-1.1, 1.1, None), Interval(0.5, 1.7, None)]
+        >>> itree.remove_envelop(-1.1, 1.5)
+        >>> list(itree)
+        [Interval(0.5, 1.7, None)]
+        >>> itree.remove_envelop(0.5, 1.5)
+        >>> list(itree)
+        [Interval(0.5, 1.7, None)]
+        >>> itree.remove_envelop(0.5, 1.7)
+        >>> list(itree)
+        []
+        
+    Point/interval overlap queries::
+    
+        >>> itree = IntervalTree([Interval(-1.1, 1.1), Interval(-0.5, 1.5), Interval(0.5, 1.7)])
+        >>> itree[-1.1]
+        set([Interval(-1.1, 1.1, None)])
+        >>> itree.search(1.1)  # Same as [1.1]
+        set([Interval(-0.5, 1.5, None), Interval(0.5, 1.7, None)])
+        >>> itree[-0.5:0.5]   # Interval overlap query
+        set([Interval(-0.5, 1.5, None), Interval(-1.1, 1.1, None)])
+        >>> itree.search(1.5, 1.5)  # Same as [1.5, 1.5]
+        set([Interval(0.5, 1.7, None)])
+        >>> itree.search(1.7, 1.7)
+        set([])
+
+    Envelop queries::
+    
+        >>> itree.search(-0.5, 0.5, strict=True)
+        set([])
+        >>> itree.search(-0.4, 1.7, strict=True)
+        set([Interval(0.5, 1.7, None)])
+        
+    Membership queries::
+    
+        >>> Interval(-0.5, 0.5) in itree
+        False
+        >>> Interval(-1.1, 1.1) in itree
+        True
+        >>> Interval(-1.1, 1.1, "x") in itree
+        False
+        >>> itree.overlaps(-1.1)
+        True
+        >>> not itree.overlaps(1.7) # TODO: itree.overlaps(1.7) returns None, should return False
+        True
+        >>> itree.overlaps(1.7, 1.8)
+        False
+        >>> itree.overlaps(-1.2, -1.1)
+        False
+        >>> itree.overlaps(-1.2, -1.0)
+        True
+    
+    Sizing::
+    
+        >>> len(itree)
+        3
+        >>> itree.is_empty()
+        False
+        >>> IntervalTree().is_empty()
+        True
+        >>> not itree
+        False
+        >>> not IntervalTree()
+        True
+        >>> itree.begin()
+        -1.1
+        >>> itree.end()
+        1.7
+        
+    Iteration::
+        
+        >>> [int.begin for int in itree]
+        [-0.5, -1.1, 0.5]
+        >>> itree.items()
+        set([Interval(-0.5, 1.5, None), Interval(-1.1, 1.1, None), Interval(0.5, 1.7, None)])
+
+    Copy- and typecasting, pickling::
+    
+        >>> itree = IntervalTree([Interval(0,1,"x"), Interval(1,2,["x"])])
+        >>> itree2 = IntervalTree(itree) # Does not copy Interval objects
+        >>> itree3 = itree.copy()        # Shallow copy of Interval objects
+        >>> import pickle
+        >>> itree4 = pickle.loads(pickle.dumps(itree)) # Full copy
+        >>> list(itree[0])[0].data = "y"
+        >>> list(itree[1])[0].data[0] = "y"
+        >>> list(itree)
+        [Interval(0, 1, 'y'), Interval(1, 2, ['y'])]
+        >>> list(itree2)
+        [Interval(0, 1, 'y'), Interval(1, 2, ['y'])]
+        >>> list(itree3)
+        [Interval(0, 1, 'x'), Interval(1, 2, ['y'])]
+        >>> list(itree4)
+        [Interval(0, 1, 'x'), Interval(1, 2, ['x'])]
+        
+    Equality testing::
+    
+        >>> IntervalTree([Interval(0,1)]) == IntervalTree([Interval(0,1)])
+        True
+        >>> IntervalTree([Interval(0,1)]) == IntervalTree([Interval(0,1,"x")])
+        False
+
     """
     
     def __init__(self, intervals=None):
@@ -519,7 +652,7 @@ class IntervalTree:
         """
         return len(self.all_intervals)
     
-    __hash__ = object.__hash__
+    #__hash__ = object.__hash__  # Does not seem to work: {IntervalTree([Interval(0,1)]): 1}[IntervalTree([Interval(0,1)])]
         
     def __eq__(self, other):
         """
@@ -1051,205 +1184,3 @@ class Node:
             return result
         else:
             print(result)
-
-
-if __name__ == "__main__":
-    try:
-        # My version of pprint formats Intervals and IntervalTrees
-        # more nicely
-        from util.pprint import pprint
-    except Exception as e:
-        from pprint import pprint
-    from operator import attrgetter
-    
-    def makeinterval(lst):
-        return Interval(
-            lst[0], 
-            lst[1], 
-            "{}-{}".format(*lst)
-            )
-    
-    ivs = map(makeinterval, [
-        [1,2],
-        [4,7],
-        [5,9],
-        [6,10],
-        [8,10],
-        [8,15],
-        [10,12],
-        [12,14],
-        [14,15],
-        ])
-    t = IntervalTree(ivs)
-    t.verify()
-    pprint(t)
-    #t.print_structure()
-    orig = t.print_structure(True)
-        
-    assert orig == \
-    """Node<8, balance=0>
-||||:
- Interval(5, 9, '5-9')
- Interval(6, 10, '6-10')
- Interval(8, 10, '8-10')
- Interval(8, 15, '8-15')
-<<<<:Node<4, balance=-1>
-    ||||:
-     Interval(4, 7, '4-7')
-    <<<<:Node<1, balance=0>
-        ||||:
-         Interval(1, 2, '1-2')
->>>>:Node<12, balance=0>
-    ||||:
-     Interval(12, 14, '12-14')
-    <<<<:Node<10, balance=0>
-        ||||:
-         Interval(10, 12, '10-12')
-    >>>>:Node<14, balance=0>
-        ||||:
-         Interval(14, 15, '14-15')
-"""
-    
-    def data(s): 
-        return set(map(attrgetter('data'), s))
-    
-    # Query tests
-    print('Query tests...')
-    assert data(t[4])          == set(['4-7'])
-    assert data(t[4:5])        == set(['4-7'])
-    assert data(t[4:6])        == set(['4-7', '5-9'])
-    assert data(t[9])          == set(['6-10', '8-10', '8-15'])
-    assert data(t[15])         == set()
-    assert data(t.search(5))   == set(['4-7', '5-9'])
-    assert data(t.search(6, 11, strict = True)) == set(['6-10', '8-10'])
-    
-    print('    passed')
-    
-    # Membership tests
-    print('Membership tests...')
-    assert ivs[1] in t
-    assert Interval(1,3, '1-3') not in t
-    assert t.overlaps(4)
-    assert t.overlaps(9)
-    assert not t.overlaps(15)
-    assert t.overlaps(0,4)
-    assert t.overlaps(1,2)
-    assert t.overlaps(1,3)
-    assert t.overlaps(8,15)
-    assert not t.overlaps(15, 16)
-    assert not t.overlaps(-1, 0)
-    assert not t.overlaps(2,4)
-    print('    passed')
-    
-    # Insertion tests
-    print('Insertion tests...')
-    t.add( makeinterval([1,2]) )  # adding duplicate should do nothing
-    assert data(t[1])        == set(['1-2'])
-    assert orig == t.print_structure(True)
-    
-    t[1:2] = '1-2'                # adding duplicate should do nothing
-    assert data(t[1])        == set(['1-2'])
-    assert orig == t.print_structure(True)
-    
-    t.add(makeinterval([2,4]))
-    assert data(t[2])        == set(['2-4'])
-    t.verify()
-    
-    t[13:15] = '13-15'
-    assert data(t[14])       == set(['8-15', '13-15', '14-15'])
-    t.verify()
-    print('    passed')
-    
-    # Duplication tests
-    print('Interval duplication tests...')
-    t.add(Interval(14,15,'14-15####'))
-    assert data(t[14])        == set(['8-15', '13-15', '14-15', '14-15####'])
-    t.verify()
-    print('    passed')
-    
-    # Copying and casting
-    print('Tree copying and casting...')
-    tcopy = IntervalTree(t)
-    tcopy.verify()
-    assert t == tcopy
-    
-    tlist = list(t)
-    for iv in tlist:
-        assert iv in t
-    for iv in t:
-        assert iv in tlist
-    
-    tset = set(t)
-    assert tset == t.items()
-    print('    passed')
-    
-    # Deletion tests
-    print('Deletion tests...')
-    try:
-        t.remove(
-            Interval(1,3, "Doesn't exist")
-            )
-    except ValueError:
-        pass
-    else:
-        raise AssertionError("Expected ValueError")
-    
-    try:
-        t.remove(
-            Interval(500, 1000, "Doesn't exist")
-            )
-    except ValueError:
-        pass
-    else:
-        raise AssertionError("Expected ValueError")
-    
-    orig = t.print_structure(True)
-    t.discard( Interval(1,3, "Doesn't exist") )
-    t.discard( Interval(500, 1000, "Doesn't exist") )
-    assert orig == t.print_structure(True)
-    
-    assert data(t[14])        == set(['8-15', '13-15', '14-15', '14-15####'])
-    t.remove( Interval(14,15,'14-15####') )
-    assert data(t[14])        == set(['8-15', '13-15', '14-15'])
-    t.verify()
-    
-    assert data(t[2])        == set(['2-4'])
-    t.discard( makeinterval([2,4]) )
-    assert data(t[2])        == set()
-    t.verify()
-    
-    assert t[14]
-    t.remove_overlap(14)
-    t.verify()
-    assert not t[14]
-    
-    # Emptying the tree
-    #t.print_structure()
-    for iv in sorted(iter(t)):
-        #print('### Removing '+str(iv)+'... ###')
-        t.remove(iv)
-        #t.print_structure()
-        t.verify()
-        #print('')
-    assert len(t) == 0
-    assert t.is_empty()
-    assert not t
-    
-    t = IntervalTree(ivs)
-    #t.print_structure()
-    t.remove_overlap(1)
-    #t.print_structure()
-    t.verify()
-    
-    t.remove_overlap(8)
-    #t.print_structure()    
-    print('    passed')
-    
-    t = IntervalTree(ivs)
-    pprint(t)
-    t.split_overlaps()
-    pprint(t)
-    #import cPickle as pickle
-    #p = pickle.dumps(t)
-    #print(p)
-    
