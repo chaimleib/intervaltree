@@ -171,9 +171,19 @@ You can create a ``GenomeIntervalTree`` instance from a ``BED`` file::
     
 In addition, special functions are offered to read in `UCSC tables of gene positions <https://genome.ucsc.edu/cgi-bin/hgTables>`_:
 
-* ``knownGene = GenomeIntervalTree.from_table()`` (loads the UCSC knownGene table with each interval corresponding to gene's transcribed region)
-* ``refGene = GenomeIntervalTree.from_table(parser=UCSCTable.REF_GENE, mode='cds')`` (loads the UCSC ``refGene`` table with each interval corresponding to gene's coding region)
-* ``ensGene = GenomeIntervalTree.from_table(parser=UCSCTable.ENS_GENE, mode='exons')`` (loads the UCSC ``ensGene`` table with each interval corresponding to a gene's exon).
+* Load the UCSC ``knownGene`` table with each interval corresponding to gene's transcribed region::
+
+    knownGene = GenomeIntervalTree.from_table()
+  
+* Load the UCSC ``refGene`` table with each interval corresponding to gene's coding region::
+
+    url = 'http://hgdownload.cse.ucsc.edu/goldenpath/hg19/database/refGene.txt.gz'
+    refGene = GenomeIntervalTree.from_table(url=url, parser=UCSCTable.REF_GENE, mode='cds')
+    
+* Load the UCSC ``ensGene`` table with each interval corresponding to a gene's exon::
+
+    url = 'http://hgdownload.cse.ucsc.edu/goldenpath/hg19/database/ensGene.txt.gz'
+    ensGene = GenomeIntervalTree.from_table(url=url, parser=UCSCTable.ENS_GENE, mode='exons') 
 
 You may add methods for parsing your own tabular files with genomic intervals, see the documentation for ``GenomeIntervalTree.from_table``.
 
