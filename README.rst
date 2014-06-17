@@ -160,4 +160,4 @@ Copyright
 ---------
 
   * `Chaim-Leib Halbert <https://github.com/MusashiAharon/PyIntervalTree>`_
-  * This particular fork by `Konstantin Tretyakov <https://github.com/konstantint/PyIntervalTree>`_ so far introduces purely cosmetic modifications.
+  * This particular fork by `Konstantin Tretyakov <https://github.com/konstantint/PyIntervalTree>`_. See changes in CHANGELOG.txt.
