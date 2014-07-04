@@ -10,7 +10,7 @@ intervals include the lower bound but not the upper bound.
 Features
 --------
 
-  * Initialize blank or from an iterable of Intervals in O(n * log n).
+  * Initialize blank or from an iterable of `Intervals` in O(n * log n).
   * Insertions
     * `tree[begin:end] = data`
     * `tree.add(interval)`

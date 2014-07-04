@@ -1,4 +1,4 @@
-from interval import *
+from interval import Interval
 from numbers import Number
 from operator import attrgetter
     
@@ -7,8 +7,7 @@ class IntervalTree:
     A binary lookup tree of intervals.
     
     Features:
-        * Initialize blank or from an iterable of Intervals in 
-          O(n * log n).
+        * Initialize blank or from an iterable of intervals
         * Insertions
             * tree[a:b] = value
             * tree.add(Interval(a, b, value))
@@ -70,8 +69,8 @@ class IntervalTree:
     
     def __init__(self, intervals=None):
         """
-        Set up a tree. If intervals is set, add all the intervals to 
-        the tree.
+        Set up a tree. If intervals is provided, add all the intervals 
+        to the tree.
         
         Completes in O(n*log n) time.
         """
@@ -84,6 +83,12 @@ class IntervalTree:
         #self.verify()
     
     def copy(self):
+        """
+        Construct a new IntervalTree using shallow copies of the 
+        intervals in the source tree.
+        
+        Completes in O(n*log n) time.
+        """
         return IntervalTree(iv.copy() for iv in self)
     
     def _add_boundaries(self, interval):
@@ -148,7 +153,8 @@ class IntervalTree:
         Completes in O(log n) time.
         """
         return self.add(Interval(begin, end, data))
-        
+    appendi = addi
+    
     def extend(self, intervals):
         """
         Given an iterable of intervals, add them to the tree.
@@ -208,7 +214,7 @@ class IntervalTree:
         """
         Removes all intervals overlapping the given point or range.
         
-        Completes in O( (r+m) * log n ) time, where:
+        Completes in O((r+m)*log n) time, where:
           * n = size of the tree
           * m = number of matches
           * r = size of the search range (this is 1 for a point)
@@ -221,7 +227,7 @@ class IntervalTree:
         """
         Removes all intervals completely enveloped in the given range.
         
-        Completes in O( (r+m) * log n ) time, where:
+        Completes in O((r+m)*log n) time, where:
           * n = size of the tree
           * m = number of matches
           * r = size of the search range (this is 1 for a point)
@@ -302,7 +308,9 @@ class IntervalTree:
         Finds all intervals with overlapping ranges and splits them
         along the range boundaries.
         
-        Completes in worst-case O(n^2*log n) time, average O(n*log n) time.
+        Completes in worst-case O(n^2*log n) time (many interval 
+        boundaries are inside many intervals), best-case O(n*log n)
+        time (small number of overlaps << n per interval).
         """
         if not self:
             return
@@ -384,13 +392,17 @@ class IntervalTree:
     
     def begin(self):
         """
-        Returns the begin attribute of the first interval in the tree.
+        Returns the lower bound of the first interval in the tree.
+        
+        Completes in O(n) time.
         """
         return min(self.boundary_table)
     
     def end(self):
         """
-        Returns the end attribute of the last interval in the tree.
+        Returns the upper bound of the last interval in the tree.
+        
+        Completes in O(n) time.
         """
         return max(self.boundary_table)
     
@@ -468,7 +480,8 @@ class IntervalTree:
     
     def __setitem__(self, index, value):
         """
-        Adds a new interval to the tree.
+        Adds a new interval to the tree. A shortcut for
+        add(Interval(index.start, index.stop, value)).
         
         If an identical Interval object with equal range and data 
         already exists, does nothing.
@@ -482,7 +495,7 @@ class IntervalTree:
     def __contains__(self, item):
         """
         Returns whether item exists as an Interval in the tree.
-        This method only returns true for exact matches; for
+        This method only returns True for exact matches; for
         overlaps, see the overlaps() method.
         
         Completes in O(1) time.
@@ -523,9 +536,9 @@ class IntervalTree:
         
     def __eq__(self, other):
         """
-        Whether two interval trees are equal.
+        Whether two IntervalTrees are equal.
         
-        Completes in O(n) time worst-case, O(1) otherwise.
+        Completes in O(n) time if sizes are equal; O(1) time otherwise.
         """
         return (
             isinstance(other, IntervalTree) and 
