@@ -22,8 +22,8 @@ Features
   * Deletions
     * `tree.remove(interval)`             (raises `ValueError` if not present)
     * `tree.discard(interval)`            (quiet if not present)
-    * `tree.removei(begin, end, data)`
-    * `tree.discardi(begin, end, data)`
+    * `tree.removei(begin, end, data)`    (short for `tree.remove(Interval(begin, end, data))`)
+    * `tree.discardi(begin, end, data)`   (short for `tree.discard(Interval(begin, end, data))`)
     * `tree.remove_overlap(point)`
     * `tree.remove_overlap(begin, end)`   (removes all overlapping the range)
     * `tree.remove_envelop(begin, end)`   (removes all enveloped in the range)
