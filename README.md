@@ -68,22 +68,22 @@ Examples
         from intervaltree import Interval, IntervalTree
         t = IntervalTree()
 
-* Adding intervals - you don't have to use strings!
+* Adding intervals - any object works!
 
         t[1:2] = "1-2"
-        t[4:7] = "4-7"
-        t[5:9] = "5-9"
+        t[4:7] = (4, 7)
+        t[5:9] = {5: 9}
 
 * Query by point
 
-        ivs = t[6]            # set([Interval(4, 7, '4-7'), Interval(5, 9, '5-9')])
-        iv = sorted(ivs)[0]   # Interval(4, 7, '4-7')
+        ivs = t[6]            # set([Interval(4, 7, (4, 7)), Interval(5, 9, {5: 9})])
+        iv = sorted(ivs)[0]   # Interval(4, 7, (4, 7))
   
 * Accessing an `Interval` object
 
         iv.begin  # 4
         iv.end    # 7
-        iv.data   # "4-7"
+        iv.data   # (4, 7)
   
 * Query by range
 
@@ -94,17 +94,20 @@ Examples
 
   But:
 
-        t[1:5]    # set([Interval(1, 2, '1-2'), Interval(4, 7, '4-7')])
+        t[1:5]    # set([Interval(1, 2, '1-2'), Interval(4, 7, (4, 7))])
 
 * Constructing from lists of `Interval`s
 
-  We could have made the same tree this way:
+  We could have made a similar tree this way:
 
         ivs = [ [1,2], [4,7], [5,9] ]
-        ivs = map( lambda begin,end: Interval(begin, end, "%d-%d" % (begin,end), 
-                   *zip(*ivs) )
-  
-        t = IntervalTree(ivs)
+        t = IntervalTree(
+            Interval(begin, end, "%d-%d" % (begin, end)) for (begin, end) in ivs
+        )
+   
+  Or, if we don't need the data fields:
+    
+        t = IntervalTree(Interval(begin, end) for (begin, end) in ivs)
 
 * Removing intervals
 
