@@ -5,10 +5,7 @@ A mutable, self-balancing interval tree. Queries may be by point, by range
 overlap, or by range envelopment.
 
 This library was designed to allow tagging text and time intervals, where the
-intervals include the lower bound but not the upper bound. Support for open, 
-closed, half-open and infinite intervals is planned for future versions, using
-the [`interval`](https://pypi.python.org/pypi/interval) package available from
-[PyPI](https://pypi.python.org).
+intervals include the lower bound but not the upper bound.
 
 Features
 --------
@@ -125,6 +122,13 @@ Examples
   
         t.remove_overlap(t.begin(), t.end())
 
+Future improvements
+-------------------
+* KeyedIntervalTree class, allowing lookup of intervals by a key. Useful for genome research, as in [Konstantin Tretyakov's fork](https://github.com/konstantint/PyIntervalTree).
+* Support for open, closed, half-open and infinite intervals, using
+the [`interval`](https://pypi.python.org/pypi/interval) package available from
+[PyPI](https://pypi.python.org). (Maybe not, since these intervals would complicate the use case of text intervals a lot.)
+
 Based on
 --------
 
@@ -133,4 +137,3 @@ Based on
   * Wikipedia's [Interval Tree](http://en.wikipedia.org/wiki/Interval_tree)
   * Heavily modified from Tyler Kahn's 
   [Interval Tree implementation in Python](http://forrst.com/posts/Interval_Tree_implementation_in_python-e0K) ([GitHub project](https://github.com/tylerkahn/intervaltree-python))
-
