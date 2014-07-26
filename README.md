@@ -10,6 +10,7 @@ intervals include the lower bound but not the upper bound.
 Features
 --------
 
+  * Supports Python 2.7 and Python 3.3
   * Initialize blank or from an iterable of `Intervals` in O(n * log n).
   * Insertions
     * `tree[begin:end] = data`
@@ -124,6 +125,7 @@ Examples
 
 Future improvements
 -------------------
+
 * KeyedIntervalTree class, allowing lookup of intervals by a key. Useful for genome research, as in [Konstantin Tretyakov's fork](https://github.com/konstantint/PyIntervalTree).
 * Support for open, closed, half-open and infinite intervals, using
 the [`interval`](https://pypi.python.org/pypi/interval) package available from
