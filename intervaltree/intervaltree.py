@@ -1,8 +1,4 @@
 import six
-try:
-    range = xrange
-except NameError:
-    pass
 
 from numbers import Number
 from operator import attrgetter
@@ -261,8 +257,8 @@ class IntervalTree(object):
                 
         long_ivs = sorted(self.all_intervals, key=len, reverse=True)
         for i, parent in enumerate(long_ivs):
-            for k in range(i+1, len(long_ivs)):
-                add_if_nested(parent, long_ivs[k])
+            for long_iv in long_ivs[i+1:]:
+                add_if_nested(parent, long_iv)
         return result
     
     def overlaps(self, begin, end=None):
@@ -325,10 +321,8 @@ class IntervalTree(object):
         temp = IntervalTree()
         
         bounds = sorted(self.boundary_table)  # get bound locations
-        # if strict:
-        for i in range(len(bounds)-1):
-            lbound = bounds[i]
-            ubound = bounds[i+1]
+
+        for lbound, ubound in zip(bounds[:-1], bounds[1:]):
             for iv in self[lbound]:
                 temp[lbound:ubound] = iv.data
 
