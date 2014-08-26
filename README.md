@@ -112,8 +112,8 @@ Examples
         t.remove( Interval(1, 2, "1-2") )
         list(t)     # [Interval(4, 7, '4-7'), Interval(5, 9, '5-9')]
         
-        t.remove( Interval(500, 1000, "Doesn't exist") # raises ValueError
-        t.discard(Interval(500, 1000, "Doesn't exist") # quietly does nothing
+        t.remove( Interval(500, 1000, "Doesn't exist")) # raises ValueError
+        t.discard(Interval(500, 1000, "Doesn't exist")) # quietly does nothing
         
         t.remove_overlap(5)   
         list(t)     # []
