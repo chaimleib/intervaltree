@@ -1,5 +1,5 @@
-Version 0.2.2b
---------------
+Version 0.2.3
+-------------
 
     - Slight changes for inclusion in PyPI.
     - Some documentation changes
