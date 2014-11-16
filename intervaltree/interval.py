@@ -66,8 +66,8 @@ class Interval(object):
         #try:
         c = self.begin - other.begin
         #except Exception as e:
-        #    print("self: {}".format(self) )
-        #    print("other: {}".format(other))
+        #    print("self: {0}".format(self) )
+        #    print("other: {0}".format(other))
         #    raise e
         if c == 0:
             c = self.end - other.end
@@ -87,12 +87,11 @@ class Interval(object):
     
     def __unicode__(self):
         fields = map(repr, [self.begin, self.end, self.data])
-        return u"Interval({}, {}, {})".format(*fields)
+        return u"Interval({0}, {1}, {2})".format(*fields)
     
     def __repr__(self):
-        fields = map(repr, [self.begin, self.end, self.data])
-        return "Interval({}, {}, {})".format(*fields)
-    
+        return str(self)
+
     def copy(self):
         return Interval(self.begin, self.end, self.data)
     

@@ -446,8 +446,8 @@ class IntervalTree(object):
                 'the intervals in the tree!'
             for key, val in six.iteritems(self.boundary_table):
                 assert bound_check[key] == val, \
-                    'Error: boundary_table[{}] should be {},' \
-                    ' but is {}!'.format(
+                    'Error: boundary_table[{0}] should be {1},' \
+                    ' but is {2}!'.format(
                         key, bound_check[key], val)
             self.top_node.verify(set())
         else:
@@ -545,15 +545,10 @@ class IntervalTree(object):
             return u"IntervalTree()"
         else:
             ivs = u", ".join(map(unicode, ivs))
-            return u"IntervalTree([{}])".format(ivs)
+            return u"IntervalTree([{0}])".format(ivs)
     
     def __repr__(self):
-        ivs = sorted(self)
-        if not ivs:
-            return "IntervalTree()"
-        else:
-            ivs = ", ".join(map(repr, ivs))
-            return "IntervalTree([{}])".format(ivs)
+        return str(self)
     
     def __reduce__(self):
         """
@@ -661,7 +656,7 @@ class Node(object):
         heavy = self.balance > 0
         light = not heavy
         save = self[heavy]
-        #print("srotate: bal={},{}".format(self.balance, save.balance))
+        #print("srotate: bal={0},{1}".format(self.balance, save.balance))
         #self.print_structure()
         self[heavy] = save[light]   # 2
         #assert(save[light])
@@ -748,7 +743,7 @@ class Node(object):
         in his AVL tree article for reference.
         """
         if self.center_hit(interval):
-            #if trace: print('Hit at {}'.format(self.x_center))
+            #if trace: print('Hit at {0}'.format(self.x_center))
             if not should_raise_error and interval not in self.s_center:
                 done.append(1)
                 #if trace: print('Doing nothing.')
@@ -778,7 +773,7 @@ class Node(object):
                 return self
             
             #if trace: 
-            #   print('Descending to {} branch'.format(
+            #   print('Descending to {0} branch'.format(
             #       ['left', 'right'][direction]
             #       ))
             self[direction] = self[direction].remove_interval_helper(
@@ -787,7 +782,7 @@ class Node(object):
             # Clean up
             if not done:
                 #if trace: 
-                #    print('Rotating {}'.format(self.x_center))
+                #    print('Rotating {0}'.format(self.x_center))
                 #    self.print_structure()
                 return self.rotate()
             return self
@@ -823,7 +818,7 @@ class Node(object):
         if not self[0] or not self[1]:    # if I have an empty branch
             direction = not self[0]       # graft the other branch here
             #if trace:
-            #    print('Grafting {} branch'.format(
+            #    print('Grafting {0} branch'.format(
             #       'right' if direction else 'left'))
             
             result = self[direction]
@@ -833,7 +828,7 @@ class Node(object):
             # Replace the root node with the greatest predecessor.
             (heir, self[0]) = self[0].pop_greatest_child()
             #if trace: 
-            #    print('Replacing {} with {}.'.format(
+            #    print('Replacing {0} with {1}.'.format(
             #        self.x_center, heir.x_center
             #        ))
             #    print('Removed greatest predecessor:')
@@ -869,7 +864,7 @@ class Node(object):
         See Eternally Confuzzled's jsw_remove_r function (lines 34-54)
         in his AVL tree article for reference.
         """
-        #print('Popping from {}'.format(self.x_center))
+        #print('Popping from {0}'.format(self.x_center))
         if self[1] is None:         # This node is the greatest child.
             # To reduce the chances of an overlap with a parent, return
             # a child node containing the smallest possible number of 
@@ -886,23 +881,23 @@ class Node(object):
             child.x_center = child_x_center
             self.s_center = ivs - child.s_center
             
-            #print('Pop hit! Returning child   = {}'.format( 
+            #print('Pop hit! Returning child   = {0}'.format(
             #    child.print_structure(tostring=True)
             #    ))
             assert not child[0]
             assert not child[1]
             
             if self.s_center:
-                #print('     and returning newnode = {}'.format( self ))
+                #print('     and returning newnode = {0}'.format( self ))
                 #self.verify()
                 return child, self
             else:
-                #print('     and returning newnode = {}'.format( self[0] ))
+                #print('     and returning newnode = {0}'.format( self[0] ))
                 #if self[0]: self[0].verify()
                 return child, self[0]  # Rotate left child up
                 
         else:
-            #print('Pop descent to {}'.format(self[1].x_center))
+            #print('Pop descent to {0}'.format(self[1].x_center))
             (greatest_child, self[1]) = self[1].pop_greatest_child()
             self.refresh_balance()
             new_self = self.rotate()
@@ -913,18 +908,18 @@ class Node(object):
                     new_self.s_center.remove(iv)
                     greatest_child.add(iv)
                     
-            #print('Pop Returning child   = {}'.format( 
+            #print('Pop Returning child   = {0}'.format(
             #    greatest_child.print_structure(tostring=True)
             #    ))
             if new_self.s_center:
-                #print('and returning newnode = {}'.format(
+                #print('and returning newnode = {0}'.format(
                 #    new_self.print_structure(tostring=True)
                 #    ))
                 #new_self.verify()
                 return greatest_child, new_self
             else:
                 new_self = new_self.prune()
-                #print('and returning prune = {}'.format( 
+                #print('and returning prune = {0}'.format(
                 #    new_self.print_structure(tostring=True)
                 #    ))
                 #if new_self: new_self.verify()
@@ -964,17 +959,17 @@ class Node(object):
         
         bal = self.balance
         assert abs(bal) < 2, \
-            "Error: Rotation should have happened, but didn't! \n{}".format(
+            "Error: Rotation should have happened, but didn't! \n{0}".format(
                 self.print_structure(tostring=True)
             )
         self.refresh_balance()
         assert bal == self.balance, \
-            "Error: self.balance not set correctly! \n{}".format(
+            "Error: self.balance not set correctly! \n{0}".format(
                 self.print_structure(tostring=True)
             )
         
         assert self.s_center, \
-            "Error: s_center is empty! \n{}".format(
+            "Error: s_center is empty! \n{0}".format(
                 self.print_structure(tostring=True)
             )
         for iv in self.s_center:
@@ -985,16 +980,16 @@ class Node(object):
             assert iv.overlaps(self.x_center)
             for parent in sorted(parents):
                 assert not iv.contains_point(parent), \
-                    "Error: Overlaps ancestor ({})! \n{}\n\n{}".format(
+                    "Error: Overlaps ancestor ({0})! \n{1}\n\n{2}".format(
                         parent, iv, self.print_structure(tostring=True)
                     )
         if self[0]:
             assert self[0].x_center < self.x_center, \
-                "Error: Out-of-order left child! {}".format(self.x_center)
+                "Error: Out-of-order left child! {0}".format(self.x_center)
             self[0].verify(parents.union([self.x_center]))
         if self[1]:
             assert self[1].x_center > self.x_center, \
-                "Error: Out-of-order right child! {}".format(self.x_center)
+                "Error: Out-of-order right child! {0}".format(self.x_center)
             self[1].verify(parents.union([self.x_center]))
 
     def __getitem__(self, index):
@@ -1022,14 +1017,14 @@ class Node(object):
         user, I'm not bothering to make this copy-paste-executable as a
         constructor.
         """
-        return "Node<{}, balance={}>".format(self.x_center, self.balance)
-        #fieldcount = 'c_count,has_l,has_r = <{}, {}, {}>'.format(
+        return "Node<{0}, balance={1}>".format(self.x_center, self.balance)
+        #fieldcount = 'c_count,has_l,has_r = <{0}, {1}, {2}>'.format(
         #    len(self.s_center), 
         #    bool(self.left_node), 
         #    bool(self.right_node)
         #)
         #fields = [self.x_center, self.balance, fieldcount]
-        #return "Node({}, b={}, {})".format(*fields)
+        #return "Node({0}, b={1}, {2})".format(*fields)
     
     def print_structure(self, indent=0, tostring=False):
         """
@@ -1069,7 +1064,7 @@ def test():
         return Interval(
             lst[0], 
             lst[1], 
-            "{}-{}".format(*lst)
+            "{0}-{1}".format(*lst)
         )
     
     ivs = list(map(makeinterval, [
