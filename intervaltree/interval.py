@@ -1,4 +1,8 @@
 from numbers import Number
+try:
+    unicode
+except:
+    unicode = str
 
 
 class Interval(object):

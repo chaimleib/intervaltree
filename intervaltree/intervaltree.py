@@ -1,4 +1,8 @@
 import six
+try:
+    unicode
+except:
+    unicode = str
 
 from numbers import Number
 from operator import attrgetter
