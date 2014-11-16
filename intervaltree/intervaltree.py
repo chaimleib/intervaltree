@@ -1044,15 +1044,15 @@ class Node(object):
         """
         For debugging.
         """
-        CR = '\n'
+        nl = '\n'
         sp = indent*'    '
         
         rlist = list()
-        rlist.append(str(self) + CR)
-        rlist.append(sp + '||||:' + CR)
+        rlist.append(str(self) + nl)
+        rlist.append(sp + '||||:' + nl)
         if self.s_center: 
             for iv in sorted(self.s_center):
-                rlist.append(sp+' '+repr(iv) + CR)
+                rlist.append(sp+' '+repr(iv) + nl)
         if self.left_node:
             rlist.append(sp + '<<<<:')  # no CR
             rlist.append(self.left_node.print_structure(indent+1, True))
