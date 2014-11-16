@@ -1099,7 +1099,8 @@ def test():
     orig = t.print_structure(True)
         
     assert orig == \
-        """Node<8, balance=0>
+        """
+Node<8, balance=0>
 ||||:
  Interval(5, 9, '5-9')
  Interval(6, 10, '6-10')
@@ -1120,7 +1121,7 @@ def test():
     >>>>:Node<14, balance=0>
         ||||:
          Interval(14, 15, '14-15')
-"""
+"""[1:]
     
     def data(s): 
         return set(map(attrgetter('data'), s))
@@ -1252,7 +1253,8 @@ def test():
     t.remove_overlap(8)
     #t.print_structure()    
     print('    passed')
-    
+
+    print('Split overlaps...')
     t = IntervalTree(ivs)
     pprint(t)
     t.split_overlaps()
