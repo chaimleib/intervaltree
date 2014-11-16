@@ -54,7 +54,15 @@ from numbers import Number
 try:
     from cStringIO import StringIO as _StringIO
 except ImportError:
-    from StringIO import StringIO as _StringIO
+    try:
+        from StringIO import StringIO as _StringIO
+    except ImportError:
+        from io import StringIO as _StringIO
+
+try:
+    basestring
+except NameError:
+    basestring = str
 
 __all__ = ["pprint","pformat","isreadable","isrecursive","saferepr",
            "PrettyPrinter"]
@@ -453,8 +461,8 @@ def _perfcheck(object=None, enable_pickle=None):
     t2 = time.time()
     p.pformat(object)
     t3 = time.time()
-    print "_safe_repr:", t2 - t1
-    print "pformat:", t3 - t2
+    print ("_safe_repr:", t2 - t1)
+    print ("pformat:", t3 - t2)
 
 if __name__ == "__main__":
     print("With enable_pickle:")
