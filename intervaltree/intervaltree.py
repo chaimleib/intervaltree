@@ -1061,7 +1061,7 @@ def test():
     try:
         # My version of pprint formats Intervals and IntervalTrees
         # more nicely
-        from util.pprint import pprint
+        from test.pprint import pprint
     except ImportError:
         from pprint import pprint
 
