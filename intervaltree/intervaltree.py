@@ -435,9 +435,9 @@ class IntervalTree(object):
         if self.all_intervals:
             try:
                 assert self.top_node.all_children() == self.all_intervals
-            except Exception as e:
+            except AssertionError as e:
                 print(
-                    'Error: the tree and the membership set are ou of sync!'
+                    'Error: the tree and the membership set are out of sync!'
                 )
                 tivs = set(self.top_node.all_children())
                 print('top_node.all_children() - all_intervals:')
@@ -445,6 +445,7 @@ class IntervalTree(object):
                 print('all_intervals - top_node.all_children():')
                 pprint(self.all_intervals - tivs)
                 raise e
+
             bound_check = {}
             for iv in self:
                 if iv.begin in bound_check:
