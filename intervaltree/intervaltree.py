@@ -1074,14 +1074,14 @@ def test():
     except ImportError:
         from pprint import pprint
 
-    def makeinterval(lst):
+    def make_interval(lst):
         return Interval(
             lst[0], 
             lst[1], 
             "{0}-{1}".format(*lst)
         )
     
-    ivs = list(map(makeinterval, [
+    ivs = list(map(make_interval, [
         [1, 2],
         [4, 7],
         [5, 9],
@@ -1156,7 +1156,7 @@ Node<8, balance=0>
     
     # Insertion tests
     print('Insertion tests...')
-    t.add(makeinterval([1, 2]))  # adding duplicate should do nothing
+    t.add(make_interval([1, 2]))  # adding duplicate should do nothing
     assert data(t[1]) == set(['1-2'])
     assert orig == t.print_structure(True)
     
@@ -1164,7 +1164,7 @@ Node<8, balance=0>
     assert data(t[1]) == set(['1-2'])
     assert orig == t.print_structure(True)
     
-    t.add(makeinterval([2, 4]))
+    t.add(make_interval([2, 4]))
     assert data(t[2]) == set(['2-4'])
     t.verify()
     
@@ -1223,7 +1223,7 @@ Node<8, balance=0>
     t.verify()
     
     assert data(t[2]) == set(['2-4'])
-    t.discard(makeinterval([2, 4]))
+    t.discard(make_interval([2, 4]))
     assert data(t[2]) == set()
     t.verify()
     
