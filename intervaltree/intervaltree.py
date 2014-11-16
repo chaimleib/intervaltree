@@ -15,7 +15,7 @@
 import six
 try:
     unicode
-except:
+except NameError:
     unicode = str
 
 from numbers import Number

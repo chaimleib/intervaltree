@@ -15,7 +15,7 @@
 from numbers import Number
 try:
     unicode
-except:
+except NameError:
     unicode = str
 
 
