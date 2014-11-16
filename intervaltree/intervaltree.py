@@ -13,10 +13,6 @@
 # limitations under the License.
 
 import six
-try:
-    unicode
-except NameError:
-    unicode = str
 
 from numbers import Number
 from operator import attrgetter
@@ -562,8 +558,7 @@ class IntervalTree(object):
         if not ivs:
             return u"IntervalTree()"
         else:
-            ivs = u", ".join(map(unicode, ivs))
-            return u"IntervalTree([{0}])".format(ivs)
+            return u"IntervalTree({0})".format(ivs)
     
     def __repr__(self):
         return str(self)

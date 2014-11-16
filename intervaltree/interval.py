@@ -13,10 +13,6 @@
 # limitations under the License.
 
 from numbers import Number
-try:
-    unicode
-except NameError:
-    unicode = str
 
 
 class Interval(object):
@@ -100,12 +96,22 @@ class Interval(object):
     def __gt__(self, other):
         return self.__cmp__(other) > 0
 
+    def _get_fields(self):
+        """Used by str, unicode, repr and __reduce__.
+
+        Returns only the fields necessary to reconstruct the Interval.
+        """
+        if self.data is not None:
+            return self.begin, self.end, self.data
+        else:
+            return self.begin, self.end
+
     def __str__(self):
         return str(self.__unicode__())
     
     def __unicode__(self):
-        fields = map(repr, [self.begin, self.end, self.data])
-        return u"Interval({0}, {1}, {2})".format(*fields)
+        fields = self._get_fields()
+        return u"Interval{0}".format(fields)
     
     def __repr__(self):
         return str(self)
@@ -117,4 +123,4 @@ class Interval(object):
         """
         For pickle-ing.
         """
-        return Interval, (self.begin, self.end, self.data)
+        return Interval, self._get_fields()
