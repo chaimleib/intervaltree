@@ -3,7 +3,7 @@ setup(
     name='PyIntervalTree',
     packages=['intervaltree'],
     install_requires=['six'],
-    version='0.3',
+    version='0.3.1',
     description='Mutable, self-balancing interval tree',
     author='Chaim-Leib Halbert',
     author_email='chaim.leib.halbert@gmail.com',
