@@ -263,7 +263,7 @@ class IntervalTree(object):
         """
         result = {}
         
-        def add_if_nested(parent, child):
+        def add_if_nested():
             if parent.contains_interval(child):
                 if parent not in result:
                     result[parent] = set()
@@ -271,8 +271,8 @@ class IntervalTree(object):
                 
         long_ivs = sorted(self.all_intervals, key=len, reverse=True)
         for i, parent in enumerate(long_ivs):
-            for long_iv in long_ivs[i+1:]:
-                add_if_nested(parent, long_iv)
+            for child in long_ivs[i+1:]:
+                add_if_nested()
         return result
     
     def overlaps(self, begin, end=None):
