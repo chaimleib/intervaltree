@@ -8,7 +8,6 @@ Most recent fork and modifications by Konstantin Tretyakov
 
 Licensed under LGPL.
 '''
-
 from numbers import Number
 from collections import namedtuple
 
@@ -76,16 +75,11 @@ class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
         else:
             return (self.begin, self.end) < (other.begin, other.end)
         
-    def __str__(self):
-        return str(unicode(self))
-    
-    def __unicode__(self):
-        fields = map(repr, [self.begin, self.end, self.data])
-        return u"Interval({}, {}, {})".format(*fields)
-    
     def __repr__(self):
         fields = map(repr, [self.begin, self.end, self.data])
         return "Interval({}, {}, {})".format(*fields)
+    
+    __str__ = __repr__    
     
     def copy(self):
         return Interval(self.begin, self.end, self.data)
