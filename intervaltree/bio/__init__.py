@@ -15,10 +15,15 @@ Copyright 2014, Konstantin Tretyakov
 
 Licensed under MIT [This particular file, PyIntervalTree in general is licensed under LGPL].
 '''
-from urllib import urlopen
-from StringIO import StringIO
-import zlib
+try:
+    from urllib import urlopen
+    from StringIO import StringIO as BytesIO
+except ImportError: # Python 3?
+    from urllib.request import urlopen
+    from io import BytesIO
 
+import zlib
+import warnings
 from collections import defaultdict
 from intervaltree import Interval, IntervalTree
 
@@ -31,13 +36,13 @@ class UCSCTable(object):
     
     @staticmethod
     def KNOWN_GENE(line):
-        return dict(zip(UCSCTable.KNOWN_GENE_FIELDS, line.split('\t')))
+        return dict(zip(UCSCTable.KNOWN_GENE_FIELDS, line.split(b'\t')))
     @staticmethod
     def REF_GENE(line):
-        return dict(zip(UCSCTable.REF_GENE_FIELDS, line.split('\t')))
+        return dict(zip(UCSCTable.REF_GENE_FIELDS, line.split(b'\t')))
     @staticmethod
     def ENS_GENE(line):
-        return dict(zip(UCSCTable.ENS_GENE_FIELDS, line.split('\t')))
+        return dict(zip(UCSCTable.ENS_GENE_FIELDS, line.split(b'\t')))
 
 
 def _fix(interval):
@@ -47,9 +52,11 @@ def _fix(interval):
     Data tables may contain intervals with begin >= end. Such intervals lead to infinite recursions and
     other unpleasant behaviour, so something has to be done about them. We 'fix' them by simply setting end = begin+1.
     '''
+    warnings.warn("Interval with reversed coordinates (begin >= end) detected when reading data. Interval was automatically fixed to point interval [begin, begin+1).")
     if interval.begin >= interval.end:
-        interval.end = interval.begin + 1
-    return interval
+        return Interval(interval.begin, interval.begin+1, interval.data)
+    else:
+        return interval
 
 class GenomeIntervalTree(defaultdict):
     '''
@@ -67,8 +74,8 @@ class GenomeIntervalTree(defaultdict):
         3
         >>> len(gtree['chr1'])
         2
-        >>> gtree.keys()
-        ['chr2', 'chr1']
+        >>> sorted(gtree.keys())
+        ['chr1', 'chr2']
         
     '''
     def __init__(self):
@@ -78,10 +85,10 @@ class GenomeIntervalTree(defaultdict):
         self[chrom].addi(begin, end, data)
         
     def __len__(self):
-        return sum([len(tree) for k,tree in self.iteritems()])
+        return sum([len(tree) for tree in self.values()])
 
     @staticmethod
-    def from_bed(fileobj, field_sep='\t'):
+    def from_bed(fileobj, field_sep=b'\t'):
         '''
         Initialize a ``GenomeIntervalTree`` from a BED file.
         Each line of the file must consist of several fields, separated using ``field_sep``.
@@ -95,17 +102,13 @@ class GenomeIntervalTree(defaultdict):
         Example::
             >>> test_url = 'http://hgdownload.cse.ucsc.edu/goldenPath/hg19/encodeDCC/wgEncodeAwgTfbsUniform/wgEncodeAwgTfbsBroadDnd41Ezh239875UniPk.narrowPeak.gz'
             >>> data = zlib.decompress(urlopen(test_url).read(), 16+zlib.MAX_WBITS)
-            >>> gtree = GenomeIntervalTree.from_bed(StringIO(data))
+            >>> gtree = GenomeIntervalTree.from_bed(BytesIO(data))
             >>> len(gtree)
             1732
-            >>> gtree['chr10'].search(22610878)
-            set([Interval(22610878, 22611813, ['.', '1000', '.', '471.725544438908', '-1', '3.21510858105313', '389']), Interval(22610878, 22611813, ['.', '791', '.', '123.885507169449', '-1', '3.21510858105313', '596'])])
-            >>> gtree['chr10'].search(22611813)
-            set([])
-            >>> gtree['chr1'].search(145036590, 145036594)
-            set([Interval(145036593, 145037123, ['.', '247', '.', '38.6720804428054', '-1', '3.06233123683911', '265'])])
-            >>> gtree['chr10'].search(145036594, 145036595)
-            set([])
+            >>> assert gtree[b'chr10'].search(22610878) == set([Interval(22610878, 22611813, [b'.', b'1000', b'.', b'471.725544438908', b'-1', b'3.21510858105313', b'389']), Interval(22610878, 22611813, [b'.', b'791', b'.', b'123.885507169449', b'-1', b'3.21510858105313', b'596'])])
+            >>> assert gtree[b'chr10'].search(22611813) == set([])
+            >>> assert gtree[b'chr1'].search(145036590, 145036594) == set([Interval(145036593, 145037123, [b'.', b'247', b'.', b'38.6720804428054', b'-1', b'3.06233123683911', b'265'])])
+            >>> assert gtree[b'chr10'].search(145036594, 145036595) == set([])
             
         '''
         # We collect all intervals into a set of lists, and then put them all at once into the tree structures
@@ -115,18 +118,18 @@ class GenomeIntervalTree(defaultdict):
         
         interval_lists = defaultdict(list)
         for ln in fileobj:
-            if ln[-1] == '\n':
+            if ln.endswith(b'\n'):
                 ln = ln[0:-1]
             ln = ln.split(field_sep)
             interval_lists[ln[0]].append(_fix(Interval(int(ln[1]), int(ln[2]), data=ln[3:])))
         gtree = GenomeIntervalTree()
-        for k, v in interval_lists.iteritems():
+        for k, v in getattr(interval_lists, 'iteritems', interval_lists.items)():
             gtree[k] = IntervalTree(v)
         return gtree
     
     @staticmethod
     def from_table(fileobj=None, url='http://hgdownload.cse.ucsc.edu/goldenpath/hg19/database/knownGene.txt.gz',
-                    parser=UCSCTable.KNOWN_GENE, mode='tx'):
+                    parser=UCSCTable.KNOWN_GENE, mode='tx', decompress=None):
         '''
         UCSC Genome project provides several tables with gene coordinates (https://genome.ucsc.edu/cgi-bin/hgTables),
         such as knownGene, refGene, ensGene, wgEncodeGencodeBasicV19, etc.
@@ -149,26 +152,29 @@ class GenomeIntervalTree(defaultdict):
         The ``parser`` function must ensure that its output contains the field named ``chrom``, and also fields named ``txStart``/``txEnd`` if ``mode=='tx'``,
         fields ``cdsStart``/``cdsEnd`` if ``mode=='cds'``, and fields ``exonCount``/``exonStarts``/``exonEnds`` if ``mode=='exons'``.
         
+        The ``decompress`` parameter specifies whether the provided file is gzip-compressed.
+        This only applies to the situation when the url is given (no decompression is made if fileobj is provided in any case).
+        If decompress is None, data is decompressed if the url ends with .gz, otherwise decompress = True forces decompression.
         
         >> knownGene = GenomeIntervalTree.from_table()
         >> len(knownGene)
         82960
-        >> result = knownGene['chr1'].search(100000, 138529)
+        >> result = knownGene[b'chr1'].search(100000, 138529)
         >> len(result)
         1
         >> list(result)[0].data['name']
-        'uc021oeg.2'
+        b'uc021oeg.2'
         '''
         if fileobj is None:
             data = urlopen(url).read()
-            if url.endswith('.gz'):
+            if (decompress is None and url.endswith('.gz')) or decompress:
                 data = zlib.decompress(data, 16+zlib.MAX_WBITS)
-            fileobj = StringIO(data)
+            fileobj = BytesIO(data)
         
         interval_lists = defaultdict(list)
         
         for ln in fileobj:
-            if ln[-1] == '\n':
+            if ln.endswith(b'\n'):
                 ln = ln[0:-1]
             d = parser(ln)
             if mode == 'tx':
@@ -176,8 +182,8 @@ class GenomeIntervalTree(defaultdict):
             elif mode == 'cds':
                 interval_lists[d['chrom']].append(_fix(Interval(int(d['cdsStart']), int(d['cdsEnd']), d)))
             elif mode == 'exons':
-                exStarts = d['exonStarts'].split(',')
-                exEnds = d['exonEnds'].split(',')
+                exStarts = d['exonStarts'].split(b',')
+                exEnds = d['exonEnds'].split(b',')
                 for i in range(int(d['exonCount'])):
                     interval_lists[d['chrom']].append(_fix(Interval(int(exStarts[i]), int(exEnds[i]), d)))
             else:
@@ -185,6 +191,6 @@ class GenomeIntervalTree(defaultdict):
                 
         # Now convert interval lists into trees
         gtree = GenomeIntervalTree()
-        for chrom, lst in interval_lists.iteritems():
+        for chrom, lst in getattr(interval_lists, 'iteritems', interval_lists.items)():
             gtree[chrom] = IntervalTree(lst)        
         return gtree

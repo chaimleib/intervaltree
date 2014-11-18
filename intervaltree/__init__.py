@@ -9,5 +9,5 @@ Modifications by Konstantin Tretyakov
 Licensed under LGPL.
 '''
 
-from interval import Interval
-from intervaltree import IntervalTree
+from .interval import Interval
+from .intervaltree import IntervalTree

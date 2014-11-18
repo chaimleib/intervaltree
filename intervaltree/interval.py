@@ -10,12 +10,12 @@ Licensed under LGPL.
 '''
 
 from numbers import Number
+from collections import namedtuple
 
-class Interval:
-    def __init__(self, begin, end, data = None):
-        self.begin = begin
-        self.end = end
-        self.data = data
+class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
+    __slots__ = ()  # Saves memory, avoiding the need to create __dict__ for each interval
+    def __new__(cls, begin, end, data=None):
+        return super(Interval, cls).__new__(cls, begin, end, data)
     
     def overlaps(self, begin, end=None):
         if end is not None:
@@ -58,27 +58,24 @@ class Interval:
             return self.begin - other.end
     
     def __len__(self):
+        # NB: This redefines the tuple's own "len" which would always return 3
         return self.end - self.begin
     
     def __hash__(self):
-        #data_hash = hash(self.data) if hasattr('__hash__', self.data) \
-        #    else id(self.data)
-        return hash( self.begin * self.end )
+        # Allow to have unhashable elements in the data field.
+        return hash((self.begin, self.end))
     
-    def __cmp__(self, other):
-        #try:
-        c = self.begin - other.begin
-        #except Exception as e:
-        #    print("self: {}".format(self) )
-        #    print("other: {}".format(other))
-        #    raise e
-        if c == 0:
-            c = self.end - other.end
-        if c == 0:
-            c = -1 if self.data < other.data \
-                else (1 if self.data > other.data else 0)
-        return c
-    
+    def __lt__(self, other):
+        if (self.begin, self.end) == (other.begin, other.end):
+            try:
+                # The third element here helps solve the "unorderable type" problem in Python3 when comparing, e.g., None and non-None data fields.
+                return (self.begin, self.end, type(self.data).__name__, self.data) < (other.begin, other.end, type(other.data).__name__, other.data)
+            except TypeError: # still get an "unorderable type" error (e.g. dict cannot be compared with dict in Py3)
+                # Not really sure whether it may backfire anywhere
+                return False
+        else:
+            return (self.begin, self.end) < (other.begin, other.end)
+        
     def __str__(self):
         return str(unicode(self))
     

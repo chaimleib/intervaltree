@@ -9,10 +9,15 @@ Most recent fork and modifications by Konstantin Tretyakov
 Licensed under LGPL.
 '''
 
-from interval import *
+from .interval import *
 from numbers import Number
 from operator import attrgetter
-    
+
+try:
+    xrange  # Python 2?
+except NameError:
+    xrange = range
+
 class IntervalTree(object):
     """
     A binary lookup tree of intervals.
@@ -98,7 +103,7 @@ class IntervalTree(object):
     
         >>> itree = IntervalTree([Interval(-1.1, 1.1), Interval(-0.5, 1.5), Interval(0.5, 1.7)])
         >>> itree.remove_envelop(-1.0, 1.5)
-        >>> list(itree)
+        >>> sorted(itree)
         [Interval(-1.1, 1.1, None), Interval(0.5, 1.7, None)]
         >>> itree.remove_envelop(-1.1, 1.5)
         >>> list(itree)
@@ -113,23 +118,16 @@ class IntervalTree(object):
     Point/interval overlap queries::
     
         >>> itree = IntervalTree([Interval(-1.1, 1.1), Interval(-0.5, 1.5), Interval(0.5, 1.7)])
-        >>> itree[-1.1]
-        set([Interval(-1.1, 1.1, None)])
-        >>> itree.search(1.1)  # Same as [1.1]
-        set([Interval(-0.5, 1.5, None), Interval(0.5, 1.7, None)])
-        >>> itree[-0.5:0.5]   # Interval overlap query
-        set([Interval(-0.5, 1.5, None), Interval(-1.1, 1.1, None)])
-        >>> itree.search(1.5, 1.5)  # Same as [1.5, 1.5]
-        set([Interval(0.5, 1.7, None)])
-        >>> itree.search(1.7, 1.7)
-        set([])
+        >>> assert itree[-1.1]         == set([Interval(-1.1, 1.1, None)])
+        >>> assert itree.search(1.1)   == set([Interval(-0.5, 1.5, None), Interval(0.5, 1.7, None)])   # Same as [1.1]
+        >>> assert itree[-0.5:0.5]     == set([Interval(-0.5, 1.5, None), Interval(-1.1, 1.1, None)])  # Interval overlap query
+        >>> assert itree.search(1.5, 1.5) == set([Interval(0.5, 1.7, None)])                           # Same as [1.5, 1.5]
+        >>> assert itree.search(1.7, 1.7) == set([])
 
     Envelop queries::
     
-        >>> itree.search(-0.5, 0.5, strict=True)
-        set([])
-        >>> itree.search(-0.4, 1.7, strict=True)
-        set([Interval(0.5, 1.7, None)])
+        >>> assert itree.search(-0.5, 0.5, strict=True) == set([])
+        >>> assert itree.search(-0.4, 1.7, strict=True) == set([Interval(0.5, 1.7, None)])
         
     Membership queries::
     
@@ -169,24 +167,22 @@ class IntervalTree(object):
         
     Iteration::
         
-        >>> [int.begin for int in itree]
-        [-0.5, -1.1, 0.5]
-        >>> itree.items()
-        set([Interval(-0.5, 1.5, None), Interval(-1.1, 1.1, None), Interval(0.5, 1.7, None)])
+        >>> [int.begin for int in sorted(itree)]
+        [-1.1, -0.5, 0.5]
+        >>> assert itree.items() == set([Interval(-0.5, 1.5, None), Interval(-1.1, 1.1, None), Interval(0.5, 1.7, None)])
 
     Copy- and typecasting, pickling::
     
         >>> itree = IntervalTree([Interval(0,1,"x"), Interval(1,2,["x"])])
         >>> itree2 = IntervalTree(itree) # Does not copy Interval objects
-        >>> itree3 = itree.copy()        # Shallow copy of Interval objects
+        >>> itree3 = itree.copy()        # Shallow copy of Interval objects (which is the same as above as those are singletons).
         >>> import pickle
         >>> itree4 = pickle.loads(pickle.dumps(itree)) # Full copy
-        >>> list(itree[0])[0].data = "y"
         >>> list(itree[1])[0].data[0] = "y"
         >>> list(itree)
-        [Interval(0, 1, 'y'), Interval(1, 2, ['y'])]
+        [Interval(0, 1, 'x'), Interval(1, 2, ['y'])]
         >>> list(itree2)
-        [Interval(0, 1, 'y'), Interval(1, 2, ['y'])]
+        [Interval(0, 1, 'x'), Interval(1, 2, ['y'])]
         >>> list(itree3)
         [Interval(0, 1, 'x'), Interval(1, 2, ['y'])]
         >>> list(itree4)
@@ -572,7 +568,7 @@ class IntervalTree(object):
             assert set(self.boundary_table.keys()) == set(bound_check.keys()),\
                 'Error: boundary_table is out of sync with ' \
                 'the intervals in the tree!'
-            for key,val in self.boundary_table.iteritems():
+            for key,val in self.boundary_table.items():   # For efficiency reasons it should be iteritems in Py2, but we don't care much for efficiency in debug methods anyway.
                 assert bound_check[key] == val, \
                     'Error: boundary_table[{}] should be {},' \
                     ' but is {}!'.format(
@@ -718,7 +714,7 @@ class Node:
     def init_from_sorted(self, intervals):
         if not intervals:
             return None
-        center_iv = intervals[len(intervals)/2]
+        center_iv = intervals[len(intervals)//2]
         self.x_center = center_iv.begin #+ (center_iv.end - center_iv.begin)/2
         self.s_center = set()
         s_left = []

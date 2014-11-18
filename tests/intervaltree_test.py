@@ -21,7 +21,7 @@ def test_all():
             "{}-{}".format(*lst)
             )
     
-    ivs = map(makeinterval, [
+    ivs = list(map(makeinterval, [
         [1,2],
         [4,7],
         [5,9],
@@ -31,7 +31,7 @@ def test_all():
         [10,12],
         [12,14],
         [14,15],
-        ])
+        ]))
     t = IntervalTree(ivs)
     t.verify()
     orig = t.print_structure(True)
