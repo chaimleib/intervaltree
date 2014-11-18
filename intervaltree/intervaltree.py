@@ -661,17 +661,7 @@ class IntervalTree(object):
             self.all_intervals == other.all_intervals
         )
         
-    def __str__(self):
-        return str(unicode(self))
-        
-    def __unicode__(self):
-        ivs = sorted(self)
-        if not ivs:
-            return u"IntervalTree()"
-        else:
-            ivs = u", ".join(map(unicode, ivs))
-            return u"IntervalTree([{}])".format(ivs)
-    
+   
     def __repr__(self):
         ivs = sorted(self)
         if not ivs:
@@ -680,6 +670,8 @@ class IntervalTree(object):
             ivs = ", ".join(map(repr, ivs))
             return "IntervalTree([{}])".format(ivs)
     
+    __str__ = __repr__
+
     def __reduce__(self):
         """
         For pickle-ing.
