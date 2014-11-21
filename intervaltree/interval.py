@@ -1,25 +1,30 @@
-# Copyright 2013-2014 Chaim-Leib Halbert
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+'''
+PyIntervalTree: A mutable, self-balancing interval tree.
+
+Interval class.
+
+Copyright 2013-2014 Chaim-Leib Halbert
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+'''
 
 from numbers import Number
+from collections import namedtuple
 
-
-class Interval(object):
-    def __init__(self, begin, end, data=None):
-        self.begin = begin
-        self.end = end
-        self.data = data
+class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
+    __slots__ = ()  # Saves memory, avoiding the need to create __dict__ for each interval
+    def __new__(cls, begin, end, data=None):
+        return super(Interval, cls).__new__(cls, begin, end, data)
     
     def overlaps(self, begin, end=None):
         if end is not None:
@@ -62,12 +67,11 @@ class Interval(object):
             return self.begin - other.end
     
     def __len__(self):
+        # NB: This redefines the tuple's own "len" which would always return 3
         return self.end - self.begin
     
     def __hash__(self):
-        #data_hash = hash(self.data) if hasattr('__hash__', self.data) \
-        #    else id(self.data)
-        return hash(self.begin * self.end)
+        return hash((self.begin, self.end))
 
     def __eq__(self, other):
         return (
@@ -90,6 +94,17 @@ class Interval(object):
                 else (1 if self.data > other.data else 0)
         return c
 
+    # def __lt__(self, other):
+    #     if (self.begin, self.end) == (other.begin, other.end):
+    #         try:
+    #             # The third element here helps solve the "unorderable type" problem in Python3 when comparing, e.g., None and non-None data fields.
+    #             return (self.begin, self.end, type(self.data).__name__, self.data) < (other.begin, other.end, type(other.data).__name__, other.data)
+    #         except TypeError: # still get an "unorderable type" error (e.g. dict cannot be compared with dict in Py3)
+    #             # Not really sure whether it may backfire anywhere
+    #             return False
+    #     else:
+    #         return (self.begin, self.end) < (other.begin, other.end)
+        
     def __lt__(self, other):
         return self.__cmp__(other) < 0
 
@@ -124,3 +139,4 @@ class Interval(object):
         For pickle-ing.
         """
         return Interval, self._get_fields()
+

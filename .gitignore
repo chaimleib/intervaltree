@@ -1,4 +1,7 @@
 *.pyc
 .DS_Store
 .idea/
+*.egg-info
+*.komodoproject
+dist/
 

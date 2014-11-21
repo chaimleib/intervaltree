@@ -1,7 +1,8 @@
 '''
 PyIntervalTree: A mutable, self-balancing interval tree.
 
-Root package.
+Test module. Meant for use with ``py.test``.
+To run all tests simply invoke ``python setup.py test`` from the package root.
 
 Copyright 2013-2014 Chaim-Leib Halbert
 
@@ -17,6 +18,3 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
-from interval import Interval
-from intervaltree import IntervalTree
