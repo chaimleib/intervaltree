@@ -10,53 +10,70 @@ intervals include the lower bound but not the upper bound.
 Features
 --------
 
-  * Supports Python 2.6+ and Python 3.3+
-  * Initialize blank or from an iterable of `Intervals` in O(n * log n).
-  * Insertions
-    * `tree[begin:end] = data`
-    * `tree.add(interval)`
-    * `tree.addi(begin, end, data)`
-    * `tree.extend(list_of_interval_objs)`
-  * Deletions
-    * `tree.remove(interval)`             (raises `ValueError` if not present)
-    * `tree.discard(interval)`            (quiet if not present)
-    * `tree.removei(begin, end, data)`    (short for `tree.remove(Interval(begin, end, data))`)
-    * `tree.discardi(begin, end, data)`   (short for `tree.discard(Interval(begin, end, data))`)
-    * `tree.remove_overlap(point)`
-    * `tree.remove_overlap(begin, end)`   (removes all overlapping the range)
-    * `tree.remove_envelop(begin, end)`   (removes all enveloped in the range)
-  * Overlap queries:
-    * `tree[point]`
-    * `tree[begin, end]`
-    * `tree.search(point)`
-    * `tree.search(begin, end)`
-  * Envelop queries:
-    * `tree.search(begin, end, strict = True)`
-  * Membership queries:
-    * `interval_obj in tree`              (this is fastest, O(1))
-    * `tree.containsi(begin, end, data)`
-    * `tree.overlaps(point)`
-    * `tree.overlaps(begin, end)`
-  * Iterable:
-    * `for interval_obj in tree:`
-    * `tree.items()`
-  * Sizing:
-    * `len(tree)`
-    * `tree.is_empty()`
-    * `not tree`
-    * `tree.begin()`
-    * `tree.end()`
-  * Restructuring
-    * `split_overlaps()`
-  * Copy- and typecast-able:
-    * `IntervalTree(tree)`    (`Interval` objects are same as those in tree)
-    * `tree.copy()`           (`Interval` objects are shallow copies of those in tree)
-    * `set(tree)`             (can later be fed into `IntervalTree()`)
-    * `list(tree)`            (ditto)
-  * Equal-able
-  * Hashable
-  * Pickle-friendly
-  * Automatic AVL balancing
+* Supports Python 2.6+ and Python 3.3+
+* Initialize blank or from an iterable of `Intervals` in O(n * log n).
+* Insertions
+
+  * `tree[begin:end] = data`
+  * `tree.add(interval)`
+  * `tree.addi(begin, end, data)`
+  * `tree.extend(list_of_interval_objs)`
+
+* Deletions
+
+  * `tree.remove(interval)`             (raises `ValueError` if not present)
+  * `tree.discard(interval)`            (quiet if not present)
+  * `tree.removei(begin, end, data)`    (short for `tree.remove(Interval(begin, end, data))`)
+  * `tree.discardi(begin, end, data)`   (short for `tree.discard(Interval(begin, end, data))`)
+  * `tree.remove_overlap(point)`
+  * `tree.remove_overlap(begin, end)`   (removes all overlapping the range)
+  * `tree.remove_envelop(begin, end)`   (removes all enveloped in the range)
+
+* Overlap queries:
+
+  * `tree[point]`
+  * `tree[begin, end]`
+  * `tree.search(point)`
+  * `tree.search(begin, end)`
+
+* Envelop queries:
+
+  * `tree.search(begin, end, strict = True)`
+
+* Membership queries:
+
+  * `interval_obj in tree`              (this is fastest, O(1))
+  * `tree.containsi(begin, end, data)`
+  * `tree.overlaps(point)`
+  * `tree.overlaps(begin, end)`
+
+* Iterable:
+
+  * `for interval_obj in tree:`
+  * `tree.items()`
+
+* Sizing:
+
+  * `len(tree)`
+  * `tree.is_empty()`
+  * `not tree`
+  * `tree.begin()`          (the `begin` coordinate of the leftmost interval)
+  * `tree.end()`            (the `end` coordinate of the rightmost interval)
+
+* Restructuring
+
+  * `split_overlaps()`
+
+* Copy- and typecast-able:
+
+  * `IntervalTree(tree)`    (`Interval` objects are same as those in tree)
+  * `tree.copy()`           (`Interval` objects are shallow copies of those in tree)
+  * `set(tree)`             (can later be fed into `IntervalTree()`)
+  * `list(tree)`            (ditto)
+
+* Equal-able
+* Pickle-friendly
+* Automatic AVL balancing
     
 Examples
 --------
@@ -134,8 +151,12 @@ the [`interval`](https://pypi.python.org/pypi/interval) package available from
 Based on
 --------
 
-  * Eternally Confuzzled's 
-  [AVL tree](http://www.eternallyconfuzzled.com/tuts/datastructures/jsw_tut_avl.aspx)
-  * Wikipedia's [Interval Tree](http://en.wikipedia.org/wiki/Interval_tree)
-  * Heavily modified from Tyler Kahn's 
+* Eternally Confuzzled's 
+[AVL tree](http://www.eternallyconfuzzled.com/tuts/datastructures/jsw_tut_avl.aspx)
+* Wikipedia's [Interval Tree](http://en.wikipedia.org/wiki/Interval_tree)
+* Heavily modified from Tyler Kahn's 
   [Interval Tree implementation in Python](http://forrst.com/posts/Interval_Tree_implementation_in_python-e0K) ([GitHub project](https://github.com/tylerkahn/intervaltree-python))
+
+Copyright
+---------
+* [Chaim-Leib Halbert](https://github.com/chaimleib/PyIntervalTree)

@@ -1,0 +1,21 @@
+Version 0.3
+-------------
+
+    - Support for Python 3
+    - Interval now inherits from a namedtuple. Benefits: should be faster. 
+      Drawbacks: slight behavioural change (intervals not mutable anymore).
+
+Version 0.2.3
+-------------
+
+    - Slight changes for inclusion in PyPI.
+    - Some documentation changes
+    - Added tests
+    - Fixed the bug, where interval addition via [] would not work properly in Python 2.7
+      (see http://bugs.python.org/issue21785)
+    - Added intervaltree.bio subpackage, adding some utilities for use in bioinformatics
+    
+Version 0.2.2b
+--------------
+
+    - Forked from https://github.com/MusashiAharon/PyIntervalTree
