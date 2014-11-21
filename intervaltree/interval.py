@@ -111,11 +111,8 @@ class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
             return self.begin, self.end, self.data
         else:
             return self.begin, self.end
-
-    def __str__(self):
-        return str(self.__unicode__())
     
-    def __unicode__(self):
+    def __repr__(self):
         if isinstance(self.begin, Number):
             s_begin = str(self.begin)
             s_end = str(self.end)
@@ -123,13 +120,12 @@ class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
             s_begin = repr(self.begin)
             s_end = repr(self.end)
         if self.data is None:
-            return u"Interval({0}, {1})".format(s_begin, s_end)
+            return "Interval({0}, {1})".format(s_begin, s_end)
         else:
-            return u"Interval({0}, {1}, {2})".format(s_begin, s_end, repr(self.data))
-    
-    def __repr__(self):
-        return str(self)
+            return "Interval({0}, {1}, {2})".format(s_begin, s_end, repr(self.data))
 
+    __str__ = __repr__
+    
     def copy(self):
         return Interval(self.begin, self.end, self.data)
     
