@@ -525,6 +525,8 @@ class IntervalTree(object):
         
         Completes in O(n) time.
         """
+        if not self.boundary_table:
+            return 0
         return min(self.boundary_table)
     
     def end(self):
@@ -533,6 +535,8 @@ class IntervalTree(object):
         
         Completes in O(n) time.
         """
+        if not self.boundary_table:
+            return 0
         return max(self.boundary_table)
     
     def print_structure(self, tostring=False):
