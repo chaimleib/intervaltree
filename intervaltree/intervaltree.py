@@ -17,8 +17,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
-from interval import Interval
+from __future__ import absolute_import
+from .interval import Interval
 from numbers import Number
 from operator import attrgetter
 
@@ -1220,8 +1220,7 @@ def test():
     #t.print_structure()
     orig = t.print_structure(True)
         
-    assert orig == \
-        """
+    assert orig == """
 Node<8, balance=0>
 ||||:
  Interval(5, 9, '5-9')
