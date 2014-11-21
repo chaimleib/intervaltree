@@ -81,29 +81,20 @@ class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
         )
 
     def __cmp__(self, other):
-        #try:
-        c = self.begin - other.begin
-        #except Exception as e:
-        #    print("self: {0}".format(self) )
-        #    print("other: {0}".format(other))
-        #    raise e
-        if c == 0:
-            c = self.end - other.end
-        if c == 0:
-            c = -1 if self.data < other.data \
-                else (1 if self.data > other.data else 0)
-        return c
-
-    # def __lt__(self, other):
-    #     if (self.begin, self.end) == (other.begin, other.end):
-    #         try:
-    #             # The third element here helps solve the "unorderable type" problem in Python3 when comparing, e.g., None and non-None data fields.
-    #             return (self.begin, self.end, type(self.data).__name__, self.data) < (other.begin, other.end, type(other.data).__name__, other.data)
-    #         except TypeError: # still get an "unorderable type" error (e.g. dict cannot be compared with dict in Py3)
-    #             # Not really sure whether it may backfire anywhere
-    #             return False
-    #     else:
-    #         return (self.begin, self.end) < (other.begin, other.end)
+        s = self[0:2]
+        o = other[0:2]
+        if s != o:
+            return -1 if s < o else 1
+        try:
+            if self.data == other.data:
+                return 0
+            return -1 if self.data < other.data else 1
+        except TypeError:
+            s = type(self.data).__name__
+            o = type(other.data).__name__
+            if s == o:
+                return 0
+            return -1 if s < o else 1
         
     def __lt__(self, other):
         return self.__cmp__(other) < 0
@@ -125,8 +116,16 @@ class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
         return str(self.__unicode__())
     
     def __unicode__(self):
-        fields = self._get_fields()
-        return u"Interval{0}".format(fields)
+        if isinstance(self.begin, Number):
+            s_begin = str(self.begin)
+            s_end = str(self.end)
+        else:
+            s_begin = repr(self.begin)
+            s_end = repr(self.end)
+        if self.data is None:
+            return u"Interval({0}, {1})".format(s_begin, s_end)
+        else:
+            return u"Interval({0}, {1}, {2})".format(s_begin, s_end, repr(self.data))
     
     def __repr__(self):
         return str(self)

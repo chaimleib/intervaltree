@@ -17,8 +17,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
-from interval import Interval
+from __future__ import absolute_import
+from .interval import Interval
 from numbers import Number
 from operator import attrgetter
 
@@ -93,17 +93,17 @@ class IntervalTree(object):
         >>> itree = IntervalTree([Interval(-1.1, 1.1), Interval(-0.5, 1.5), Interval(0.5, 1.7)])
         >>> itree.remove_overlap(1.1)
         >>> list(itree)
-        [Interval(-1.1, 1.1, None)]
+        [Interval(-1.1, 1.1)]
         
     Delete intervals, overlapping an interval::
     
         >>> itree = IntervalTree([Interval(-1.1, 1.1), Interval(-0.5, 1.5), Interval(0.5, 1.7)])
         >>> itree.remove_overlap(0, 0.5)
         >>> list(itree)
-        [Interval(0.5, 1.7, None)]
+        [Interval(0.5, 1.7)]
         >>> itree.remove_overlap(1.7, 1.8)
         >>> list(itree)
-        [Interval(0.5, 1.7, None)]
+        [Interval(0.5, 1.7)]
         >>> itree.remove_overlap(1.6, 1.6) # Empty interval still works
         >>> list(itree)
         []
@@ -113,13 +113,13 @@ class IntervalTree(object):
         >>> itree = IntervalTree([Interval(-1.1, 1.1), Interval(-0.5, 1.5), Interval(0.5, 1.7)])
         >>> itree.remove_envelop(-1.0, 1.5)
         >>> sorted(itree)
-        [Interval(-1.1, 1.1, None), Interval(0.5, 1.7, None)]
+        [Interval(-1.1, 1.1), Interval(0.5, 1.7)]
         >>> itree.remove_envelop(-1.1, 1.5)
         >>> list(itree)
-        [Interval(0.5, 1.7, None)]
+        [Interval(0.5, 1.7)]
         >>> itree.remove_envelop(0.5, 1.5)
         >>> list(itree)
-        [Interval(0.5, 1.7, None)]
+        [Interval(0.5, 1.7)]
         >>> itree.remove_envelop(0.5, 1.7)
         >>> list(itree)
         []
@@ -127,16 +127,16 @@ class IntervalTree(object):
     Point/interval overlap queries::
     
         >>> itree = IntervalTree([Interval(-1.1, 1.1), Interval(-0.5, 1.5), Interval(0.5, 1.7)])
-        >>> assert itree[-1.1]         == set([Interval(-1.1, 1.1, None)])
-        >>> assert itree.search(1.1)   == set([Interval(-0.5, 1.5, None), Interval(0.5, 1.7, None)])   # Same as [1.1]
-        >>> assert itree[-0.5:0.5]     == set([Interval(-0.5, 1.5, None), Interval(-1.1, 1.1, None)])  # Interval overlap query
-        >>> assert itree.search(1.5, 1.5) == set([Interval(0.5, 1.7, None)])                           # Same as [1.5, 1.5]
+        >>> assert itree[-1.1]         == set([Interval(-1.1, 1.1)])
+        >>> assert itree.search(1.1)   == set([Interval(-0.5, 1.5), Interval(0.5, 1.7)])   # Same as [1.1]
+        >>> assert itree[-0.5:0.5]     == set([Interval(-0.5, 1.5), Interval(-1.1, 1.1)])  # Interval overlap query
+        >>> assert itree.search(1.5, 1.5) == set([Interval(0.5, 1.7)])                     # Same as [1.5, 1.5]
         >>> assert itree.search(1.7, 1.7) == set([])
 
     Envelop queries::
     
         >>> assert itree.search(-0.5, 0.5, strict=True) == set([])
-        >>> assert itree.search(-0.4, 1.7, strict=True) == set([Interval(0.5, 1.7, None)])
+        >>> assert itree.search(-0.4, 1.7, strict=True) == set([Interval(0.5, 1.7)])
         
     Membership queries::
     
@@ -169,16 +169,17 @@ class IntervalTree(object):
         False
         >>> not IntervalTree()
         True
-        >>> itree.begin()
+        >>> print(itree.begin())    # using print() because of floats in Python 2.6
         -1.1
-        >>> itree.end()
+        >>> print(itree.end())      # ditto
         1.7
         
     Iteration::
-        
-        >>> [int.begin for int in sorted(itree)]
-        [-1.1, -0.5, 0.5]
-        >>> assert itree.items() == set([Interval(-0.5, 1.5, None), Interval(-1.1, 1.1, None), Interval(0.5, 1.7, None)])
+
+        (Using str() because of floats in Python 2.6)
+        >>> print(', '.join(str(int.begin) for int in sorted(itree)))
+        -1.1, -0.5, 0.5
+        >>> assert itree.items() == set([Interval(-0.5, 1.5), Interval(-1.1, 1.1), Interval(0.5, 1.7)])
 
     Copy- and typecasting, pickling::
     
@@ -1220,8 +1221,7 @@ def test():
     #t.print_structure()
     orig = t.print_structure(True)
         
-    assert orig == \
-        """
+    assert orig == """
 Node<8, balance=0>
 ||||:
  Interval(5, 9, '5-9')

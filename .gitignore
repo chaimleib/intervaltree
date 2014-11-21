@@ -2,6 +2,8 @@
 .DS_Store
 .idea/
 *.egg-info
+*.egg
+.eggs/
 *.komodoproject
 dist/
 

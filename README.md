@@ -156,6 +156,7 @@ Based on
 * Wikipedia's [Interval Tree](http://en.wikipedia.org/wiki/Interval_tree)
 * Heavily modified from Tyler Kahn's 
   [Interval Tree implementation in Python](http://forrst.com/posts/Interval_Tree_implementation_in_python-e0K) ([GitHub project](https://github.com/tylerkahn/intervaltree-python))
+* Incorporates modifications by [konstantint][https://github.com/konstantint/PyIntervalTree]
 
 Copyright
 ---------

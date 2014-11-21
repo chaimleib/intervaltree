@@ -35,13 +35,12 @@ class PyTest(TestCommand):
         sys.exit(pytest.main(self.test_args))
 
 
-version = '0.3'
+version = '0.3.1'
 setup(
-    name = 'PyIntervalTree',
-    version = version,
-    packages=['intervaltree'],
-    install_requires=['six'],
-    description = 'Mutable, self-balancing interval tree',
+    name='PyIntervalTree',
+    version=version,
+    install_requires=[],
+    description='Mutable, self-balancing interval tree',
     long_description=open("README.md").read(),
     classifiers=[ # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
         'Development Status :: 4 - Beta',
@@ -50,8 +49,8 @@ setup(
         'Topic :: Software Development :: Libraries',
     ],
     keywords="interval-tree data-structure intervals tree", # Separate with spaces
-    author = 'Chaim-Leib Halbert, Konstantin Tretyakov',
-    author_email = 'chaim.leib.halbert@gmail.com',
+    author='Chaim-Leib Halbert, Konstantin Tretyakov',
+    author_email='chaim.leib.halbert@gmail.com',
     url='https://github.com/chaimleib/PyIntervalTree',
     license="Apache",
     packages=find_packages(exclude=['examples', 'tests', 'test']),
