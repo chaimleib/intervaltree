@@ -81,29 +81,15 @@ class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
         )
 
     def __cmp__(self, other):
-        #try:
-        c = self.begin - other.begin
-        #except Exception as e:
-        #    print("self: {0}".format(self) )
-        #    print("other: {0}".format(other))
-        #    raise e
-        if c == 0:
-            c = self.end - other.end
-        if c == 0:
-            c = -1 if self.data < other.data \
-                else (1 if self.data > other.data else 0)
+        c = cmp((self.begin, self.end), (other.begin, other.end))
+        if c != 0:
+            return c
+        
+        try:
+            c = cmp(self.data, other.data)
+        except TypeError:
+            c = cmp(self.data.__name__, other.data.__name__)
         return c
-
-    # def __lt__(self, other):
-    #     if (self.begin, self.end) == (other.begin, other.end):
-    #         try:
-    #             # The third element here helps solve the "unorderable type" problem in Python3 when comparing, e.g., None and non-None data fields.
-    #             return (self.begin, self.end, type(self.data).__name__, self.data) < (other.begin, other.end, type(other.data).__name__, other.data)
-    #         except TypeError: # still get an "unorderable type" error (e.g. dict cannot be compared with dict in Py3)
-    #             # Not really sure whether it may backfire anywhere
-    #             return False
-    #     else:
-    #         return (self.begin, self.end) < (other.begin, other.end)
         
     def __lt__(self, other):
         return self.__cmp__(other) < 0
