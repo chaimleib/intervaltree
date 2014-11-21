@@ -1,7 +1,23 @@
+Version 0.3.1
+-------------
+
+    - Changed license from LGPL to more permissive Apache license
+    - Merged changes from https://github.com/konstantint/PyIntervalTree to
+      https://github.com/chaimleib/PyIntervalTree
+      (formerly /MusashiAharon/PyIntervalTree)
+    - Support for Python 2.6
+    - Removed dependency on six
+    - Fixed crash when querying empty tree
+    - Intervals are ordered by begin, then end, then by data. If data is not
+      orderable, sorts by type(data)
+    - Easier display for debugging, using custom test/pprint.py
+    - More sensitive exception handling
+    - Fixed missing close parenthesis in examples
+
 Version 0.3
 -------------
 
-    - Support for Python 3
+    - Support for Python 3.2
     - Interval now inherits from a namedtuple. Benefits: should be faster. 
       Drawbacks: slight behavioural change (intervals not mutable anymore).
 
