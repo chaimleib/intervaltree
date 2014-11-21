@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/chaimleib/PyIntervalTree.svg)](https://travis-ci.org/chaimleib/PyIntervalTree)
+
 PyIntervalTree
 ==============
 
