@@ -81,15 +81,20 @@ class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
         )
 
     def __cmp__(self, other):
-        c = cmp((self.begin, self.end), (other.begin, other.end))
-        if c != 0:
-            return c
-        
+        s = self[0:2]
+        o = other[0:2]
+        if s != o:
+            return -1 if s < o else 1
         try:
-            c = cmp(self.data, other.data)
+            if self.data == other.data:
+                return 0
+            return -1 if self.data < other.data else 1
         except TypeError:
-            c = cmp(self.data.__name__, other.data.__name__)
-        return c
+            s = type(self.data).__name__
+            o = type(other.data).__name__
+            if s == o:
+                return 0
+            return -1 if s < o else 1
         
     def __lt__(self, other):
         return self.__cmp__(other) < 0
@@ -111,8 +116,16 @@ class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
         return str(self.__unicode__())
     
     def __unicode__(self):
-        fields = self._get_fields()
-        return u"Interval{0}".format(fields)
+        if isinstance(self.begin, Number):
+            s_begin = str(self.begin)
+            s_end = str(self.end)
+        else:
+            s_begin = repr(self.begin)
+            s_end = repr(self.end)
+        if self.data is None:
+            return u"Interval({0}, {1})".format(s_begin, s_end)
+        else:
+            return u"Interval({0}, {1}, {2})".format(s_begin, s_end, repr(self.data))
     
     def __repr__(self):
         return str(self)
