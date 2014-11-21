@@ -145,10 +145,8 @@ Examples
 Future improvements
 -------------------
 
+* Support for points
 * KeyedIntervalTree class, allowing lookup of intervals by a key. Useful for genome research, as in [Konstantin Tretyakov's fork](https://github.com/konstantint/PyIntervalTree).
-* Support for open, closed, half-open and infinite intervals, using
-the [`interval`](https://pypi.python.org/pypi/interval) package available from
-[PyPI](https://pypi.python.org). (Maybe not, since these intervals would complicate the use case of text intervals a lot.)
 
 Based on
 --------
