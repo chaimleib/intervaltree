@@ -125,7 +125,7 @@ class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
             return "Interval({0}, {1}, {2})".format(s_begin, s_end, repr(self.data))
 
     __str__ = __repr__
-    
+
     def copy(self):
         return Interval(self.begin, self.end, self.data)
     
