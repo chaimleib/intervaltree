@@ -491,6 +491,8 @@ class IntervalTree(object):
           * m = number of matches
           * k = size of the search range (this is 1 for a point)
         """
+        if self.top_node is None:
+            return set()
         if end is None:
             if isinstance(begin, Number):
                 return self.top_node.search_point(begin, set())
