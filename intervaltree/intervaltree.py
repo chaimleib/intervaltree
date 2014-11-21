@@ -169,15 +169,16 @@ class IntervalTree(object):
         False
         >>> not IntervalTree()
         True
-        >>> itree.begin()
+        >>> print(itree.begin())    # using print() because of floats in Python 2.6
         -1.1
-        >>> itree.end()
+        >>> print(itree.end())      # ditto
         1.7
         
     Iteration::
-        
-        >>> [int.begin for int in sorted(itree)]
-        [-1.1, -0.5, 0.5]
+
+        (Using str() because of floats in Python 2.6)
+        >>> print(', '.join(str(int.begin) for int in sorted(itree)))
+        -1.1, -0.5, 0.5
         >>> assert itree.items() == set([Interval(-0.5, 1.5), Interval(-1.1, 1.1), Interval(0.5, 1.7)])
 
     Copy- and typecasting, pickling::
