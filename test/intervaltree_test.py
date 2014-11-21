@@ -18,11 +18,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+from intervaltree import Interval, IntervalTree
+from pprint import pprint
+from operator import attrgetter
+
+
+def test_emptyTreeQueries():
+    t = IntervalTree()
+    e = set()
+
+    assert len(t) == 0
+    assert t[3] == e
+    assert t[4:6] == e
+    assert t.begin() == 0
+    assert t.end() == 0
+
 def test_all():
-    from intervaltree import Interval, IntervalTree
-    from pprint import pprint
-    from operator import attrgetter
-    
     def makeinterval(lst):
         return Interval(
             lst[0], 
