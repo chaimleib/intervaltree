@@ -28,10 +28,18 @@ def test_emptyTreeQueries():
     e = set()
 
     assert len(t) == 0
+    assert t.is_empty()
     assert t[3] == e
     assert t[4:6] == e
     assert t.begin() == 0
     assert t.end() == 0
+    assert t[t.begin():t.end()] == e
+    assert t.items() == e
+    assert set(t) == e
+    assert set(t.copy()) == e
+    assert t.find_nested() == {}
+    t.verify()
+
 
 def test_all():
     def makeinterval(lst):
