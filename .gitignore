@@ -3,6 +3,7 @@
 .idea/
 *.egg-info
 *.egg
+.eggs/
 *.komodoproject
 dist/
 
