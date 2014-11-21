@@ -148,6 +148,8 @@ Future improvements
 * Support for points
 * KeyedIntervalTree class, allowing lookup of intervals by a key. Useful for genome research, as in [Konstantin Tretyakov's fork](https://github.com/konstantint/PyIntervalTree).
 
+For more, see the [issue tracker](./issues/) on GitHub.
+
 Based on
 --------
 
