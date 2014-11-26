@@ -146,20 +146,29 @@ Future improvements
 -------------------
 
 * Support for points
-* KeyedIntervalTree class, allowing lookup of intervals by a key. Useful for genome research, as in [Konstantin Tretyakov's fork](https://github.com/konstantint/PyIntervalTree).
+* KeyedIntervalTree class, allowing lookup of intervals by a key. Useful for genome research, 
+as in [Konstantin Tretyakov's fork][Konstantin intervaltree].
 
-For more, see the [issue tracker](./issues/) on GitHub.
+For more, see the [issue tracker][] on GitHub.
 
 Based on
 --------
 
 * Eternally Confuzzled's 
-[AVL tree](http://www.eternallyconfuzzled.com/tuts/datastructures/jsw_tut_avl.aspx)
-* Wikipedia's [Interval Tree](http://en.wikipedia.org/wiki/Interval_tree)
+[AVL tree][Confuzzled AVL tree]
+* Wikipedia's [Interval Tree][Wiki intervaltree]
 * Heavily modified from Tyler Kahn's 
-  [Interval Tree implementation in Python](http://forrst.com/posts/Interval_Tree_implementation_in_python-e0K) ([GitHub project](https://github.com/tylerkahn/intervaltree-python))
-* Incorporates modifications by [konstantint](https://github.com/konstantint/PyIntervalTree)
+  [Interval Tree implementation in Python][Kahn intervaltree] ([GitHub project][Kahn intervaltree GH])
+* Incorporates modifications by [konstantint][Konstantin intervaltree]
 
 Copyright
 ---------
 * [Chaim-Leib Halbert](https://github.com/chaimleib/PyIntervalTree)
+
+
+[issue tracker]: https://github.com/chaimleib/PyIntervalTree/issues
+[Konstantin intervaltree]: https://github.com/konstantint/PyIntervalTree 
+[Confuzzled AVL tree]: http://www.eternallyconfuzzled.com/tuts/datastructures/jsw_tut_avl.aspx
+[Wiki intervaltree]: http://en.wikipedia.org/wiki/Interval_tree
+[Kahn intervaltree]: http://zurb.com/forrst/posts/Interval_Tree_implementation_in_python-e0K
+[Kahn intervaltree GH]: https://github.com/tylerkahn/intervaltree-python
