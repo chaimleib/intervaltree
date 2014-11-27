@@ -1205,10 +1205,10 @@ class Node(object):
             for iv in sorted(self.s_center):
                 rlist.append(sp+' '+repr(iv) + nl)
         if self.left_node:
-            rlist.append(sp + '<<<<:')  # no CR
+            rlist.append(sp + '<:  ')  # no CR
             rlist.append(self.left_node.print_structure(indent+1, True))
         if self.right_node:
-            rlist.append(sp + '>>>>:')  # no CR
+            rlist.append(sp + '>:  ')  # no CR
             rlist.append(self.right_node.print_structure(indent+1, True))
         result = ''.join(rlist)
         if tostring:
