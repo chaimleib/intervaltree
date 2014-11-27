@@ -85,25 +85,19 @@ def test_all():
     assert orig == \
            """
 Node<8, balance=0>
-||||:
  Interval(5, 9, '5-9')
  Interval(6, 10, '6-10')
  Interval(8, 10, '8-10')
  Interval(8, 15, '8-15')
 <<<<:Node<4, balance=-1>
-    ||||:
      Interval(4, 7, '4-7')
     <<<<:Node<1, balance=0>
-        ||||:
          Interval(1, 2, '1-2')
 >>>>:Node<12, balance=0>
-    ||||:
      Interval(12, 14, '12-14')
     <<<<:Node<10, balance=0>
-        ||||:
          Interval(10, 12, '10-12')
     >>>>:Node<14, balance=0>
-        ||||:
          Interval(14, 15, '14-15')
 """[1:]
     

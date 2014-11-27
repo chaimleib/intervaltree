@@ -1201,8 +1201,7 @@ class Node(object):
         
         rlist = list()
         rlist.append(str(self) + nl)
-        rlist.append(sp + '||||:' + nl)
-        if self.s_center: 
+        if self.s_center:
             for iv in sorted(self.s_center):
                 rlist.append(sp+' '+repr(iv) + nl)
         if self.left_node:
