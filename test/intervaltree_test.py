@@ -59,50 +59,44 @@ def test_duplicate_insert():
 
     ## string data
     tree[-10:20] = "arbitrary data"
+    contents = frozenset([Interval(-10, 20, "arbitrary data")])
+
     assert len(tree) == 1
-    assert tree.items() == set([Interval(-10, 20, "arbitrary data")])
+    assert tree.items() == contents
 
     tree.addi(-10, 20, "arbitrary data")
     assert len(tree) == 1
-    assert tree.items() == set([Interval(-10, 20, "arbitrary data")])
+    assert tree.items() == contents
 
     tree.add(Interval(-10, 20, "arbitrary data"))
     assert len(tree) == 1
-    assert tree.items() == set([Interval(-10, 20, "arbitrary data")])
+    assert tree.items() == contents
 
     tree.extend([Interval(-10, 20, "arbitrary data")])
     assert len(tree) == 1
-    assert tree.items() == set([Interval(-10, 20, "arbitrary data")])
+    assert tree.items() == contents
 
     ## None data
     tree[-10:20] = None
-    assert len(tree) == 2
-    assert tree.items() == set([
+    contents = frozenset([
         Interval(-10, 20),
         Interval(-10, 20, "arbitrary data"),
     ])
+
+    assert len(tree) == 2
+    assert tree.items() == contents
 
     tree.addi(-10, 20)
     assert len(tree) == 2
-    assert tree.items() == set([
-        Interval(-10, 20),
-        Interval(-10, 20, "arbitrary data"),
-    ])
+    assert tree.items() == contents
 
     tree.add(Interval(-10, 20))
     assert len(tree) == 2
-    assert tree.items() == set([
-        Interval(-10, 20),
-        Interval(-10, 20, "arbitrary data"),
-    ])
+    assert tree.items() == contents
 
     tree.extend([Interval(-10, 20)])
     assert len(tree) == 2
-    assert tree.items() == set([
-        Interval(-10, 20),
-        Interval(-10, 20, "arbitrary data"),
-    ])
-
+    assert tree.items() == contents
 
 
 def test_empty_queries():
