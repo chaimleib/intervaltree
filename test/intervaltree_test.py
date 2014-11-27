@@ -29,6 +29,7 @@ def test_empty_init():
     assert not tree
     assert len(tree) == 0
     assert list(tree) == []
+    assert tree.is_empty()
 
 
 def test_list_init():
@@ -37,6 +38,8 @@ def test_list_init():
     assert tree
     assert len(tree) == 2
     assert tree.items() == set([Interval(-10, 10), Interval(-20.0, -10.0)])
+    assert tree.begin() == -20
+    assert tree.end() == 10
 
 
 def test_generator_init():
@@ -52,6 +55,8 @@ def test_generator_init():
         Interval(-10, 10),
         Interval(10, 20),
     ])
+    assert tree.begin() == -20
+    assert tree.end() == 20
 
 
 def test_insert():
