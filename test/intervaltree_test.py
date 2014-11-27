@@ -21,6 +21,7 @@ limitations under the License.
 from intervaltree import Interval, IntervalTree
 from pprint import pprint
 from operator import attrgetter
+import pickle
 
 
 def test_emptyTreeQueries():
@@ -40,6 +41,24 @@ def test_emptyTreeQueries():
     assert t.find_nested() == {}
     t.verify()
 
+def test_copyTree():
+    itree = IntervalTree([Interval(0,1,"x"), Interval(1,2,["x"])])
+    itree.verify()
+
+    itree2 = IntervalTree(itree) # Does not copy Interval objects
+    itree2.verify()
+
+    itree3 = itree.copy()        # Shallow copy of Interval objects (which is the same as above as those are singletons).
+    itree3.verify()
+
+    itree4 = pickle.loads(pickle.dumps(itree)) # Full copy
+    itree4.verify()
+
+    list(itree[1])[0].data[0] = "y"
+    assert sorted(itree)  == [Interval(0, 1, 'x'), Interval(1, 2, ['y'])]
+    assert sorted(itree2) == [Interval(0, 1, 'x'), Interval(1, 2, ['y'])]
+    assert sorted(itree3) == [Interval(0, 1, 'x'), Interval(1, 2, ['y'])]
+    assert sorted(itree4) == [Interval(0, 1, 'x'), Interval(1, 2, ['x'])]
 
 def test_all():
     def makeinterval(lst):
@@ -232,4 +251,3 @@ Node<8, balance=0>
     #import cPickle as pickle
     #p = pickle.dumps(t)
     #print(p)
-    
