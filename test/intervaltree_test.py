@@ -48,10 +48,10 @@ def test_tree_copy():
     itree2 = IntervalTree(itree)  # Shares Interval objects
     itree2.verify()
 
-    itree3 = itree.copy()         # Shallow copy; (same as above as those are singletons).
+    itree3 = itree.copy()         # Shallow copy (same as above, as Intervals are singletons)
     itree3.verify()
 
-    itree4 = pickle.loads(pickle.dumps(itree))  # Full copy
+    itree4 = pickle.loads(pickle.dumps(itree))  # Deep copy
     itree4.verify()
 
     list(itree[1])[0].data[0] = "y"
