@@ -1,4 +1,4 @@
-'''
+"""
 PyIntervalTree: A mutable, self-balancing interval tree.
 
 Test module
@@ -16,14 +16,14 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 
 from intervaltree import Interval, IntervalTree
 from pprint import pprint
 import pickle
 
 
-def test_emptyTreeQueries():
+def test_empty_tree_queries():
     t = IntervalTree()
     e = set()
 
@@ -40,50 +40,51 @@ def test_emptyTreeQueries():
     assert t.find_nested() == {}
     t.verify()
 
-def test_copyTree():
-    itree = IntervalTree([Interval(0,1,"x"), Interval(1,2,["x"])])
+
+def test_tree_copy():
+    itree = IntervalTree([Interval(0, 1, "x"), Interval(1, 2, ["x"])])
     itree.verify()
 
-    itree2 = IntervalTree(itree) # Does not copy Interval objects
+    itree2 = IntervalTree(itree)  # Shares Interval objects
     itree2.verify()
 
-    itree3 = itree.copy()        # Shallow copy of Interval objects (which is the same as above as those are singletons).
+    itree3 = itree.copy()         # Shallow copy; (same as above as those are singletons).
     itree3.verify()
 
-    itree4 = pickle.loads(pickle.dumps(itree)) # Full copy
+    itree4 = pickle.loads(pickle.dumps(itree))  # Full copy
     itree4.verify()
 
     list(itree[1])[0].data[0] = "y"
-    assert sorted(itree)  == [Interval(0, 1, 'x'), Interval(1, 2, ['y'])]
+    assert sorted(itree) == [Interval(0, 1, 'x'), Interval(1, 2, ['y'])]
     assert sorted(itree2) == [Interval(0, 1, 'x'), Interval(1, 2, ['y'])]
     assert sorted(itree3) == [Interval(0, 1, 'x'), Interval(1, 2, ['y'])]
     assert sorted(itree4) == [Interval(0, 1, 'x'), Interval(1, 2, ['x'])]
 
+
+def sdata(s):
+    return set(iv.data for iv in s)
+
+
 def test_all():
-    def makeinterval(lst):
-        return Interval(
-            lst[0], 
-            lst[1], 
-            "{0}-{1}".format(*lst)
-            )
+    def make_interval(lst):
+        return Interval(lst[0], lst[1], "{0}-{1}".format(*lst))
     
-    ivs = list(map(makeinterval, [
-        [1,2],
-        [4,7],
-        [5,9],
-        [6,10],
-        [8,10],
-        [8,15],
-        [10,12],
-        [12,14],
-        [14,15],
-        ]))
+    ivs = list(map(make_interval, [
+        [1, 2],
+        [4, 7],
+        [5, 9],
+        [6, 10],
+        [8, 10],
+        [8, 15],
+        [10, 12],
+        [12, 14],
+        [14, 15],
+    ]))
     t = IntervalTree(ivs)
     t.verify()
     orig = t.print_structure(True)
         
-    assert orig == \
-           """
+    assert orig == """
 Node<8, balance=0>
  Interval(5, 9, '5-9')
  Interval(6, 10, '6-10')
@@ -101,60 +102,57 @@ Node<8, balance=0>
          Interval(14, 15, '14-15')
 """[1:]
     
-    def data(s): 
-        return set(iv.data for iv in s)
-    
     # Query tests
     print('Query tests...')
-    assert data(t[4])          == set(['4-7'])
-    assert data(t[4:5])        == set(['4-7'])
-    assert data(t[4:6])        == set(['4-7', '5-9'])
-    assert data(t[9])          == set(['6-10', '8-10', '8-15'])
-    assert data(t[15])         == set()
-    assert data(t.search(5))   == set(['4-7', '5-9'])
-    assert data(t.search(6, 11, strict = True)) == set(['6-10', '8-10'])
+    assert sdata(t[4]) == set(['4-7'])
+    assert sdata(t[4:5]) == set(['4-7'])
+    assert sdata(t[4:6]) == set(['4-7', '5-9'])
+    assert sdata(t[9]) == set(['6-10', '8-10', '8-15'])
+    assert sdata(t[15]) == set()
+    assert sdata(t.search(5)) == set(['4-7', '5-9'])
+    assert sdata(t.search(6, 11, strict=True)) == set(['6-10', '8-10'])
     
     print('    passed')
     
     # Membership tests
     print('Membership tests...')
     assert ivs[1] in t
-    assert Interval(1,3, '1-3') not in t
+    assert Interval(1, 3, '1-3') not in t
     assert t.overlaps(4)
     assert t.overlaps(9)
     assert not t.overlaps(15)
-    assert t.overlaps(0,4)
-    assert t.overlaps(1,2)
-    assert t.overlaps(1,3)
-    assert t.overlaps(8,15)
+    assert t.overlaps(0, 4)
+    assert t.overlaps(1, 2)
+    assert t.overlaps(1, 3)
+    assert t.overlaps(8, 15)
     assert not t.overlaps(15, 16)
     assert not t.overlaps(-1, 0)
-    assert not t.overlaps(2,4)
+    assert not t.overlaps(2, 4)
     print('    passed')
     
     # Insertion tests
     print('Insertion tests...')
-    t.add( makeinterval([1,2]) )  # adding duplicate should do nothing
-    assert data(t[1])        == set(['1-2'])
+    t.add(make_interval([1, 2]))  # adding duplicate should do nothing
+    assert sdata(t[1]) == set(['1-2'])
     assert orig == t.print_structure(True)
     
     t[1:2] = '1-2'                # adding duplicate should do nothing
-    assert data(t[1])        == set(['1-2'])
+    assert sdata(t[1]) == set(['1-2'])
     assert orig == t.print_structure(True)
     
-    t.add(makeinterval([2,4]))
-    assert data(t[2])        == set(['2-4'])
+    t.add(make_interval([2, 4]))
+    assert sdata(t[2]) == set(['2-4'])
     t.verify()
     
     t[13:15] = '13-15'
-    assert data(t[14])       == set(['8-15', '13-15', '14-15'])
+    assert sdata(t[14]) == set(['8-15', '13-15', '14-15'])
     t.verify()
     print('    passed')
     
     # Duplication tests
     print('Interval duplication tests...')
-    t.add(Interval(14,15,'14-15####'))
-    assert data(t[14])        == set(['8-15', '13-15', '14-15', '14-15####'])
+    t.add(Interval(14, 15, '14-15####'))
+    assert sdata(t[14]) == set(['8-15', '13-15', '14-15', '14-15####'])
     t.verify()
     print('    passed')
     
@@ -177,36 +175,32 @@ Node<8, balance=0>
     # Deletion tests
     print('Deletion tests...')
     try:
-        t.remove(
-            Interval(1,3, "Doesn't exist")
-            )
+        t.remove(Interval(1, 3, "Doesn't exist"))
     except ValueError:
         pass
     else:
         raise AssertionError("Expected ValueError")
     
     try:
-        t.remove(
-            Interval(500, 1000, "Doesn't exist")
-            )
+        t.remove(Interval(500, 1000, "Doesn't exist"))
     except ValueError:
         pass
     else:
         raise AssertionError("Expected ValueError")
     
     orig = t.print_structure(True)
-    t.discard( Interval(1,3, "Doesn't exist") )
-    t.discard( Interval(500, 1000, "Doesn't exist") )
+    t.discard(Interval(1, 3, "Doesn't exist"))
+    t.discard(Interval(500, 1000, "Doesn't exist"))
     assert orig == t.print_structure(True)
     
-    assert data(t[14])        == set(['8-15', '13-15', '14-15', '14-15####'])
-    t.remove( Interval(14,15,'14-15####') )
-    assert data(t[14])        == set(['8-15', '13-15', '14-15'])
+    assert sdata(t[14]) == set(['8-15', '13-15', '14-15', '14-15####'])
+    t.remove(Interval(14, 15, '14-15####'))
+    assert sdata(t[14]) == set(['8-15', '13-15', '14-15'])
     t.verify()
     
-    assert data(t[2])        == set(['2-4'])
-    t.discard( makeinterval([2,4]) )
-    assert data(t[2])        == set()
+    assert sdata(t[2]) == set(['2-4'])
+    t.discard(make_interval([2, 4]))
+    assert sdata(t[2]) == set()
     t.verify()
     
     assert t[14]
