@@ -94,7 +94,7 @@ def test_duplicate_insert():
     assert len(tree) == 2
     assert tree.items() == contents
 
-    tree.extend([Interval(-10, 20)])
+    tree.extend([Interval(-10, 20), Interval(-10, 20, "arbitrary data")])
     assert len(tree) == 2
     assert tree.items() == contents
 
