@@ -215,9 +215,6 @@ class IntervalTree(object):
         """
         intervals = intervals if intervals is not None else []
         self.all_intervals = set(intervals)
-        for iv in intervals:
-            assert isinstance(iv, Interval)
-            assert not iv.is_null(), "IntervalTree: Null Interval objects not allowed in IntervalTree: {0}".format(iv)
         self.top_node = Node.from_intervals(self.all_intervals)
         self.boundary_table = {}
         for iv in self.all_intervals:
@@ -273,7 +270,12 @@ class IntervalTree(object):
         """
         if interval in self: 
             return
-        
+
+        assert not interval.is_null(), (
+            "IntervalTree: Null Interval objects not allowed in IntervalTree:"
+            " {0}".format(interval)
+        )
+
         #self.verify()
         
         #if self.top_node:
