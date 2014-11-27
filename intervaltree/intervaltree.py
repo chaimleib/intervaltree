@@ -563,6 +563,7 @@ class IntervalTree(object):
         Checks the table to ensure that the invariants are held.
         """
         if self.all_intervals:
+            ## top_node.all_children() == self.all_intervals
             try:
                 assert self.top_node.all_children() == self.all_intervals
             except AssertionError as e:
@@ -576,6 +577,21 @@ class IntervalTree(object):
                 pprint(self.all_intervals - tivs)
                 raise e
 
+            ## All members are Intervals
+            for iv in self:
+                assert isinstance(iv, Interval), (
+                    "Error: Only Interval objects allowed in IntervalTree:"
+                    " {0}".format(iv)
+                )
+
+            ## No null intervals
+            for iv in self:
+                assert not iv.is_null(), (
+                    "Error: Null Interval objects not allowed in IntervalTree:"
+                    " {0}".format(iv)
+                )
+
+            ## Reconstruct boundary_table
             bound_check = {}
             for iv in self:
                 if iv.begin in bound_check:
@@ -586,16 +602,24 @@ class IntervalTree(object):
                     bound_check[iv.end] += 1
                 else:
                     bound_check[iv.end] = 1
+
+            ## Reconstructed boundary table (bound_check) ==? boundary_table
             assert set(self.boundary_table.keys()) == set(bound_check.keys()),\
                 'Error: boundary_table is out of sync with ' \
                 'the intervals in the tree!'
-            for key,val in self.boundary_table.items():   # For efficiency reasons it should be iteritems in Py2, but we don't care much for efficiency in debug methods anyway.
+
+            # For efficiency reasons this should be iteritems in Py2, but we
+            # don't care much for efficiency in debug methods anyway.
+            for key,val in self.boundary_table.items():
                 assert bound_check[key] == val, \
                     'Error: boundary_table[{0}] should be {1},' \
                     ' but is {2}!'.format(
                         key, bound_check[key], val)
+
+            ## Internal tree structure
             self.top_node.verify(set())
         else:
+            ## Verify empty tree
             assert not self.boundary_table, \
                 "Error: boundary table should be empty!"
             assert self.top_node is None, \
