@@ -62,25 +62,25 @@ class IntervalTree(object):
     
     Insertions::
         >>> tree = IntervalTree()
-        >>> tree[-10:20] = "arbitrary data"
-        >>> tree[-10:20] = None  # Note that this is also an insertion
-        >>> tree
-        IntervalTree([Interval(-10, 20), Interval(-10, 20, 'arbitrary data')])
-        >>> tree[-10:20] = None  # This won't change anything
-        >>> tree[-10:20] = "arbitrary data" # Neither will this
-        >>> len(tree)
-        2
-        >>> tree = IntervalTree()
+        >>> tree[0:1] = "data"
         >>> tree.add(Interval(10, 20))
         >>> tree.addi(19.9, 20)
         >>> tree
-        IntervalTree([Interval(10, 20), Interval(19.9, 20)])
+        IntervalTree([Interval(0, 1, 'data'), Interval(10, 20), Interval(19.9, 20)])
         >>> tree.extend([Interval(19.9, 20.1), Interval(20.1, 30)])
         >>> len(tree)
-        4
-        >>> tree.extend([Interval(19.9, 20.1), Interval(20.1, 30)]) # Note the set-like logic again
-        >>> len(tree)
-        4
+        5
+
+        Inserting the same Interval twice does nothing::
+            >>> tree = IntervalTree()
+            >>> tree[-10:20] = "arbitrary data"
+            >>> tree[-10:20] = None  # Note that this is also an insertion
+            >>> tree
+            IntervalTree([Interval(-10, 20), Interval(-10, 20, 'arbitrary data')])
+            >>> tree[-10:20] = None  # This won't change anything
+            >>> tree[-10:20] = "arbitrary data" # Neither will this
+            >>> len(tree)
+            2
 
     Deletions::
         >>> tree = IntervalTree(Interval(b, e) for b, e in [(-10, 10), (-20, -10), (10, 20)])
