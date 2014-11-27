@@ -18,7 +18,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from intervaltree import Interval, IntervalTree
+from intervaltree import Interval
 from pprint import pprint
 from operator import attrgetter
 import pickle
+
+def test_isnull():
+    iv = Interval(0,0)
+    assert iv.is_null()
+
+    iv = Interval(1,0)
+    assert iv.is_null()
+
