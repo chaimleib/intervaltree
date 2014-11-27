@@ -65,7 +65,13 @@ class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
             return other.begin - self.end
         else:
             return self.begin - other.end
-    
+
+    def is_null(self):
+        """
+        Returns True if nothing is contained in this interval, i.e. end <= begin.
+        """
+        return self.begin >= self.end
+
     def __len__(self):
         # NB: This redefines the tuple's own "len" which would always return 3
         return self.end - self.begin
