@@ -54,6 +54,36 @@ def test_generator_init():
     ])
 
 
+def test_insert():
+    tree = IntervalTree()
+
+    tree[0:1] = "data"
+    assert len(tree) == 1
+    assert tree.items() == set([Interval(0, 1, "data")])
+
+    tree.add(Interval(10, 20))
+    assert len(tree) == 2
+    assert tree.items() == set([Interval(0, 1, "data"), Interval(10, 20)])
+
+    tree.addi(19.9, 20)
+    assert len(tree) == 3
+    assert tree.items() == set([
+        Interval(0, 1, "data"),
+        Interval(19.9, 20),
+        Interval(10, 20),
+    ])
+
+    tree.extend([Interval(19.9, 20.1), Interval(20.1, 30)])
+    assert len(tree) == 5
+    assert tree.items() == set([
+        Interval(0, 1, "data"),
+        Interval(19.9, 20),
+        Interval(10, 20),
+        Interval(19.9, 20.1),
+        Interval(20.1, 30),
+    ])
+
+
 def test_duplicate_insert():
     tree = IntervalTree()
 
