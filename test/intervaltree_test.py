@@ -23,7 +23,38 @@ from pprint import pprint
 import pickle
 
 
-def test_empty_tree_queries():
+def test_empty_init():
+    tree = IntervalTree()
+    tree.verify()
+    assert not tree
+    assert len(tree) == 0
+    assert list(tree) == []
+
+
+def test_list_init():
+    tree = IntervalTree([Interval(-10, 10), Interval(-20.0, -10.0)])
+    tree.verify()
+    assert tree
+    assert len(tree) == 2
+    assert tree.items() == set([Interval(-10, 10), Interval(-20.0, -10.0)])
+
+
+def test_generator_init():
+    tree = IntervalTree(
+        Interval(begin, end) for begin, end in
+        [(-10, 10), (-20, -10), (10, 20)]
+    )
+    tree.verify()
+    assert tree
+    assert len(tree) == 3
+    assert tree.items() == set([
+        Interval(-20, -10),
+        Interval(-10, 10),
+        Interval(10, 20),
+    ])
+
+
+def test_empty_queries():
     t = IntervalTree()
     e = set()
 
@@ -41,7 +72,7 @@ def test_empty_tree_queries():
     t.verify()
 
 
-def test_tree_copy():
+def test_copy():
     itree = IntervalTree([Interval(0, 1, "x"), Interval(1, 2, ["x"])])
     itree.verify()
 
