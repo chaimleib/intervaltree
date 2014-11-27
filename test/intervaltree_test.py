@@ -20,7 +20,6 @@ limitations under the License.
 
 from intervaltree import Interval, IntervalTree
 from pprint import pprint
-from operator import attrgetter
 import pickle
 
 
@@ -109,7 +108,7 @@ Node<8, balance=0>
 """[1:]
     
     def data(s): 
-        return set(map(attrgetter('data'), s))
+        return set(iv.data for iv in s)
     
     # Query tests
     print('Query tests...')

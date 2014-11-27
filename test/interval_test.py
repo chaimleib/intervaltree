@@ -20,7 +20,6 @@ limitations under the License.
 
 from intervaltree import Interval
 from pprint import pprint
-from operator import attrgetter
 import pickle
 
 def test_isnull():
