@@ -54,6 +54,57 @@ def test_generator_init():
     ])
 
 
+def test_duplicate_insert():
+    tree = IntervalTree()
+
+    ## string data
+    tree[-10:20] = "arbitrary data"
+    assert len(tree) == 1
+    assert tree.items() == set([Interval(-10, 20, "arbitrary data")])
+
+    tree.addi(-10, 20, "arbitrary data")
+    assert len(tree) == 1
+    assert tree.items() == set([Interval(-10, 20, "arbitrary data")])
+
+    tree.add(Interval(-10, 20, "arbitrary data"))
+    assert len(tree) == 1
+    assert tree.items() == set([Interval(-10, 20, "arbitrary data")])
+
+    tree.extend([Interval(-10, 20, "arbitrary data")])
+    assert len(tree) == 1
+    assert tree.items() == set([Interval(-10, 20, "arbitrary data")])
+
+    ## None data
+    tree[-10:20] = None
+    assert len(tree) == 2
+    assert tree.items() == set([
+        Interval(-10, 20),
+        Interval(-10, 20, "arbitrary data"),
+    ])
+
+    tree.addi(-10, 20)
+    assert len(tree) == 2
+    assert tree.items() == set([
+        Interval(-10, 20),
+        Interval(-10, 20, "arbitrary data"),
+    ])
+
+    tree.add(Interval(-10, 20))
+    assert len(tree) == 2
+    assert tree.items() == set([
+        Interval(-10, 20),
+        Interval(-10, 20, "arbitrary data"),
+    ])
+
+    tree.extend([Interval(-10, 20)])
+    assert len(tree) == 2
+    assert tree.items() == set([
+        Interval(-10, 20),
+        Interval(-10, 20, "arbitrary data"),
+    ])
+
+
+
 def test_empty_queries():
     t = IntervalTree()
     e = set()
