@@ -21,6 +21,14 @@ from __future__ import absolute_import
 from .interval import Interval
 from numbers import Number
 from operator import attrgetter
+from math import floor, log as lg
+
+def l2(num):
+    """
+    log base 2
+    :rtype real
+    """
+    return lg(num, 2)
 
 try:
     xrange  # Python 2?
@@ -637,7 +645,41 @@ class IntervalTree(object):
                 "Error: boundary table should be empty!"
             assert self.top_node is None, \
                 "Error: top_node isn't None!"
-    
+
+    def score(self, full_report=False):
+        """
+        Returns a number between 0 and 1, indicating how suboptimal the tree
+        is. The lower, the better. Roughly, this number represents the
+        fraction of flawed Intervals in the tree.
+        :rtype: real
+        """
+        if len(self) <= 2:
+            return 0.0
+
+        n = len(self)
+        m = self.top_node.count_nodes()
+
+        def s_center_score():
+            """
+            Returns a normalized score, indicating roughly how many times
+            intervals share s_center with other intervals. Output is full-scale
+            from 0 to 1.
+            :rtype: real
+            """
+            raw = n-m
+            maximum = n-1
+            return raw/float(maximum)
+
+        report = {
+            "depth": self.top_node.depth_score(n, m),
+            "s_center": s_center_score(),
+        }
+        cumulative = sum(report.values())/len(report)
+        report["_cumulative"] = cumulative
+        if full_report:
+            return report
+        return cumulative
+
     def __getitem__(self, index):
         """
         Returns a set of all intervals overlapping the given index or 
@@ -1202,7 +1244,45 @@ class Node(object):
         #)
         #fields = [self.x_center, self.balance, fieldcount]
         #return "Node({0}, b={1}, {2})".format(*fields)
-    
+
+    def count_nodes(self):
+        """
+        Count the number of Nodes in this subtree.
+        :rtype: int
+        """
+        count = 1
+        if self.right_node:
+            count += self.right_node.count_nodes()
+        if self.left_node:
+            count += self.left_node.count_nodes()
+        return count
+
+    def depth_score(self, n, m):
+        """
+        Calculates flaws in balancing the tree.
+        :param n: size of tree
+        :param m: number of Nodes in tree
+        :rtype: real
+        """
+        dopt = 1 + int(floor(l2(m)))
+        f = 1/float(1 + n - dopt)
+        return f * self.depth_score_helper(1, dopt)
+
+    def depth_score_helper(self, d, dopt):
+        """
+        Gets a weighted count of the number of Intervals deeper than dopt.
+        :param d: current depth, starting from 0
+        :param dopt: optimal maximum depth of a leaf Node
+        :rtype: real
+        """
+        di = d - dopt
+        count = di * len(self.s_center) if di > 0 else 0
+        if self.right_node:
+            count += self.right_node.depth_score_helper(d+1, dopt)
+        if self.left_node:
+            count += self.left_node.depth_score_helper(d+1, dopt)
+        return count
+
     def print_structure(self, indent=0, tostring=False):
         """
         For debugging.
