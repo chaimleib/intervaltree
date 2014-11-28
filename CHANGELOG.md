@@ -30,6 +30,7 @@ Version 0.3.2
         test/pprint.py (Python 2.6, 2.7)
     - More sensitive exception handling
     - Local script to test in all supported versions of Python
+    - Added IntervalTree.score() to measure how optimally a tree is structured
 
 Version 0.2.3
 -------------
