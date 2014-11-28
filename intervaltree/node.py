@@ -516,6 +516,8 @@ class Node(object):
         :param m: number of Nodes in tree
         :rtype: real
         """
+        if n == 0:
+            return 0.0
         dopt = 1 + int(floor(l2(m)))
         f = 1/float(1 + n - dopt)
         return f * self.depth_score_helper(1, dopt)
