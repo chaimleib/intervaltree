@@ -180,7 +180,7 @@ def test_all():
     def make_interval(lst):
         return Interval(lst[0], lst[1], "{0}-{1}".format(*lst))
     
-    ivs = list(map(make_interval, [
+    ivs = [make_interval(iv) for iv in [
         [1, 2],
         [4, 7],
         [5, 9],
@@ -190,7 +190,7 @@ def test_all():
         [10, 12],
         [12, 14],
         [14, 15],
-    ]))
+    ]]
     t = IntervalTree(ivs)
     t.verify()
     orig = t.print_structure(True)
