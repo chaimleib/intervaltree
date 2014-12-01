@@ -4,10 +4,8 @@ Change log
 Version 0.3.3
 -------------
 
-- Bug fixes:
-    - Made IntervalTree crash if inited with a null Interval (end <= begin)
-- Behavior change:
-    - IntervalTree raises ValueError instead of AssertionError when a null Interval is inserted 
+- Made IntervalTree crash if inited with a null Interval (end <= begin)
+- IntervalTree raises ValueError instead of AssertionError when a null Interval is inserted 
 
 Version 0.3.2
 -------------
