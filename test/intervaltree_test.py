@@ -18,6 +18,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+import pytest
 from intervaltree import Interval, IntervalTree
 from pprint import pprint
 import pickle
@@ -170,6 +171,53 @@ def test_copy():
     assert sorted(itree2) == [Interval(0, 1, 'x'), Interval(1, 2, ['y'])]
     assert sorted(itree3) == [Interval(0, 1, 'x'), Interval(1, 2, ['y'])]
     assert sorted(itree4) == [Interval(0, 1, 'x'), Interval(1, 2, ['x'])]
+
+
+def test_add_invalid_interval():
+    """
+    Ensure that begin < end.
+    """
+    itree = IntervalTree()
+    with pytest.raises(ValueError):
+        itree.addi(1, 0)
+
+    with pytest.raises(ValueError):
+        itree.addi(1, 1)
+
+    with pytest.raises(ValueError):
+        itree[1:0] = "value"
+
+    with pytest.raises(ValueError):
+        itree[1:1] = "value"
+
+    with pytest.raises(ValueError):
+        itree[1.1:1.05] = "value"
+
+    with pytest.raises(ValueError):
+        itree[1.1:1.1] = "value"
+
+    with pytest.raises(ValueError):
+        itree.extend([Interval(1, 0)])
+
+    with pytest.raises(ValueError):
+        itree.extend([Interval(1, 1)])
+
+
+def test_init_invalid_interval():
+    """
+    Ensure that begin < end.
+    """
+    with pytest.raises(ValueError):
+        IntervalTree([Interval(-1, -2)])
+
+    with pytest.raises(ValueError):
+        IntervalTree([Interval(0, 0)])
+
+    with pytest.raises(ValueError):
+        IntervalTree(Interval(b, e) for b, e in [(1, 2), (1, 0)])
+
+    with pytest.raises(ValueError):
+        IntervalTree(Interval(b, e) for b, e in [(1, 2), (1, 1)])
 
 
 def sdata(s):
