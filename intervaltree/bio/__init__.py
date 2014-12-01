@@ -52,9 +52,12 @@ def _fix(interval):
     Data tables may contain intervals with begin >= end. Such intervals lead to infinite recursions and
     other unpleasant behaviour, so something has to be done about them. We 'fix' them by simply setting end = begin+1.
     '''
-    warnings.warn("Interval with reversed coordinates (begin >= end) detected when reading data. Interval was automatically fixed to point interval [begin, begin+1).")
-    if interval.begin >= interval.end:
-        return Interval(interval.begin, interval.begin+1, interval.data)
+    if interval.is_null():
+        new = Interval(interval.begin, interval.begin+1, interval.data)
+        warnings.warn(
+            "Automatically fixed null Interval to point Interval of length 1."
+        )
+        return new
     else:
         return interval
 
