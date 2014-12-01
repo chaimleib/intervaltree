@@ -40,7 +40,7 @@ Features
 
 * Envelop queries:
 
-  * `tree.search(begin, end, strict = True)`
+  * `tree.search(begin, end, strict=True)`
 
 * Membership queries:
 
@@ -107,7 +107,7 @@ Examples
   Note that ranges are inclusive of the lower limit, but non-inclusive of the
   upper limit. So:
 
-        t[2:4]    # set([])
+        t[2:4]    # set()
 
   But:
 
@@ -117,14 +117,14 @@ Examples
 
   We could have made a similar tree this way:
 
-        ivs = [ [1,2], [4,7], [5,9] ]
+        ivs = [(1, 2), (4, 7), (5, 9)]
         t = IntervalTree(
-            Interval(begin, end, "%d-%d" % (begin, end)) for (begin, end) in ivs
+            Interval(begin, end, "%d-%d" % (begin, end)) for begin, end in ivs
         )
    
   Or, if we don't need the data fields:
     
-        t = IntervalTree(Interval(begin, end) for (begin, end) in ivs)
+        t = IntervalTree(Interval(*iv) for iv in ivs)
 
 * Removing intervals
 
