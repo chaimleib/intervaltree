@@ -9,6 +9,14 @@ Most recent fork and modifications by Konstantin Tretyakov
 Licensed under LGPL.
 '''
 
+def test_emptytree():
+    # Issue #3, https://github.com/konstantint/PyIntervalTree/issues/3
+    from intervaltree import IntervalTree
+    t = IntervalTree()
+    assert len(t) == 0
+    assert t[1:3] == set([])
+    assert t[1] == set([])
+
 def test_all():
     from intervaltree import Interval, IntervalTree
     from pprint import pprint
