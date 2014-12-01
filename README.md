@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/chaimleib/PyIntervalTree.svg)](https://travis-ci.org/chaimleib/PyIntervalTree)
+[![Build Status](https://travis-ci.org/chaimleib/PyIntervalTree.svg?branch=master)](https://travis-ci
+.org/chaimleib/PyIntervalTree)
 
 PyIntervalTree
 ==============
