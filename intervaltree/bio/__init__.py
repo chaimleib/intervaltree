@@ -55,7 +55,7 @@ def _fix(interval):
     if interval.is_null():
         new = Interval(interval.begin, interval.begin+1, interval.data)
         warnings.warn(
-            "Automatically fixed null Interval to point Interval of length 1."
+            "Automatically fixed null Interval to Interval of length 1."
         )
         return new
     else:
