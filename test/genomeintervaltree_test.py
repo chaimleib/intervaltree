@@ -42,12 +42,6 @@ def test_ensGene():
     ensGene = GenomeIntervalTree.from_table(url=ensGene_url, mode='cds', parser=UCSCTable.ENS_GENE)
     assert len(ensGene) == 204940
 
-def test_refGene():
-    # Smoke-test for refGene
-    refGene_url = 'http://hgdownload.cse.ucsc.edu/goldenpath/hg19/database/refGene.txt.gz'
-    refGene = GenomeIntervalTree.from_table(url=refGene_url, mode='tx', parser=UCSCTable.REF_GENE)
-    assert len(refGene) == 52289  # NB: Some time ago it was 50919, hence it seems the table data changes on UCSC and eventually the mirror and UCSC won't be the same.
-
 
 if __name__ == "__main__":
     test_knownGene()
