@@ -15,8 +15,6 @@ from intervaltree.bio import GenomeIntervalTree, UCSCTable
 def test_knownGene():
     # To speed up testing, we'll download the file and reuse the downloaded copy
     knownGene_url = 'http://hgdownload.cse.ucsc.edu/goldenpath/hg19/database/knownGene.txt.gz'
-    # Mirror. Slightly faster and more stable, I believe:
-    knownGene_url = 'http://kt.era.ee/distribute/pyintervaltree/knownGene.txt.gz'
 
     # To speed up testing, we'll download the file and reuse the downloaded copy
     knownGene_file, headers = urlretrieve(knownGene_url)
