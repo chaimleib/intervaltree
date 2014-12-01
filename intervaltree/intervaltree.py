@@ -224,8 +224,14 @@ class IntervalTree(object):
         
         Completes in O(n*log n) time.
         """
-        intervals = intervals if intervals is not None else []
-        self.all_intervals = set(intervals)
+        intervals = set(intervals) if intervals is not None else set()
+        for iv in intervals:
+            if iv.is_null():
+                raise ValueError(
+                    "IntervalTree: Null Interval objects not allowed in IntervalTree:"
+                    " {0}".format(iv)
+                )
+        self.all_intervals = intervals
         self.top_node = Node.from_intervals(self.all_intervals)
         self.boundary_table = {}
         for iv in self.all_intervals:
@@ -282,10 +288,11 @@ class IntervalTree(object):
         if interval in self: 
             return
 
-        assert not interval.is_null(), (
-            "IntervalTree: Null Interval objects not allowed in IntervalTree:"
-            " {0}".format(interval)
-        )
+        if interval.is_null():
+            raise ValueError(
+                "IntervalTree: Null Interval objects not allowed in IntervalTree:"
+                " {0}".format(interval)
+            )
 
         #self.verify()
         
