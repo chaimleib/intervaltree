@@ -272,14 +272,18 @@ class Node(object):
         Returns all intervals that contain point.
         """
         # TODO: add support for open and closed intervals
-        for k in self.s_center:
-            if k.begin <= point < k.end:
-                result.add(k)
-        if point < self.x_center and self[0]:
-            return self[0].search_point(point, result)
-        elif point > self.x_center and self[1]:
-            return self[1].search_point(point, result)
-        return result
+        cur = self
+        while True:
+            for k in cur.s_center:
+                if k.contains_point(point):
+                    result.add(k)
+            if point < cur.x_center and cur[0]:
+                cur = cur[0]
+                continue
+            elif point > cur.x_center and cur[1]:
+                cur = cur[1]
+                continue
+            return result
 
     def prune(self):
         """
