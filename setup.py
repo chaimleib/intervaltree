@@ -1,4 +1,4 @@
-'''
+)'''
 PyIntervalTree: A mutable, self-balancing interval tree. Queries may be by point, by range overlap, or by range envelopment.
 
 Note that "python setup.py test" invokes pytest on the package. With appropriately
@@ -26,7 +26,7 @@ class PyTest(TestCommand):
         sys.exit(pytest.main(self.test_args))
 
 
-version = '0.3'
+version = '0.4'
 setup(
     name = 'PyIntervalTree',
     version = version,

@@ -50,4 +50,4 @@ def test_refGene():
     refGene_url = 'http://hgdownload.cse.ucsc.edu/goldenpath/hg19/database/refGene.txt.gz'
     refGene_url = 'http://kt.era.ee/distribute/pyintervaltree/refGene.txt.gz'
     refGene = GenomeIntervalTree.from_table(url=refGene_url, mode='tx', parser=UCSCTable.REF_GENE)
-    assert len(refGene) == 52289  # NB: Some time ago it was 50919, hence it seems the table data changes on UCSC and eventually the mirror and UCSC won't be the same.
+    assert len(refGene) == 52350  # NB: Some time ago it was 50919, hence it seems the table data changes on UCSC and eventually the mirror and UCSC won't be the same.

@@ -3,8 +3,7 @@ PyIntervalTree: A mutable, self-balancing interval tree.
 
 Core logic.
 
-Copyright 2014, Chaim-Leib Halbert et al.
-Most recent fork and modifications by Konstantin Tretyakov
+Copyright 2014, Chaim-Leib Halbert, Konstantin Tretyakov.
 
 Licensed under LGPL.
 '''
@@ -739,15 +738,19 @@ class Node:
         return 1 if interval.begin > self.x_center else 0
     
     def refresh_balance(self):
-        """Recalculate self.balance."""
-        self.balance = bool(self[1]) - bool(self[0])
-        if self.balance<0:
-            #self.balance -= abs(self[0].balance)
-            self.balance -= 1 if (self[0][0] or self[0][1]) else 0
-        if self.balance>0:
-            #self.balance += abs(self[1].balance)
-            self.balance += 1 if (self[1][0] or self[1][1]) else 0
-    
+        """Recalculate self.balance and self.depth based on child node values."""
+        left_depth = self.left_node.depth if self.left_node else 0
+        right_depth = self.right_node.depth if self.right_node else 0
+        self.depth = 1 + max(left_depth, right_depth)
+        self.balance = right_depth - left_depth
+
+    def compute_depth(self):
+        """Recursively computes true depth of the subtree. Should only be needed for debugging. 
+        Unless something is wrong, the depth field should reflect the correct depth of the subtree"""
+        left_depth = self.left_node.compute_depth() if self.left_node else 0
+        right_depth = self.right_node.compute_depth() if self.right_node else 0
+        return 1 + max(left_depth, right_depth)
+        
     def rotate(self):
         """
         Does rotating, if necessary, to balance this node, and 
@@ -759,13 +762,13 @@ class Node:
         # balance > 0  is the heavy side
         my_heavy = self.balance>0
         child_heavy = self[my_heavy].balance>0
-        if my_heavy == child_heavy: # Heavy sides same
+        if my_heavy == child_heavy or self[my_heavy].balance == 0: # Heavy sides same or heavy side balanced
             return self.srotate()
         else:
             return self.drotate()
     
     def srotate(self):
-        """Single rotation. Assumes that balance is not 0."""
+        """Single rotation. Assumes that balance is +-2."""
         #     self        save
         #   save 3  ->   1   self
         #  1   2            2   3
@@ -782,20 +785,15 @@ class Node:
         #self.print_structure()
         self[heavy] = save[light]   # 2
         #assert(save[light])
-        save[light] = self
-        save[light].refresh_balance()
-        save[light] = save[light].rotate()
+        save[light] = self.rotate()  # Needed to ensure the 2 and 3 are balanced under new subnode
         save.refresh_balance()
         
-        # Promoting save could cause invalid overlaps.
-        # Repair them.
-        for iv in set(self.s_center):
+        # Some intervals may overlap both self.x_center and save.x_center
+        # Promote those to the new tip of the tree
+        for iv in set(save[light].s_center):
             if save.center_hit(iv):
-                save[light] = save[light].remove(iv)
-                if save[light]:
-                    save[light].refresh_balance()
-                save = save.add(iv)
-                save.refresh_balance()
+                save[light].s_center.remove(iv)
+                save.s_center.add(iv)
         return save
     
     def drotate(self):

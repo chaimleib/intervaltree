@@ -1,3 +1,8 @@
+Version 0.4
+-------------
+
+    - Turns out, the tree was not balancing itself at all, as the corresponding code was wrong.
+      
 Version 0.3
 -------------
 
@@ -18,4 +23,4 @@ Version 0.2.3
 Version 0.2.2b
 --------------
 
-    - Forked from https://github.com/MusashiAharon/PyIntervalTree
+    - Forked from https://github.com/chaimleib/PyIntervalTree
