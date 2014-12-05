@@ -1,9 +1,9 @@
 [![Build Status](https://travis-ci.org/chaimleib/PyIntervalTree.svg?branch=master)](https://travis-ci.org/chaimleib/PyIntervalTree)
 
-PyIntervalTree
+intervaltree
 ==============
 
-A mutable, self-balancing interval tree. Queries may be by point, by range 
+A mutable, self-balancing interval tree for Python 2 and 3. Queries may be by point, by range 
 overlap, or by range envelopment.
 
 This library was designed to allow tagging text and time intervals, where the

@@ -1,5 +1,5 @@
 '''
-PyIntervalTree: A mutable, self-balancing interval tree. Queries may be by point, by range overlap, or by range envelopment.
+intervaltree: A mutable, self-balancing interval tree. Queries may be by point, by range overlap, or by range envelopment.
 
 Note that "python setup.py test" invokes pytest on the package. With appropriately
 configured setup.cfg, this will check both xxx_test modules and docstrings.
