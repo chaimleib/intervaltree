@@ -6,4 +6,5 @@
 .eggs/
 *.komodoproject
 dist/
+build/
 
