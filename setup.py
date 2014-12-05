@@ -37,7 +37,7 @@ class PyTest(TestCommand):
 
 version = '0.4.0'
 setup(
-    name='PyIntervalTree',
+    name='intervaltree',
     version=version,
     install_requires=[],
     description='Mutable, self-balancing interval tree',
