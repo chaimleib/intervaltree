@@ -35,7 +35,7 @@ class PyTest(TestCommand):
         sys.exit(pytest.main(self.test_args))
 
 
-version = '0.3.3'
+version = '0.4.0'
 setup(
     name='PyIntervalTree',
     version=version,
@@ -44,8 +44,15 @@ setup(
     long_description=open("README.md").read(),
     classifiers=[ # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
         'Development Status :: 4 - Beta',
+        'Intended Audience :: Science/Research',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 2.6',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.2',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
         'License :: OSI Approved :: Apache Software License',
+        'Topic :: Scientific/Engineering :: Bio-Informatics',
         'Topic :: Software Development :: Libraries',
     ],
     keywords="interval-tree data-structure intervals tree", # Separate with spaces
