@@ -36,12 +36,18 @@ class PyTest(TestCommand):
 
 
 version = '0.4.0'
+
+long_description = open("README.md").read().split('\n')
+while not long_description[0].strip() or long_description[0].startswith('[![Build Status]'):
+    long_description = long_description[1:]
+long_description = '\n'.join(long_description)
+
 setup(
     name='intervaltree',
     version=version,
     install_requires=[],
     description='Mutable, self-balancing interval tree',
-    long_description=open("README.md").read(),
+    long_description=long_description,
     classifiers=[ # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
         'Development Status :: 4 - Beta',
         'Intended Audience :: Science/Research',
@@ -61,6 +67,7 @@ setup(
     author='Chaim-Leib Halbert, Konstantin Tretyakov',
     author_email='chaim.leib.halbert@gmail.com',
     url='https://github.com/chaimleib/PyIntervalTree',
+    download_url = 'https://github.com/chaimleib/PyIntervalTree/tarball/' + version,
     license="Apache",
     packages=find_packages(exclude=['test']),
     include_package_data=True,
