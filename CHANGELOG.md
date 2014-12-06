@@ -1,6 +1,11 @@
 Change log
 ==========
 
+Version 0.4.0
+-------------
+- Added bio package from konstantint
+- Renamed from PyIntervalTree to intervaltree
+
 Version 0.3.3
 -------------
 

@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/chaimleib/PyIntervalTree.svg?branch=master)](https://travis-ci.org/chaimleib/PyIntervalTree)
+[![Build Status](https://travis-ci.org/chaimleib/intervaltree.svg?branch=master)](https://travis-ci
+.org/chaimleib/intervaltree)
 
 intervaltree
 ============
@@ -163,10 +164,10 @@ Based on
 
 Copyright
 ---------
-* [Chaim-Leib Halbert](https://github.com/chaimleib/PyIntervalTree)
+* [Chaim-Leib Halbert](https://github.com/chaimleib/intervaltree)
 
 
-[issue tracker]: https://github.com/chaimleib/PyIntervalTree/issues
+[issue tracker]: https://github.com/chaimleib/intervaltree/issues
 [Konstantin intervaltree]: https://github.com/konstantint/PyIntervalTree 
 [Confuzzled AVL tree]: http://www.eternallyconfuzzled.com/tuts/datastructures/jsw_tut_avl.aspx
 [Wiki intervaltree]: http://en.wikipedia.org/wiki/Interval_tree

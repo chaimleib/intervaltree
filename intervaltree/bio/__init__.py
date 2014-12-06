@@ -16,8 +16,8 @@ table from UCSC.
 
 Copyright 2014, Konstantin Tretyakov
 
-Licensed under MIT [This particular file, PyIntervalTree in general is
-licensed under LGPL].
+Licensed under MIT [This particular file. intervaltree in general is
+licensed under Apache].
 """
 import sys
 if sys.version_info[0] == 2:  # Python 2
