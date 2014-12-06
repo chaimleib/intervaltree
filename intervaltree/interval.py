@@ -1,7 +1,8 @@
-'''
-PyIntervalTree: A mutable, self-balancing interval tree.
+"""
+intervaltree: A mutable, self-balancing interval tree for Python 2 and 3.
+Queries may be by point, by range overlap, or by range envelopment.
 
-Interval class.
+Interval class
 
 Copyright 2013-2014 Chaim-Leib Halbert
 
@@ -16,7 +17,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 
 from numbers import Number
 from collections import namedtuple

@@ -1,7 +1,8 @@
-'''
-PyIntervalTree: A mutable, self-balancing interval tree.
+"""
+intervaltree: A mutable, self-balancing interval tree for Python 2 and 3.
+Queries may be by point, by range overlap, or by range envelopment.
 
-Test module
+Test module: Intervals
 
 Copyright 2013-2014 Chaim-Leib Halbert
 
@@ -16,18 +17,20 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 
 from intervaltree import Interval
 from pprint import pprint
 import pickle
 
+
 def test_isnull():
-    iv = Interval(0,0)
+    iv = Interval(0, 0)
     assert iv.is_null()
 
-    iv = Interval(1,0)
+    iv = Interval(1, 0)
     assert iv.is_null()
+
 
 def test_copy():
     iv0 = Interval(1, 2, 3)

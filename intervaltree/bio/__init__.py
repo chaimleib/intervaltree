@@ -1,5 +1,6 @@
 """
-Interval tree functionality tuned for genomic data.
+intervaltree.bio.GenomeIntervalTree: Interval tree functionality tuned for
+genomic data.
 
 One of the major uses for Interval tree data structures is in bioinformatics,
 where the intervals correspond to genes or other features of the genome.

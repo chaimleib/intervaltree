@@ -1,5 +1,8 @@
-'''
-intervaltree: A mutable, self-balancing interval tree. Queries may be by point, by range overlap, or by range envelopment.
+"""
+intervaltree: A mutable, self-balancing interval tree for Python 2 and 3.
+Queries may be by point, by range overlap, or by range envelopment.
+
+Distribution logic
 
 Note that "python setup.py test" invokes pytest on the package. With appropriately
 configured setup.cfg, this will check both xxx_test modules and docstrings.
@@ -17,7 +20,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 import sys
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
@@ -48,7 +51,7 @@ setup(
     install_requires=[],
     description='Mutable, self-balancing interval tree',
     long_description=long_description,
-    classifiers=[ # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
+    classifiers=[  # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
         'Development Status :: 4 - Beta',
         'Intended Audience :: Science/Research',
         'Programming Language :: Python',
@@ -63,11 +66,11 @@ setup(
         'Topic :: Scientific/Engineering :: Bio-Informatics',
         'Topic :: Software Development :: Libraries',
     ],
-    keywords="interval-tree data-structure intervals tree", # Separate with spaces
+    keywords="interval-tree data-structure intervals tree",  # Separate with spaces
     author='Chaim-Leib Halbert, Konstantin Tretyakov',
     author_email='chaim.leib.halbert@gmail.com',
-    url='https://github.com/chaimleib/PyIntervalTree',
-    download_url = 'https://github.com/chaimleib/PyIntervalTree/tarball/' + version,
+    url='https://github.com/chaimleib/intervaltree',
+    download_url='https://github.com/chaimleib/intervaltree/tarball/' + version,
     license="Apache",
     packages=find_packages(exclude=['test']),
     include_package_data=True,
