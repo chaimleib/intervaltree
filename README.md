@@ -1,11 +1,10 @@
-[![Build Status](https://travis-ci.org/chaimleib/intervaltree.svg?branch=master)](https://travis-ci
-.org/chaimleib/intervaltree)
+[![Build status badge][]][build status]
 
 intervaltree
 ============
 
-A mutable, self-balancing interval tree for Python 2 and 3. Queries may be by point, by range 
-overlap, or by range envelopment.
+A mutable, self-balancing interval tree for Python 2 and 3. Queries may be by 
+point, by range overlap, or by range envelopment.
 
 This library was designed to allow tagging text and time intervals, where the
 intervals include the lower bound but not the upper bound.
@@ -159,14 +158,17 @@ Based on
 [AVL tree][Confuzzled AVL tree]
 * Wikipedia's [Interval Tree][Wiki intervaltree]
 * Heavily modified from Tyler Kahn's 
-  [Interval Tree implementation in Python][Kahn intervaltree] ([GitHub project][Kahn intervaltree GH])
+  [Interval Tree implementation in Python][Kahn intervaltree]
+  ([GitHub project][Kahn intervaltree GH])
 * Incorporates modifications by [konstantint][Konstantin intervaltree]
 
 Copyright
 ---------
-* [Chaim-Leib Halbert](https://github.com/chaimleib/intervaltree)
+* [Chaim-Leib Halbert][GH]
 
-
+[build status badge]: https://travis-ci.org/chaimleib/intervaltree.svg?branch=master
+[build status]: https://travis-ci.org/chaimleib/intervaltree
+[GH]: https://github.com/chaimleib/intervaltree
 [issue tracker]: https://github.com/chaimleib/intervaltree/issues
 [Konstantin intervaltree]: https://github.com/konstantint/PyIntervalTree 
 [Confuzzled AVL tree]: http://www.eternallyconfuzzled.com/tuts/datastructures/jsw_tut_avl.aspx

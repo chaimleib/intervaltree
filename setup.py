@@ -41,7 +41,7 @@ class PyTest(TestCommand):
 version = '0.4.0'
 
 long_description = open("README.md").read().split('\n')
-while not long_description[0].strip() or long_description[0].startswith('[![Build Status]'):
+while not long_description[0].strip() or long_description[0].startswith('[!['):
     long_description = long_description[1:]
 long_description = '\n'.join(long_description)
 
