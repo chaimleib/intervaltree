@@ -8,10 +8,17 @@ TEMPS+=$(shell find test/ -type f -name '*.py?')
 TEMPS+=$(shell find test/ -type d -name '__pycache__')
 
 PYTHONS=$(shell echo {2.6,2.7,3.2,3.3,3.4})
+PYTHON_MAJORS=$(shell 							\
+	echo "$(PYTHONS)" | 						\
+	tr ' ' '\n' | cut -d. -f1 | 				\
+	uniq 										\
+)
 
 # PyPI server name, as specified in ~/.pypirc
 # See http://peterdowns.com/posts/first-time-with-pypi.html
 PYPI=pypitest
+
+
 
 # first target is default
 test:
@@ -23,7 +30,7 @@ clean-build:
 	rm -rf dist build
 
 clean-eggs:
-	rm -rf *.egg*
+	rm -rf *.egg* .eggs/
 
 clean-temps:
 	@[[ "   " == "$(TEMPS)" ]] ||      	\
@@ -34,11 +41,11 @@ release:
 	PYPI=pypi
 
 # Build source distribution
-sdist:
-	python setup.py sdist
+sdist-upload:
+	python setup.py sdist upload -r $(PYPI)
 
-bdist_wheel:
-	for ver in $(PYTHONS); do									\
+bdist_wheel-upload:
+	for ver in $(PYTHON_MAJORS); do								\
 		if ! python$$ver -c 'import wheel' &>/dev/null; then 	\
 			echo;												\
 			echo "Error: Python $$ver is missing wheel. Run:";	\
@@ -47,17 +54,26 @@ bdist_wheel:
 			break;												\
 		fi > /dev/stderr;										\
 		echo '>>'$$ver;											\
-		python$$ver setup.py bdist_wheel || 					\
-			echo "Try running \`make deps-dev'";				\
+		python$$ver setup.py bdist_wheel upload -r $(PYPI);		\
 	done
 
 deps-dev:
-	for ver in $(PYTHONS); do					\
+	for ver in $(PYTHON_MAJORS); do					\
 		echo '>>'$$ver;							\
 		pip$(ver) install wheel ||				\
-			sudo $(ver) install wheel;			\
+			sudo $(ver) install --upgrade wheel;			\
 	done
 
+# Uploads to test server, unless the release target was run too
+upload: test clean sdist-upload bdist_wheel-upload
+
+
+# for debugging the Makefile
+env:
+	@echo TEMPS="\"$(TEMPS)\""
+	@echo PYTHONS="\"$(PYTHONS)\""
+	@echo PYTHON_MAJORS="\"$(PYTHON_MAJORS)\""
+	@echo PYPI="\"$(PYPI)\""
 
 .PHONY: clean clean-eggs clean-all test
 
