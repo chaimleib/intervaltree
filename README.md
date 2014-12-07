@@ -145,11 +145,7 @@ Examples
 Future improvements
 -------------------
 
-* Support for points
-* KeyedIntervalTree class, allowing lookup of intervals by a key. Useful for genome research, 
-as in [Konstantin Tretyakov's fork][Konstantin intervaltree].
-
-For more, see the [issue tracker][] on GitHub.
+See the [issue tracker][] on GitHub.
 
 Based on
 --------
