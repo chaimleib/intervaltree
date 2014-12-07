@@ -19,7 +19,6 @@ PYTHON_MAJORS=$(shell 							\
 PYPI=pypitest
 
 
-
 # first target is default
 test:
 	"$(SCRIPTS_DIR)/testall.sh"
@@ -38,7 +37,7 @@ clean-temps:
 
 # Setup for live upload
 release:
-	PYPI=pypi
+	$(eval PYPI=pypi)
 
 # Build source distribution
 sdist-upload:
@@ -70,6 +69,7 @@ upload: test clean sdist-upload bdist_wheel-upload
 
 # for debugging the Makefile
 env:
+	@echo
 	@echo TEMPS="\"$(TEMPS)\""
 	@echo PYTHONS="\"$(PYTHONS)\""
 	@echo PYTHON_MAJORS="\"$(PYTHON_MAJORS)\""
