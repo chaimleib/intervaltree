@@ -1,7 +1,7 @@
 Change log
 ==========
 
-Version 0.3.4
+Version 1.0.0
 -------------
 - Renamed from PyIntervalTree to intervaltree
 
