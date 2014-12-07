@@ -56,11 +56,22 @@ bdist_wheel-upload:
 		python$$ver setup.py bdist_wheel upload -r $(PYPI);		\
 	done
 
-deps-dev:
-	for ver in $(PYTHON_MAJORS); do					\
-		echo '>>'$$ver;							\
-		pip$(ver) install wheel ||				\
-			sudo $(ver) install --upgrade wheel;			\
+deps-dev: pywheel pyandoc
+
+pyandoc:
+	$(eval PYPKG=pyandoc)
+	for ver in $(PYTHONS); do						\
+		echo '>>'$$ver;								\
+		pip$(ver) install --upgrade $(PYPKG) ||		\
+			sudo $(ver) install --upgrade $(PYPKG);	\
+	done
+
+pywheel:
+	$(eval PYPKG=wheel)
+	for ver in $(PYTHONS); do						\
+		echo '>>'$$ver;								\
+		pip$(ver) install --upgrade $(PYPKG) ||		\
+			sudo $(ver) install --upgrade $(PYPKG);	\
 	done
 
 # Uploads to test server, unless the release target was run too
