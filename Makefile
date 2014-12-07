@@ -1,17 +1,17 @@
 SHELL=bash
 
-SCRIPTS_DIR=$(PWD)/scripts
+SCRIPTS_DIR:=$(PWD)/scripts
 
 TEMPS=$(shell find intervaltree/ -type f -name '*.py?')
 TEMPS+=$(shell find intervaltree/ -type d -name '__pycache__')
 TEMPS+=$(shell find test/ -type f -name '*.py?')
 TEMPS+=$(shell find test/ -type d -name '__pycache__')
 
-PYTHONS=$(shell echo {2.6,2.7,3.2,3.3,3.4})
-PYTHON_MAJORS=$(shell 							\
-	echo "$(PYTHONS)" | 						\
-	tr ' ' '\n' | cut -d. -f1 | 				\
-	uniq 										\
+PYTHONS:=2.6 2.7 3.2 3.3 3.4
+PYTHON_MAJORS:=$(shell 			\
+	echo "$(PYTHONS)" | 		\
+	tr ' ' '\n' | cut -d. -f1 | \
+	uniq 						\
 )
 
 # PyPI server name, as specified in ~/.pypirc
