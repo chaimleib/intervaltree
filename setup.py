@@ -38,7 +38,7 @@ class PyTest(TestCommand):
         sys.exit(pytest.main(self.test_args))
 
 
-version = '0.4.0'
+version = '0.3.4'
 
 long_description = open("README.md").read().split('\n')
 while not long_description[0].strip() or long_description[0].startswith('[!['):
