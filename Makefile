@@ -2,10 +2,12 @@ SHELL=bash
 
 SCRIPTS_DIR:=$(PWD)/scripts
 
-TEMPS=$(shell find intervaltree/ -type f -name '*.py?')
-TEMPS+=$(shell find intervaltree/ -type d -name '__pycache__')
-TEMPS+=$(shell find test/ -type f -name '*.py?')
-TEMPS+=$(shell find test/ -type d -name '__pycache__')
+# any files ending in .py?, and any folders named __pycache__
+TEMPS=$(shell  \
+	find intervaltree/ test/  \
+		\( -type f -name '*.py?' ! -path '*/__pycache__/*' \) \
+		-o \( -type d -name '__pycache__' \) \
+)
 
 PYTHONS:=2.6 2.7 3.2 3.3 3.4
 PYTHON_MAJORS:=$(shell 			\
@@ -32,8 +34,7 @@ clean-eggs:
 	rm -rf *.egg* .eggs/
 
 clean-temps:
-	@[[ "   " == "$(TEMPS)" ]] ||      	\
-		(echo 'Removing:' && rm -rfv $(TEMPS))
+	rm -rf $(TEMPS)
 
 # Setup for live upload
 release:
@@ -86,5 +87,6 @@ env:
 	@echo PYTHON_MAJORS="\"$(PYTHON_MAJORS)\""
 	@echo PYPI="\"$(PYPI)\""
 
-.PHONY: clean clean-eggs clean-all test
+
+.PHONY: clean clean-build clean-eggs clean-all test release sdist-upload bdist_wheel-upload deps-dev pyandoc pywheel upload env
 
