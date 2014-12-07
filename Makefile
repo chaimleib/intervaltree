@@ -8,14 +8,14 @@ TEMPS+=$(shell find test/ -type f -name '*.py?')
 TEMPS+=$(shell find test/ -type d -name '__pycache__')
 
 clean:
-	@[[ " " == "$(TEMPS)" ]] &&      	\
+	@[[ "   " == "$(TEMPS)" ]] &&      	\
 		echo No temps to delete	||			\
 		(echo 'Removing:' && rm -rfv $(TEMPS))
 
 clean-eggs:
 	rm -rf *.egg*
 
-clean-all: clean clean-eggs
+clean-all: clean-eggs clean
 
 test:
 	"$(SCRIPTS_DIR)/testall.sh"
