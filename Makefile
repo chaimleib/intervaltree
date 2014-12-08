@@ -23,6 +23,8 @@ PYPI=pypitest
 
 # first target is default
 test: deps-dev rst
+
+pytest: deps-dev
 	"$(SCRIPTS_DIR)/testall.sh"
 
 clean: clean-build clean-eggs clean-temps
@@ -47,7 +49,7 @@ rst: pydocutils
 	python setup.py check --restructuredtext --strict
 
 # Register at PyPI
-register:
+register: rst
 	python setup.py register -r $(PYPI)
 
 # Setup for live upload
@@ -118,5 +120,5 @@ env:
 	@echo PYPI="\"$(PYPI)\""
 
 
-.PHONY: clean clean-build clean-eggs clean-all test release sdist-upload bdist_wheel-upload deps-dev pywheel upload env pm-update pydocutils
+.PHONY: clean clean-build clean-eggs clean-all test release sdist-upload bdist_wheel-upload deps-dev pywheel upload env pm-update pydocutils pytest
 
