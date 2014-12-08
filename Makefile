@@ -88,12 +88,9 @@ pandoc-bin: pm-update
 	
 pydocutils:
 	$(eval PYPKG=docutils)
-	for ver in $(PYTHONS); do                          \
-		python$$ver -c 'import $(PYPKG)' &>/dev/null ||\
-		(echo '>>'$$ver &&                             \
-		 pip$$ver install --upgrade $(PYPKG) ||       \
-			sudo pip$$ver install --upgrade $(PYPKG));   \
-	done
+	python -c 'import $(PYPKG)' &>/dev/null ||       \
+		pip install --upgrade $(PYPKG) ||            \
+		sudo pip install --upgrade $(PYPKG))
 	
 pm-update:
 	pandoc -h &>/dev/null || brew update &>/dev/null || sudo apt-get update
