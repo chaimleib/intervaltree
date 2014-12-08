@@ -51,6 +51,7 @@ clean-temps:
 # Convert README to rst and check the result
 rst: pydocutils
 	python setup.py check --restructuredtext --strict
+	@echo "README is ready for PyPI"
 
 # Register at PyPI
 register: rst
