@@ -209,7 +209,7 @@ setup(
     url='https://github.com/chaimleib/intervaltree',
     download_url='https://github.com/chaimleib/intervaltree/tarball/' + version,
     license="Apache",
-    packages=find_packages(exclude=['test', 'pandoc']),
+    packages=find_packages(exclude=['test', 'pandoc', 'docutils']),
     include_package_data=True,
     zip_safe=True,
     tests_require=['pytest'],
