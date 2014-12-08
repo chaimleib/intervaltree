@@ -1,10 +1,21 @@
-*.pyc
-.DS_Store
+# IDE dirs
 .idea/
-*.egg-info
-*.egg
-.eggs/
 *.komodoproject
+
+# Auto-generated
+*.pyc
 dist/
 build/
 *.rst
+
+# Dev dependencies
+pyandoc/
+pandoc
+
+# Developer eggs
+*.egg-info
+*.egg
+.eggs/
+
+# Mac noise
+.DS_Store
