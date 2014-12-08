@@ -20,8 +20,9 @@ PYTHON_MAJORS:=$(shell          \
 # See http://peterdowns.com/posts/first-time-with-pypi.html
 PYPI=pypitest
 
+# default target
+all: test
 
-# first target is default
 test: deps-dev pytest rst
 	
 quicktest: rst
@@ -84,6 +85,15 @@ pyandoc: pandoc-bin
 
 pandoc-bin: pm-update
 	pandoc -h &>/dev/null || brew install pandoc &>/dev/null || sudo apt-get install pandoc
+	
+pydocutils:
+	$(eval PYPKG=docutils)
+	for ver in $(PYTHONS); do                          \
+		python$$ver -c 'import $(PYPKG)' &>/dev/null ||\
+		(echo '>>'$$ver &&                             \
+		 pip$$ver install --upgrade $(PYPKG) ||       \
+			sudo pip$$ver install --upgrade $(PYPKG));   \
+	done
 	
 pm-update:
 	pandoc -h &>/dev/null || brew update &>/dev/null || sudo apt-get update

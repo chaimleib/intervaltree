@@ -212,7 +212,7 @@ setup(
     packages=find_packages(exclude=['test']),
     include_package_data=True,
     zip_safe=True,
-    tests_require=['pytest', 'docutils'],
+    tests_require=['pytest'],
     cmdclass={'test': PyTest},
     entry_points={}
 )
