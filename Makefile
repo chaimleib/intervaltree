@@ -22,7 +22,10 @@ PYPI=pypitest
 
 
 # first target is default
-test: deps-dev rst
+test: deps-dev pytest rst
+	
+quicktest: rst
+	python setup.py test
 
 pytest: deps-dev
 	"$(SCRIPTS_DIR)/testall.sh"
@@ -45,7 +48,7 @@ clean-temps:
 	rm -rf $(TEMPS)
 
 # Convert README to rst and check the result
-rst: pydocutils
+rst:
 	python setup.py check --restructuredtext --strict
 
 # Register at PyPI
@@ -78,34 +81,29 @@ deps-dev: pyandoc pydocutils
 pyandoc: pandoc-bin
 	[[ -d pyandoc/pandoc ]] || git clone --depth=50 git://github.com/chaimleib/pyandoc.git
 	[[ "`readlink pandoc`" == "pyandoc/pandoc" ]] || ln -s pyandoc/pandoc pandoc
-	# $(eval PYPKG=pyandoc)
-	# for ver in $(PYTHONS); do                          \
-	#     echo '>>'$$ver;                                \
-	#     pip$(ver) install --upgrade $(PYPKG) ||        \
-	#         sudo $(ver) install --upgrade $(PYPKG);    \
-	# done
 
 pydocutils:
 	$(eval PYPKG=docutils)
 	for ver in $(PYTHONS); do                          \
-		echo '>>'$$ver;                                \
-		pip$(ver) install --upgrade $(PYPKG) ||        \
-			sudo $(ver) install --upgrade $(PYPKG);    \
+		python$$ver -c 'import $(PYPKG)' &>/dev/null ||\
+		(echo '>>'$$ver &&                             \
+		 pip$$ver install --upgrade $(PYPKG) ||       \
+			sudo pip$$ver install --upgrade $(PYPKG));   \
 	done
 	
 pandoc-bin: pm-update
-	brew install pandoc || sudo apt-get install pandoc
+	pandoc -h &>/dev/null || brew install pandoc || sudo apt-get install pandoc
 	
 pywheel:
 	$(eval PYPKG=wheel)
 	for ver in $(PYTHONS); do                          \
 		echo '>>'$$ver;                                \
-		pip$(ver) install --upgrade $(PYPKG) ||        \
-			sudo $(ver) install --upgrade $(PYPKG);    \
+		pip$$ver install --upgrade $(PYPKG) ||        \
+			sudo pip$$ver install --upgrade $(PYPKG);    \
 	done
 
 pm-update:
-	brew update || sudo apt-get update
+	pandoc -h &>/dev/null || brew update || sudo apt-get update
 	
 # Uploads to test server, unless the release target was run too
 upload: test clean sdist-upload bdist_wheel-upload
@@ -120,5 +118,5 @@ env:
 	@echo PYPI="\"$(PYPI)\""
 
 
-.PHONY: clean clean-build clean-eggs clean-all test release sdist-upload bdist_wheel-upload deps-dev pywheel upload env pm-update pydocutils pytest
+.PHONY: clean clean-build clean-eggs clean-all test release sdist-upload bdist_wheel-upload deps-dev pywheel upload env pm-update pydocutils pytest quicktest
 
