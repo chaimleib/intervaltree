@@ -49,7 +49,7 @@ clean-temps:
 	rm -rf $(TEMPS)
 
 # Convert README to rst and check the result
-rst: pydocutils
+rst: pydocutils pyandoc
 	python setup.py check --restructuredtext --strict
 	@echo "README is ready for PyPI"
 
