@@ -65,7 +65,7 @@ release:
 sdist-upload:
 	python setup.py sdist upload -r $(PYPI)
 
-deps-dev: pyandoc pydocutils
+deps-dev: pyandoc
 
 pyandoc: pandoc-bin
 	[[ -d pyandoc/pandoc ]] || git clone --depth=50 git://github.com/chaimleib/pyandoc.git
