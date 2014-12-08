@@ -416,7 +416,7 @@ class IntervalTree(object):
                 
         long_ivs = sorted(self.all_intervals, key=len, reverse=True)
         for i, parent in enumerate(long_ivs):
-            for child in long_ivs[i+1:]:
+            for child in long_ivs[i + 1:]:
                 add_if_nested()
         return result
     
@@ -503,8 +503,8 @@ class IntervalTree(object):
         
         Completes in O(1) time.
         """
-        return len(self) == 0
-    
+        return 0 == len(self)
+
     def search(self, begin, end=None, strict=False):
         """
         Returns a set of all intervals overlapping the given range. Or,
@@ -666,15 +666,15 @@ class IntervalTree(object):
             from 0 to 1.
             :rtype: real
             """
-            raw = n-m
-            maximum = n-1
-            return raw/float(maximum)
+            raw = n - m
+            maximum = n - 1
+            return raw / float(maximum)
 
         report = {
             "depth": self.top_node.depth_score(n, m),
             "s_center": s_center_score(),
         }
-        cumulative = sum(report.values())/len(report)
+        cumulative = sum(report.values()) / len(report)
         report["_cumulative"] = cumulative
         if full_report:
             return report

@@ -5,6 +5,11 @@ Version 1.0.0
 -------------
 - Renamed from PyIntervalTree to intervaltree
 
+Version 0.4
+-------------
+
+    - Turns out, the tree was not balancing itself at all, as the corresponding code was wrong.
+      
 Version 0.3.3
 -------------
 

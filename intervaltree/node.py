@@ -21,6 +21,7 @@ limitations under the License.
 from operator import attrgetter
 from math import floor, log as lg
 
+
 def l2(num):
     """
     log base 2
@@ -32,16 +33,17 @@ def l2(num):
 class Node(object):
     def __init__(self,
                  x_center=None,
-                 s_center=None,
+                 s_center=set(),
                  left_node=None,
                  right_node=None):
         self.x_center = x_center
-        self.s_center = set(s_center) if s_center is not None else set()
+        self.s_center = set(s_center)
         self.left_node = left_node
         self.right_node = right_node
         self.balance = None  # will be set when rotated
         self.rotate()
 
+    # noinspection PyTypeChecker
     @classmethod
     def from_interval(cls, interval):
         if interval is None:
@@ -61,7 +63,7 @@ class Node(object):
     def init_from_sorted(self, intervals):
         if not intervals:
             return None
-        center_iv = intervals[len(intervals)//2]
+        center_iv = intervals[len(intervals) // 2]
         self.x_center = center_iv.begin
         self.s_center = set()
         s_left = []
@@ -97,6 +99,16 @@ class Node(object):
             self.balance -= 1
         if self.balance > 0 and (self[1][0] or self[1][1]):
             self.balance += 1
+        
+    def compute_depth(self):
+        """
+        Recursively computes true depth of the subtree. Should only 
+        be needed for debugging. Unless something is wrong, the 
+        depth field should reflect the correct depth of the subtree.
+        """
+        left_depth = self.left_node.compute_depth() if self.left_node else 0
+        right_depth = self.right_node.compute_depth() if self.right_node else 0
+        return 1 + max(left_depth, right_depth)
 
     def rotate(self):
         """
@@ -110,48 +122,76 @@ class Node(object):
         my_heavy = self.balance > 0
         child_heavy = self[my_heavy].balance > 0
         if my_heavy == child_heavy:  # Heavy sides same
+            #    self     save
+            #  save   -> 1   self
+            # 1
+            return self.srotate()
+        elif self[my_heavy].balance == 0:
+            #    self     save         save
+            #  save   -> 1   self  -> 1  self.rot()
+            #  1  2         2
             return self.srotate()
         else:
+            ## Step 1: (single letter vars may be empty or occupied)
+            #    self        self             self
+            #   1     ->    2     ->         2     ->
+            #     2       1   R       1.rot()  R
+            #    L R       L           x  y
+            #
+            #   x and y have a max abs(balance) of 1.
+            #
+            ## Step 2:
+            #        self      2.rot()         2.rot()          2.rot().rot()
+            #  2.rot()    ->   A    self  ->  A   self.rot() ->    U     V
+            #  A     B             B               X    Y
             return self.drotate()
 
     def srotate(self):
         """Single rotation. Assumes that balance is not 0."""
-        #     self        save
-        #   save 3  ->   1   self
+        #     self        save         save
+        #   save 3  ->   1   self  -> 1   self.rot()
         #  1   2            2   3
         #
-        #  self            save
-        # 3   save  ->  self  1
+        #  self            save                save
+        # 3   save  ->  self  1    -> self.rot()   1
         #    2   1     3   2
 
-        #assert(self.balance != 0)
+        #assert self.balance != 0
         heavy = self.balance > 0
         light = not heavy
         save = self[heavy]
         #print("srotate: bal={0},{1}".format(self.balance, save.balance))
         #self.print_structure()
+        #assert self
+        #assert save
         self[heavy] = save[light]   # 2
         #assert(save[light])
+        
+        # Needed to ensure the 2 and 3 are balanced under new subnode
         save[light] = self
         save[light].refresh_balance()
-        save[light] = save[light].rotate()
+        if abs(save[light].balance) > 1:
+            save[light] = save[light].rotate()
         save.refresh_balance()
 
         # Promoting save could cause invalid overlaps.
         # Repair them.
-        for iv in set(self.s_center):
+        for iv in set(save[light].s_center):
             if save.center_hit(iv):
                 save[light] = save[light].remove(iv)
-                if save[light]:
-                    save[light].refresh_balance()
+                
+                # Using Node.add() here, to simplify future balancing improvements.
+                # For now, this is the same as save.s_center.add(iv), but that may
+                # change.
                 save = save.add(iv)
-                save.refresh_balance()
         return save
 
     def drotate(self):
         #print("drotate:")
         #self.print_structure()
-        self[self.balance > 0] = self[self.balance > 0].srotate()
+        heavy = self.balance > 0
+        #assert self[heavy]
+        self[heavy] = self[heavy].srotate()
         self.refresh_balance()
 
         #print("First rotate:")
@@ -168,18 +208,30 @@ class Node(object):
         """
         Returns self after adding the interval and balancing.
         """
-        if self.center_hit(interval):
-            self.s_center.add(interval)
-            return self
-        else:
-            direction = self.hit_branch(interval)
-            if not self[direction]:
-                self[direction] = Node.from_interval(interval)
-                self.refresh_balance()
-                return self
+        cur = self
+        stack = []
+        push = stack.append
+        pop = stack.pop
+        while True:
+            if cur.center_hit(interval):
+                cur.s_center.add(interval)
+                break
+
+            direction = cur.hit_branch(interval)
+            if not cur[direction]:
+                cur[direction] = Node.from_interval(interval)
+                cur.refresh_balance()
+                break
             else:
-                self[direction] = self[direction].add(interval)
-                return self.rotate()
+                push((cur, direction))
+                cur = cur[direction]
+
+        while stack:
+            parent, direction = pop()
+            parent[direction] = cur
+            cur = parent.rotate()
+
+        return cur
 
     def remove(self, interval):
         """
@@ -187,11 +239,7 @@ class Node(object):
 
         If interval is not present, raise ValueError.
         """
-        # since this is a list, called methods can set this to [1],
-        # making it true
-        done = []
-        return self.remove_interval_helper(interval, done,
-                                           should_raise_error=True)
+        return self.remove_interval_helper(interval, should_raise_error=True)
 
     def discard(self, interval):
         """
@@ -199,11 +247,9 @@ class Node(object):
 
         If interval is not present, do nothing.
         """
-        done = []
-        return self.remove_interval_helper(interval, done,
-                                           should_raise_error=False)
+        return self.remove_interval_helper(interval, should_raise_error=False)
 
-    def remove_interval_helper(self, interval, done, should_raise_error):
+    def remove_interval_helper(self, interval, should_raise_error):
         """
         Returns self after removing interval and balancing.
         If interval doesn't exist, raise ValueError.
@@ -214,50 +260,47 @@ class Node(object):
         See Eternally Confuzzled's jsw_remove_r function (lines 1-32)
         in his AVL tree article for reference.
         """
-        if self.center_hit(interval):
-            #if trace: print('Hit at {0}'.format(self.x_center))
-            if not should_raise_error and interval not in self.s_center:
-                done.append(1)
-                #if trace: print('Doing nothing.')
-                return self
-            try:
-                # raises error if interval not present - this is
-                # desired.
-                self.s_center.remove(interval)
-            except:
-                self.print_structure()
-                raise KeyError(interval)
-            if self.s_center:     # keep this node
-                done.append(1)    # no rebalancing necessary
-                #if trace: print('Removed, no rebalancing.')
-                return self
+        cur = self
+        stack = []
+        push = stack.append
+        pop = stack.pop
+        while True:
+            if cur.center_hit(interval):
+                #if trace: print('Hit at {0}'.format(self.x_center))
+                if not should_raise_error and interval not in cur.s_center:
+                    return self  # end early and do nothing
+                try:
+                    # raises error if interval not present - this is
+                    # desired.
+                    cur.s_center.remove(interval)
+                    # don't return yet! We need to decide whether to prune this node.
+                except:
+                    # self.print_structure()
+                    raise KeyError(interval)
+                ## Prune?
+                if cur.s_center:     # keep this node
+                    return self      # no rebalancing necessary; exit w/o altering node links
 
-            # If we reach here, no intervals are left in self.s_center.
-            # So, prune self.
-            return self.prune()
-        else:  # interval not in s_center
-            direction = self.hit_branch(interval)
+                # If we reach here, no intervals are left in self.s_center.
+                # So, prune self.
+                cur = cur.prune()
+                break
 
-            if not self[direction]:
+            # else:  interval not in s_center
+            direction = cur.hit_branch(interval)
+
+            if not cur[direction]:
                 if should_raise_error:
-                    raise ValueError
-                done.append(1)
-                return self
+                    raise KeyError(interval)
+                return self  # end early and do nothing
+            push((cur, direction))
+            cur = cur[direction]
 
-            #if trace:
-            #   print('Descending to {0} branch'.format(
-            #       ['left', 'right'][direction]
-            #       ))
-            self[direction] = self[direction].remove_interval_helper(
-                interval, done, should_raise_error)
-
-            # Clean up
-            if not done:
-                #if trace:
-                #    print('Rotating {0}'.format(self.x_center))
-                #    self.print_structure()
-                return self.rotate()
-            return self
+        while stack:
+            parent, direction = pop()
+            parent[direction] = cur
+            cur = parent.rotate()
+        return cur
 
     def search_overlap(self, point_list):
         """
@@ -360,8 +403,8 @@ class Node(object):
             #print('Pop hit! Returning child   = {0}'.format(
             #    child.print_structure(tostring=True)
             #    ))
-            assert not child[0]
-            assert not child[1]
+            #assert not child[0]
+            #assert not child[1]
 
             if self.s_center:
                 #print('     and returning newnode = {0}'.format( self ))
@@ -507,11 +550,16 @@ class Node(object):
         Count the number of Nodes in this subtree.
         :rtype: int
         """
-        count = 1
-        if self.right_node:
-            count += self.right_node.count_nodes()
-        if self.left_node:
-            count += self.left_node.count_nodes()
+        count = 0
+        stack = []
+        push = stack.append
+        pop = stack.pop
+        push(self)
+        while stack:
+            cur = pop()
+            count += 1
+            if cur[0]: push(cur[0])
+            if cur[1]: push(cur[1])
         return count
 
     def depth_score(self, n, m):
@@ -523,8 +571,10 @@ class Node(object):
         """
         if n == 0:
             return 0.0
+
+        # dopt is the optimal maximum depth of the tree
         dopt = 1 + int(floor(l2(m)))
-        f = 1/float(1 + n - dopt)
+        f = 1 / float(1 + n - dopt)
         return f * self.depth_score_helper(1, dopt)
 
     def depth_score_helper(self, d, dopt):
@@ -534,12 +584,16 @@ class Node(object):
         :param dopt: optimal maximum depth of a leaf Node
         :rtype: real
         """
+        # di is how may levels deeper than optimal d is
         di = d - dopt
-        count = di * len(self.s_center) if di > 0 else 0
+        if di > 0:
+            count = di * len(self.s_center)
+        else:
+            count = 0
         if self.right_node:
-            count += self.right_node.depth_score_helper(d+1, dopt)
+            count += self.right_node.depth_score_helper(d + 1, dopt)
         if self.left_node:
-            count += self.left_node.depth_score_helper(d+1, dopt)
+            count += self.left_node.depth_score_helper(d + 1, dopt)
         return count
 
     def print_structure(self, indent=0, tostring=False):
@@ -547,19 +601,18 @@ class Node(object):
         For debugging.
         """
         nl = '\n'
-        sp = indent*'    '
+        sp = indent * '    '
 
-        rlist = list()
-        rlist.append(str(self) + nl)
+        rlist = [str(self) + nl]
         if self.s_center:
             for iv in sorted(self.s_center):
-                rlist.append(sp+' '+repr(iv) + nl)
+                rlist.append(sp + ' ' + repr(iv) + nl)
         if self.left_node:
             rlist.append(sp + '<:  ')  # no CR
-            rlist.append(self.left_node.print_structure(indent+1, True))
+            rlist.append(self.left_node.print_structure(indent + 1, True))
         if self.right_node:
             rlist.append(sp + '>:  ')  # no CR
-            rlist.append(self.right_node.print_structure(indent+1, True))
+            rlist.append(self.right_node.print_structure(indent + 1, True))
         result = ''.join(rlist)
         if tostring:
             return result

@@ -74,7 +74,7 @@ Features
 * Equal-able
 * Pickle-friendly
 * Automatic AVL balancing
-    
+
 Examples
 --------
 
@@ -93,13 +93,13 @@ Examples
 
         ivs = t[6]            # set([Interval(4, 7, (4, 7)), Interval(5, 9, {5: 9})])
         iv = sorted(ivs)[0]   # Interval(4, 7, (4, 7))
-  
+
 * Accessing an `Interval` object
 
         iv.begin  # 4
         iv.end    # 7
         iv.data   # (4, 7)
-  
+
 * Query by range
 
   Note that ranges are inclusive of the lower limit, but non-inclusive of the upper limit. So:
@@ -118,25 +118,63 @@ Examples
         t = IntervalTree(
             Interval(begin, end, "%d-%d" % (begin, end)) for begin, end in ivs
         )
-   
+
   Or, if we don't need the data fields:
-    
+
         t = IntervalTree(Interval(*iv) for iv in ivs)
 
 * Removing intervals
 
         t.remove( Interval(1, 2, "1-2") )
         list(t)     # [Interval(4, 7, '4-7'), Interval(5, 9, '5-9')]
-        
+
         t.remove( Interval(500, 1000, "Doesn't exist")) # raises ValueError
         t.discard(Interval(500, 1000, "Doesn't exist")) # quietly does nothing
-        
-        t.remove_overlap(5)   
+
+        t.remove_overlap(5)
         list(t)     # []
 
   We could also empty a tree by removing all intervals, from the lowest bound to the highest bound of the `IntervalTree`:
-  
+
         t.remove_overlap(t.begin(), t.end())
+
+Usage with Genomic Data
+-----------------------
+
+Interval trees are especially commonly used in bioinformatics, where intervals correspond to genes or various features along the genome. Such intervals are commonly stored in ``BED``-format files. To simplify working with such data, the package ``intervaltree.bio`` provides a ``GenomeIntervalTree`` class.
+
+``GenomeIntervalTree`` is essentially a ``dict`` of ``IntervalTree``-s, indexed by chromosome names:
+
+    gtree = GenomeIntervalTree()
+    gtree['chr1'].addi(10000, 20000)
+
+There is a convenience function for adding intervals:
+
+    gtree.addi('chr2', 20000, 30000)
+
+You can create a ``GenomeIntervalTree`` instance from a ``BED`` file:
+
+    test_url = 'http://hgdownload.cse.ucsc.edu/goldenPath/hg19/encodeDCC/wgEncodeAwgTfbsUniform/wgEncodeAwgTfbsBroadDnd41Ezh239875UniPk.narrowPeak.gz'
+    data = zlib.decompress(urlopen(test_url).read(), 16+zlib.MAX_WBITS)
+    gtree = GenomeIntervalTree.from_bed(StringIO(data))
+
+In addition, special functions are offered to read in [UCSC tables of gene positions][UCSC genes]:
+
+* Load the UCSC ``knownGene`` table with each interval corresponding to gene's transcribed region:
+
+        knownGene = GenomeIntervalTree.from_table()
+
+* Load the UCSC ``refGene`` table with each interval corresponding to gene's coding region:
+
+        url = 'http://hgdownload.cse.ucsc.edu/goldenpath/hg19/database/refGene.txt.gz'
+        refGene = GenomeIntervalTree.from_table(url=url, parser=UCSCTable.REF_GENE, mode='cds')
+
+* Load the UCSC ``ensGene`` table with each interval corresponding to a gene's exon:
+
+        url = 'http://hgdownload.cse.ucsc.edu/goldenpath/hg19/database/ensGene.txt.gz'
+        ensGene = GenomeIntervalTree.from_table(url=url, parser=UCSCTable.ENS_GENE, mode='exons')
+
+You may add methods for parsing your own tabular files with genomic intervals. See the documentation for ``GenomeIntervalTree.from_table``.
 
 Future improvements
 -------------------
@@ -155,12 +193,15 @@ Copyright
 ---------
 * [Chaim-Leib Halbert][GH], 2014
 
+
 [build status badge]: https://travis-ci.org/chaimleib/intervaltree.svg?branch=master
 [build status]: https://travis-ci.org/chaimleib/intervaltree
 [GH]: https://github.com/chaimleib/intervaltree
 [issue tracker]: https://github.com/chaimleib/intervaltree/issues
-[Konstantin intervaltree]: https://github.com/konstantint/PyIntervalTree 
+[UCSC genes]: https://genome.ucsc.edu/cgi-bin/hgTables
+[Konstantin intervaltree]: https://github.com/konstantint/PyIntervalTree
 [Confuzzled AVL tree]: http://www.eternallyconfuzzled.com/tuts/datastructures/jsw_tut_avl.aspx
 [Wiki intervaltree]: http://en.wikipedia.org/wiki/Interval_tree
 [Kahn intervaltree]: http://zurb.com/forrst/posts/Interval_Tree_implementation_in_python-e0K
 [Kahn intervaltree GH]: https://github.com/tylerkahn/intervaltree-python
+
