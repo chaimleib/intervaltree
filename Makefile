@@ -42,7 +42,7 @@ clean-eggs:
 	rm -rf *.egg* .eggs/
 
 clean-deps:
-	rm -rf pyandoc
+	rm -rf pyandoc docutils bin
 	rm -f pandoc
 
 clean-temps:
@@ -90,7 +90,7 @@ pydocutils:
 	$(eval PYPKG=docutils)
 	python -c 'import $(PYPKG)' &>/dev/null ||       \
 		pip install --upgrade $(PYPKG) ||            \
-		sudo pip install --upgrade $(PYPKG))
+		pip install --upgrade --install-options="--install-purelib='$(PWD)'" docutils
 	
 pm-update:
 	pandoc -h &>/dev/null || brew update &>/dev/null || sudo apt-get update

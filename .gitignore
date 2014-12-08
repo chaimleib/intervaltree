@@ -11,6 +11,8 @@ build/
 # Dev dependencies
 pyandoc/
 pandoc
+docutils/
+bin/
 
 # Developer eggs
 *.egg-info
