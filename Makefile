@@ -82,28 +82,11 @@ pyandoc: pandoc-bin
 	[[ -d pyandoc/pandoc ]] || git clone --depth=50 git://github.com/chaimleib/pyandoc.git
 	[[ "`readlink pandoc`" == "pyandoc/pandoc" ]] || ln -s pyandoc/pandoc pandoc
 
-pydocutils:
-	$(eval PYPKG=docutils)
-	for ver in $(PYTHONS); do                          \
-		python$$ver -c 'import $(PYPKG)' &>/dev/null ||\
-		(echo '>>'$$ver &&                             \
-		 pip$$ver install --upgrade $(PYPKG) ||       \
-			sudo pip$$ver install --upgrade $(PYPKG));   \
-	done
-	
 pandoc-bin: pm-update
-	pandoc -h &>/dev/null || brew install pandoc || sudo apt-get install pandoc
+	pandoc -h &>/dev/null || brew install pandoc &>/dev/null || sudo apt-get install pandoc
 	
-pywheel:
-	$(eval PYPKG=wheel)
-	for ver in $(PYTHONS); do                          \
-		echo '>>'$$ver;                                \
-		pip$$ver install --upgrade $(PYPKG) ||        \
-			sudo pip$$ver install --upgrade $(PYPKG);    \
-	done
-
 pm-update:
-	pandoc -h &>/dev/null || brew update || sudo apt-get update
+	pandoc -h &>/dev/null || brew update &>/dev/null || sudo apt-get update
 	
 # Uploads to test server, unless the release target was run too
 upload: test clean sdist-upload bdist_wheel-upload
