@@ -23,7 +23,7 @@ PYPI=pypitest
 # default target
 all: test
 
-test: deps-dev pytest rst
+test: pytest rst
 	
 quicktest: rst
 	python setup.py test
@@ -49,7 +49,7 @@ clean-temps:
 	rm -rf $(TEMPS)
 
 # Convert README to rst and check the result
-rst:
+rst: pydocutils
 	python setup.py check --restructuredtext --strict
 
 # Register at PyPI
