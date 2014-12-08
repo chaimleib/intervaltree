@@ -3,11 +3,9 @@
 intervaltree
 ============
 
-A mutable, self-balancing interval tree for Python 2 and 3. Queries may be by 
-point, by range overlap, or by range envelopment.
+A mutable, self-balancing interval tree for Python 2 and 3. Queries may be by point, by range overlap, or by range envelopment.
 
-This library was designed to allow tagging text and time intervals, where the
-intervals include the lower bound but not the upper bound.
+This library was designed to allow tagging text and time intervals, where the intervals include the lower bound but not the upper bound.
 
 Features
 --------
@@ -104,8 +102,7 @@ Examples
   
 * Query by range
 
-  Note that ranges are inclusive of the lower limit, but non-inclusive of the
-  upper limit. So:
+  Note that ranges are inclusive of the lower limit, but non-inclusive of the upper limit. So:
 
         t[2:4]    # set()
 
@@ -137,8 +134,7 @@ Examples
         t.remove_overlap(5)   
         list(t)     # []
 
-  We could also empty a tree by removing all intervals, from the lowest bound
-  to the highest bound of the `IntervalTree`:
+  We could also empty a tree by removing all intervals, from the lowest bound to the highest bound of the `IntervalTree`:
   
         t.remove_overlap(t.begin(), t.end())
 
@@ -152,8 +148,7 @@ Based on
 
 * Eternally Confuzzled's [AVL tree][Confuzzled AVL tree]
 * Wikipedia's [Interval Tree][Wiki intervaltree]
-* Heavily modified from Tyler Kahn's [Interval Tree implementation in Python][Kahn intervaltree]
-  ([GitHub project][Kahn intervaltree GH])
+* Heavily modified from Tyler Kahn's [Interval Tree implementation in Python][Kahn intervaltree] ([GitHub project][Kahn intervaltree GH])
 * Incorporates modifications by [konstantint][Konstantin intervaltree]
 
 Copyright
