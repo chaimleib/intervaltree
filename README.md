@@ -150,17 +150,15 @@ See the [issue tracker][] on GitHub.
 Based on
 --------
 
-* Eternally Confuzzled's 
-[AVL tree][Confuzzled AVL tree]
+* Eternally Confuzzled's [AVL tree][Confuzzled AVL tree]
 * Wikipedia's [Interval Tree][Wiki intervaltree]
-* Heavily modified from Tyler Kahn's 
-  [Interval Tree implementation in Python][Kahn intervaltree]
+* Heavily modified from Tyler Kahn's [Interval Tree implementation in Python][Kahn intervaltree]
   ([GitHub project][Kahn intervaltree GH])
 * Incorporates modifications by [konstantint][Konstantin intervaltree]
 
 Copyright
 ---------
-* [Chaim-Leib Halbert][GH]
+* [Chaim-Leib Halbert][GH], 2014
 
 [build status badge]: https://travis-ci.org/chaimleib/intervaltree.svg?branch=master
 [build status]: https://travis-ci.org/chaimleib/intervaltree
