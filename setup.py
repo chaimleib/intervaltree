@@ -183,6 +183,8 @@ setup(
     long_description=rst_readme(),
     classifiers=[  # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
         'Development Status :: 4 - Beta',
+        'Intended Audience :: Developers',
+        'Intended Audience :: Information Technology',
         'Intended Audience :: Science/Research',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
@@ -193,8 +195,13 @@ setup(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'License :: OSI Approved :: Apache Software License',
+        'Topic :: Scientific/Engineering :: Artificial Intelligence',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
+        'Topic :: Scientific/Engineering :: Information Analysis',
         'Topic :: Software Development :: Libraries',
+        'Topic :: Text Processing :: General',
+        'Topic :: Text Processing :: Linguistic',
+        'Topic :: Text Processing :: Markup',
     ],
     keywords="interval-tree data-structure intervals tree",  # Separate with spaces
     author='Chaim-Leib Halbert, Konstantin Tretyakov',
