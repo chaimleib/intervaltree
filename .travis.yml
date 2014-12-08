@@ -7,7 +7,8 @@ python:
     - "3.4"
 before_script:
     - sudo apt-get install pandoc
-    - git clone --depth=50 git://github.com/ovgu-ttz/pyandoc.git chaimleib/pyandoc
-    - ln -s chaimleib/pyandoc/pandoc chaimleib/intervaltree/pandoc
+    - cd ..
+    - git clone --depth=50 git://github.com/ovgu-ttz/pyandoc.git
+    - ln -s pyandoc/pandoc intervaltree/pandoc
 script:
     - python setup.py develop test
