@@ -6,12 +6,6 @@ python:
     - "3.3"
     - "3.4"
 before_script:
-    - sudo apt-get install pandoc
-    - cd ..
-    - git clone --depth=50 git://github.com/chaimleib/pyandoc.git
-    - ln -s ../pyandoc/pandoc intervaltree/pandoc
-    - cd intervaltree
-    - pwd
-    - ls -l
+    - make deps-dev
 script:
     - python setup.py develop test

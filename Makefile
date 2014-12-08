@@ -65,9 +65,7 @@ bdist_wheel-upload:
 
 deps-dev: pyandoc
 
-pyandoc:
-	brew update || sudo apt-get update
-	brew install pandoc || sudo apt-get install pandoc
+pyandoc: pandoc-bin
 	git clone --depth=50 git://github.com/chaimleib/pyandoc.git
 	ln -s pyandoc/pandoc pandoc
 	# $(eval PYPKG=pyandoc)
@@ -77,6 +75,9 @@ pyandoc:
 	#         sudo $(ver) install --upgrade $(PYPKG);    \
 	# done
 
+pandoc-bin: pm-update
+	brew install pandoc || sudo apt-get install pandoc
+	
 pywheel:
 	$(eval PYPKG=wheel)
 	for ver in $(PYTHONS); do                          \
@@ -85,6 +86,9 @@ pywheel:
 			sudo $(ver) install --upgrade $(PYPKG);    \
 	done
 
+pm-update:
+	brew update || sudo apt-get update
+	
 # Uploads to test server, unless the release target was run too
 upload: test clean sdist-upload bdist_wheel-upload
 
@@ -98,5 +102,5 @@ env:
 	@echo PYPI="\"$(PYPI)\""
 
 
-.PHONY: clean clean-build clean-eggs clean-all test release sdist-upload bdist_wheel-upload deps-dev pywheel upload env
+.PHONY: clean clean-build clean-eggs clean-all test release sdist-upload bdist_wheel-upload deps-dev pywheel upload env pm-update
 
