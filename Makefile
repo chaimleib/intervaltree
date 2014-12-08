@@ -66,8 +66,8 @@ bdist_wheel-upload:
 deps-dev: pyandoc
 
 pyandoc: pandoc-bin
-	git clone --depth=50 git://github.com/chaimleib/pyandoc.git
-	ln -s pyandoc/pandoc pandoc
+	[[ -d pyandoc/pandoc ]] || git clone --depth=50 git://github.com/chaimleib/pyandoc.git
+	[[ "`readlink pandoc`" == "pyandoc/pandoc" ]] || ln -s pyandoc/pandoc pandoc
 	# $(eval PYPKG=pyandoc)
 	# for ver in $(PYTHONS); do                          \
 	#     echo '>>'$$ver;                                \
