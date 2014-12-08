@@ -22,7 +22,7 @@ PYPI=pypitest
 
 
 # first target is default
-test: deps-dev
+test: deps-dev rst
 	"$(SCRIPTS_DIR)/testall.sh"
 
 clean: clean-build clean-eggs clean-temps
@@ -41,6 +41,14 @@ clean-deps:
 
 clean-temps:
 	rm -rf $(TEMPS)
+
+# Convert README to rst and check the result
+rst: pydocutils
+	python setup.py check --restructuredtext --strict
+
+# Register at PyPI
+register:
+	python setup.py register -r $(PYPI)
 
 # Setup for live upload
 release:
@@ -63,7 +71,7 @@ bdist_wheel-upload:
 		python$$ver setup.py bdist_wheel upload -r $(PYPI);      \
 	done
 
-deps-dev: pyandoc
+deps-dev: pyandoc pydocutils
 
 pyandoc: pandoc-bin
 	[[ -d pyandoc/pandoc ]] || git clone --depth=50 git://github.com/chaimleib/pyandoc.git
@@ -75,6 +83,14 @@ pyandoc: pandoc-bin
 	#         sudo $(ver) install --upgrade $(PYPKG);    \
 	# done
 
+pydocutils:
+	$(eval PYPKG=docutils)
+	for ver in $(PYTHONS); do                          \
+		echo '>>'$$ver;                                \
+		pip$(ver) install --upgrade $(PYPKG) ||        \
+			sudo $(ver) install --upgrade $(PYPKG);    \
+	done
+	
 pandoc-bin: pm-update
 	brew install pandoc || sudo apt-get install pandoc
 	
@@ -102,5 +118,5 @@ env:
 	@echo PYPI="\"$(PYPI)\""
 
 
-.PHONY: clean clean-build clean-eggs clean-all test release sdist-upload bdist_wheel-upload deps-dev pywheel upload env pm-update
+.PHONY: clean clean-build clean-eggs clean-all test release sdist-upload bdist_wheel-upload deps-dev pywheel upload env pm-update pydocutils
 
