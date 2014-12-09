@@ -45,3 +45,28 @@ def test_copy():
     assert iv2.end == iv0.end
     assert iv2.data == iv0.data
     assert iv2 == iv0
+
+
+def test_len():
+    iv = Interval(0, 0)
+    assert len(iv) == 3
+
+    iv = Interval(0, 1, 2)
+    assert len(iv) == 3
+
+    iv = Interval(1.3, 2.2)
+    assert len(iv) == 3
+
+
+def test_length():
+    iv = Interval(0, 0)
+    assert iv.length() == 0
+
+    iv = Interval(0, 3)
+    assert iv.length() == 3
+
+    iv = Interval(-1, 1, 'data')
+    assert iv.length() == 2
+
+    iv = Interval(0.1, 3)
+    assert iv.length() == 2.9

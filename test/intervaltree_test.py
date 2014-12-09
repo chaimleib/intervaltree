@@ -18,11 +18,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-
+from __future__ import absolute_import
 import pytest
 from intervaltree import Interval, IntervalTree
+from .intervaltrees import tree1, sdata
 from pprint import pprint
-import pickle
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
 
 
 def test_empty_init():
@@ -94,7 +98,7 @@ def test_insert():
 def test_duplicate_insert():
     tree = IntervalTree()
 
-    ## string data
+    # string data
     tree[-10:20] = "arbitrary data"
     contents = frozenset([Interval(-10, 20, "arbitrary data")])
 
@@ -113,7 +117,7 @@ def test_duplicate_insert():
     assert len(tree) == 1
     assert tree.items() == contents
 
-    ## None data
+    # None data
     tree[-10:20] = None
     contents = frozenset([
         Interval(-10, 20),
@@ -221,63 +225,46 @@ def test_init_invalid_interval():
         IntervalTree(Interval(b, e) for b, e in [(1, 2), (1, 1)])
 
 
-def sdata(s):
-    return set(iv.data for iv in s)
-
-
-def test_all():
-    def make_interval(lst):
-        return Interval(lst[0], lst[1], "{0}-{1}".format(*lst))
-    
-    ivs = [make_interval(iv) for iv in [
-        [1, 2],
-        [4, 7],
-        [5, 9],
-        [6, 10],
-        [8, 10],
-        [8, 15],
-        [10, 12],
-        [12, 14],
-        [14, 15],
-    ]]
-    t = IntervalTree(ivs)
+def test_basic_structuring():
+    t = tree1()
     t.verify()
     orig = t.print_structure(True)
         
     assert orig == """
-Node<8, balance=0>
- Interval(5, 9, '5-9')
- Interval(6, 10, '6-10')
- Interval(8, 10, '8-10')
- Interval(8, 15, '8-15')
-<:  Node<4, balance=-1>
-     Interval(4, 7, '4-7')
-    <:  Node<1, balance=0>
-         Interval(1, 2, '1-2')
->:  Node<12, balance=0>
-     Interval(12, 14, '12-14')
-    <:  Node<10, balance=0>
-         Interval(10, 12, '10-12')
-    >:  Node<14, balance=0>
-         Interval(14, 15, '14-15')
+Node<8, depth=3, balance=0>
+ Interval(5, 9, '[5,9)')
+ Interval(6, 10, '[6,10)')
+ Interval(8, 10, '[8,10)')
+ Interval(8, 15, '[8,15)')
+<:  Node<4, depth=2, balance=-1>
+     Interval(4, 7, '[4,7)')
+    <:  Node<1, depth=1, balance=0>
+         Interval(1, 2, '[1,2)')
+>:  Node<12, depth=2, balance=0>
+     Interval(12, 14, '[12,14)')
+    <:  Node<10, depth=1, balance=0>
+         Interval(10, 12, '[10,12)')
+    >:  Node<14, depth=1, balance=0>
+         Interval(14, 15, '[14,15)')
 """[1:]
-    
-    # Query tests
-    print('Query tests...')
-    assert sdata(t[4]) == set(['4-7'])
-    assert sdata(t[4:5]) == set(['4-7'])
-    assert sdata(t[4:6]) == set(['4-7', '5-9'])
-    assert sdata(t[9]) == set(['6-10', '8-10', '8-15'])
+
+
+def test_queries():
+    t = tree1()
+
+    assert sdata(t[4]) == set(['[4,7)'])
+    assert sdata(t[4:5]) == set(['[4,7)'])
+    assert sdata(t[4:6]) == set(['[4,7)', '[5,9)'])
+    assert sdata(t[9]) == set(['[6,10)', '[8,10)', '[8,15)'])
     assert sdata(t[15]) == set()
-    assert sdata(t.search(5)) == set(['4-7', '5-9'])
-    assert sdata(t.search(6, 11, strict=True)) == set(['6-10', '8-10'])
+    assert sdata(t.search(5)) == set(['[4,7)', '[5,9)'])
+    assert sdata(t.search(6, 11, strict=True)) == set(['[6,10)', '[8,10)'])
     
-    print('    passed')
-    
-    # Membership tests
-    print('Membership tests...')
-    assert ivs[1] in t
-    assert Interval(1, 3, '1-3') not in t
+
+def test_membership():
+    t = tree1()
+    assert Interval(1, 2, '[1,2)') in t
+    assert Interval(1, 3, '[1,3)') not in t
     assert t.overlaps(4)
     assert t.overlaps(9)
     assert not t.overlaps(15)
@@ -288,36 +275,42 @@ Node<8, balance=0>
     assert not t.overlaps(15, 16)
     assert not t.overlaps(-1, 0)
     assert not t.overlaps(2, 4)
-    print('    passed')
-    
-    # Insertion tests
-    print('Insertion tests...')
-    t.add(make_interval([1, 2]))  # adding duplicate should do nothing
-    assert sdata(t[1]) == set(['1-2'])
+
+
+def test_insert_to_filled_tree():
+    t = tree1()
+    orig = t.print_structure(True)  # original structure record
+
+    assert sdata(t[1]) == set(['[1,2)'])
+    t.add(Interval(1, 2, '[1,2)'))  # adding duplicate should do nothing
+    assert sdata(t[1]) == set(['[1,2)'])
     assert orig == t.print_structure(True)
     
-    t[1:2] = '1-2'                # adding duplicate should do nothing
-    assert sdata(t[1]) == set(['1-2'])
+    t[1:2] = '[1,2)'                # adding duplicate should do nothing
+    assert sdata(t[1]) == set(['[1,2)'])
     assert orig == t.print_structure(True)
-    
-    t.add(make_interval([2, 4]))
-    assert sdata(t[2]) == set(['2-4'])
+
+    assert Interval(2, 4, '[2,4)') not in t
+    t.add(Interval(2, 4, '[2,4)'))
+    assert sdata(t[2]) == set(['[2,4)'])
     t.verify()
     
-    t[13:15] = '13-15'
-    assert sdata(t[14]) == set(['8-15', '13-15', '14-15'])
+    t[13:15] = '[13,15)'
+    assert sdata(t[14]) == set(['[8,15)', '[13,15)', '[14,15)'])
     t.verify()
-    print('    passed')
-    
-    # Duplication tests
-    print('Interval duplication tests...')
-    t.add(Interval(14, 15, '14-15####'))
-    assert sdata(t[14]) == set(['8-15', '13-15', '14-15', '14-15####'])
+
+
+def test_duplicates():
+    t = tree1()
+
+    t.add(Interval(14, 15, '[14,15)####'))
+    assert sdata(t[14]) == set(['[8,15)', '[14,15)', '[14,15)####'])
     t.verify()
-    print('    passed')
-    
-    # Copying and casting
-    print('Tree copying and casting...')
+
+
+def test_copy_cast():
+    t = tree1()
+
     tcopy = IntervalTree(t)
     tcopy.verify()
     assert t == tcopy
@@ -330,10 +323,10 @@ Node<8, balance=0>
     
     tset = set(t)
     assert tset == t.items()
-    print('    passed')
-    
-    # Deletion tests
-    print('Deletion tests...')
+
+
+def test_delete():
+    t = tree1()
     try:
         t.remove(Interval(1, 3, "Doesn't exist"))
     except ValueError:
@@ -353,48 +346,65 @@ Node<8, balance=0>
     t.discard(Interval(500, 1000, "Doesn't exist"))
     assert orig == t.print_structure(True)
     
-    assert sdata(t[14]) == set(['8-15', '13-15', '14-15', '14-15####'])
-    t.remove(Interval(14, 15, '14-15####'))
-    assert sdata(t[14]) == set(['8-15', '13-15', '14-15'])
+    assert sdata(t[14]) == set(['[8,15)', '[14,15)'])
+    t.remove(Interval(14, 15, '[14,15)'))
+    assert sdata(t[14]) == set(['[8,15)'])
+    t.verify()
+
+
+    t.discard(Interval(8, 15, '[8,15)'))
+    assert sdata(t[14]) == set()
     t.verify()
     
-    assert sdata(t[2]) == set(['2-4'])
-    t.discard(make_interval([2, 4]))
-    assert sdata(t[2]) == set()
+    assert t[5]
+    t.remove_overlap(5)
     t.verify()
-    
-    assert t[14]
-    t.remove_overlap(14)
-    t.verify()
-    assert not t[14]
-    
-    # Emptying the tree
-    #t.print_structure()
+    assert not t[5]
+
+
+def test_emptying():
+    t = tree1()
+
     for iv in sorted(iter(t)):
-        #print('### Removing '+str(iv)+'... ###')
         t.remove(iv)
-        #t.print_structure()
         t.verify()
-        #print('')
     assert len(t) == 0
     assert t.is_empty()
     assert not t
-    
-    t = IntervalTree(ivs)
-    #t.print_structure()
-    t.remove_overlap(1)
-    #t.print_structure()
-    t.verify()
-    
-    t.remove_overlap(8)
-    #t.print_structure()    
-    print('    passed')
 
-    print('Split overlaps...')
-    t = IntervalTree(ivs)
-    pprint(t)
+
+def test_remove_overlap():
+    t = tree1()
+    assert t[1]
+    t.remove_overlap(1)
+    assert not t[1]
+    t.verify()
+
+    assert t[8]
+    t.remove_overlap(8)
+    assert not t[8]
+    t.verify()
+
+
+def test_split_overlap():
+    t = tree1()
+
     t.split_overlaps()
-    pprint(t)
-    #import cPickle as pickle
-    #p = pickle.dumps(t)
-    #print(p)
+    t.verify()
+
+    while t:
+        iv = set(t).pop()
+        t.remove(iv)
+        for other in t.search(iv):
+            assert other.begin == iv.begin
+            assert other.end == iv.end
+
+
+def test_pickle():
+    t = tree1()
+
+    p = pickle.dumps(t)
+    t2 = pickle.loads(p)
+
+    assert t == t2
+    t2.verify()

@@ -22,7 +22,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 import sys
-import os, errno
+import os
+import errno
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 
@@ -89,6 +90,7 @@ def pypi_sanitize_markdown(md):
     md = remove_markdown_links(md)
 
     return md
+
 
 def pypi_prepare_rst(rst):
     """Add a notice that the rst was auto-generated"""
@@ -170,8 +172,8 @@ def update_file(path, data):
         mkdir_p(parent_dir)
 
     # write file
-    with open(path, 'w') as file:
-        file.write(data)
+    with open(path, 'w') as f:
+        f.write(data)
 
 
 ## Run setuptools
