@@ -5,6 +5,7 @@ Queries may be by point, by range overlap, or by range envelopment.
 Core logic: internal tree nodes.
 
 Copyright 2013-2014 Chaim-Leib Halbert
+Modifications Copyright 2014 Konstantin Tretrakov
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -41,6 +42,7 @@ class Node(object):
         self.left_node = left_node
         self.right_node = right_node
         self.balance = None  # will be set when rotated
+        self.depth = 0
         self.rotate()
 
     # noinspection PyTypeChecker
@@ -68,7 +70,6 @@ class Node(object):
         self.s_center = set()
         s_left = []
         s_right = []
-        # TODO: add support for open and closed intervals
         for k in intervals:
             if k.end <= self.x_center:
                 s_left.append(k)
@@ -89,15 +90,14 @@ class Node(object):
         Assuming not center_hit(interval), return which branch
         (left=0, right=1) interval is in.
         """
-        # TODO: add support for open and closed intervals
         return 1 if interval.begin > self.x_center else 0
 
     def refresh_balance(self):
         """Recalculate self.balance."""
-        self.balance = bool(self[1]) - bool(self[0])
-        if self.balance < 0 and (self[0][0] or self[0][1]):
+        self.balance = bool(self.right_node) - bool(self.left_node)
+        if self.balance < 0 and (self.left_node.left_node or self.left_node.right_node):
             self.balance -= 1
-        if self.balance > 0 and (self[1][0] or self[1][1]):
+        if self.balance > 0 and (self.right_node.left_node or self.right_node.right_node):
             self.balance += 1
         
     def compute_depth(self):
@@ -168,10 +168,7 @@ class Node(object):
         #assert(save[light])
         
         # Needed to ensure the 2 and 3 are balanced under new subnode
-        save[light] = self
-        save[light].refresh_balance()
-        if abs(save[light].balance) > 1:
-            save[light] = save[light].rotate()
+        save[light] = self.rotate()
         save.refresh_balance()
 
         # Promoting save could cause invalid overlaps.
@@ -315,19 +312,16 @@ class Node(object):
         """
         Returns all intervals that contain point.
         """
-        # TODO: add support for open and closed intervals
         cur = self
-        while True:
-            for k in cur.s_center:
-                if k.contains_point(point):
-                    result.add(k)
-            if point < cur.x_center and cur[0]:
-                cur = cur[0]
-                continue
-            elif point > cur.x_center and cur[1]:
-                cur = cur[1]
-                continue
-            return result
+        while cur:
+            result.update(iv for iv in cur.s_center if iv.contains_point(point))
+            if point < cur.x_center:
+                cur = cur.left_node
+            elif point > cur.x_center:
+                cur = cur.right_node
+            else:
+                break
+        return result
 
     def prune(self):
         """
@@ -494,7 +488,6 @@ class Node(object):
         for iv in self.s_center:
             assert hasattr(iv, 'begin')
             assert hasattr(iv, 'end')
-            # TODO: add support for open and closed intervals
             assert iv.begin < iv.end
             assert iv.overlaps(self.x_center)
             for parent in sorted(parents):

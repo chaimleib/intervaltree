@@ -5,6 +5,7 @@ Queries may be by point, by range overlap, or by range envelopment.
 Core logic.
 
 Copyright 2013-2014 Chaim-Leib Halbert
+Modifications Copyright 2014 Konstantin Tretrakov
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,7 +21,7 @@ limitations under the License.
 """
 from __future__ import absolute_import
 from .interval import Interval
-from .node import Node
+from .mnode import Node
 from numbers import Number
 
 try:
@@ -163,7 +164,7 @@ class IntervalTree(object):
         True
         >>> tree.overlaps(1.7, 1.8)
         False
-        >>> tree.overlaps(-1.2, -1.1)
+        >>> tree.overlaps(-1.2, -1.1)998
         False
         >>> tree.overlaps(-1.2, -1.0)
         True
@@ -519,29 +520,26 @@ class IntervalTree(object):
         if self.top_node is None:
             return set()
         if end is None:
-            if isinstance(begin, Number):
-                return self.top_node.search_point(begin, set())
-            else:
+            try:
                 iv = begin
                 return self.search(iv.begin, iv.end, strict=strict)
-        elif isinstance(end, Number):
+            except:
+                return self.top_node.search_point(begin, set())
+        else:
             result = self.top_node.search_point(begin, set())
             
             # TODO: add support for open and closed intervals
-            result = result.union(self.top_node.search_overlap(
-                bound 
-                for bound in self.boundary_table 
+            result.update(self.top_node.search_overlap([
+                bound for bound in self.boundary_table
                 if begin < bound < end
-            ))
+            ]))
+            # TODO: improve strict search to use node info instead of less-efficient filtering
             if strict:
                 result = set(
-                    iv 
-                    for iv in result 
+                    iv for iv in result
                     if iv.begin >= begin and iv.end <= end
                 )
             return result
-        else:   # duck-typed interval
-            return self.search(begin.begin, begin.end, strict)
     
     def begin(self):
         """
@@ -690,9 +688,9 @@ class IntervalTree(object):
           * m = number of matches
           * k = size of the search range (this is 1 for a point)
         """
-        if isinstance(index, slice):
+        try:
             return self.search(index.start, index.stop)
-        else:
+        except:
             return self.search(index)
     
     def __setitem__(self, index, value):
@@ -705,9 +703,10 @@ class IntervalTree(object):
         
         Completes in O(log n) time.
         """
-        if not isinstance(index, slice):
+        try:
+            self.add(Interval(index.start, index.stop, value))
+        except:
             raise IndexError
-        self.add(Interval(index.start, index.stop, value))
     
     def __contains__(self, item):
         """
