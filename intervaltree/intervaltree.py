@@ -5,6 +5,7 @@ Queries may be by point, by range overlap, or by range envelopment.
 Core logic.
 
 Copyright 2013-2014 Chaim-Leib Halbert
+Modifications Copyright 2014 Konstantin Tretrakov
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -300,7 +301,7 @@ class IntervalTree(object):
         #if self.top_node:
         #    assert(interval not in self.top_node.search_point(interval.begin, set()))
         self.all_intervals.add(interval)
-        if self.top_node is None:
+        if not self.top_node:
             self.top_node = Node.from_interval(interval)
         else:
             self.top_node = self.top_node.add(interval)
@@ -416,7 +417,7 @@ class IntervalTree(object):
                 
         long_ivs = sorted(self.all_intervals, key=len, reverse=True)
         for i, parent in enumerate(long_ivs):
-            for child in long_ivs[i+1:]:
+            for child in long_ivs[i + 1:]:
                 add_if_nested()
         return result
     
@@ -477,18 +478,16 @@ class IntervalTree(object):
             return
         if len(self.boundary_table) == 2:
             return
-        temp = IntervalTree()
-        
+
         bounds = sorted(self.boundary_table)  # get bound locations
 
+        new_ivs = set()
         for lbound, ubound in zip(bounds[:-1], bounds[1:]):
             for iv in self[lbound]:
-                temp[lbound:ubound] = iv.data
+                new_ivs.add(Interval(lbound, ubound, iv.data))
 
-        self.all_intervals = temp.all_intervals
-        self.top_node = temp.top_node
-        # self.boundary_table unchanged
-        
+        self.__init__(new_ivs)
+
     def items(self):
         """
         Constructs and returns a set of all intervals in the tree. 
@@ -503,8 +502,8 @@ class IntervalTree(object):
         
         Completes in O(1) time.
         """
-        return len(self) == 0
-    
+        return 0 == len(self)
+
     def search(self, begin, end=None, strict=False):
         """
         Returns a set of all intervals overlapping the given range. Or,
@@ -516,32 +515,28 @@ class IntervalTree(object):
           * m = number of matches
           * k = size of the search range (this is 1 for a point)
         """
-        if self.top_node is None:
+        if not self.top_node:
             return set()
         if end is None:
-            if isinstance(begin, Number):
-                return self.top_node.search_point(begin, set())
-            else:
+            try:
                 iv = begin
                 return self.search(iv.begin, iv.end, strict=strict)
-        elif isinstance(end, Number):
+            except:
+                return self.top_node.search_point(begin, set())
+        else:
             result = self.top_node.search_point(begin, set())
             
-            # TODO: add support for open and closed intervals
-            result = result.union(self.top_node.search_overlap(
-                bound 
-                for bound in self.boundary_table 
+            result.update(self.top_node.search_overlap(
+                bound for bound in self.boundary_table
                 if begin < bound < end
             ))
+            # TODO: improve strict search to use node info instead of less-efficient filtering
             if strict:
                 result = set(
-                    iv 
-                    for iv in result 
+                    iv for iv in result
                     if iv.begin >= begin and iv.end <= end
                 )
             return result
-        else:   # duck-typed interval
-            return self.search(begin.begin, begin.end, strict)
     
     def begin(self):
         """
@@ -666,15 +661,15 @@ class IntervalTree(object):
             from 0 to 1.
             :rtype: real
             """
-            raw = n-m
-            maximum = n-1
-            return raw/float(maximum)
+            raw = n - m
+            maximum = n - 1
+            return raw / float(maximum)
 
         report = {
             "depth": self.top_node.depth_score(n, m),
             "s_center": s_center_score(),
         }
-        cumulative = sum(report.values())/len(report)
+        cumulative = sum(report.values()) / len(report)
         report["_cumulative"] = cumulative
         if full_report:
             return report
@@ -690,9 +685,9 @@ class IntervalTree(object):
           * m = number of matches
           * k = size of the search range (this is 1 for a point)
         """
-        if isinstance(index, slice):
+        try:
             return self.search(index.start, index.stop)
-        else:
+        except:
             return self.search(index)
     
     def __setitem__(self, index, value):
@@ -705,10 +700,8 @@ class IntervalTree(object):
         
         Completes in O(log n) time.
         """
-        if not isinstance(index, slice):
-            raise IndexError
-        self.add(Interval(index.start, index.stop, value))
-    
+        self.addi(index.start, index.stop, value)
+
     def __contains__(self, item):
         """
         Returns whether item exists as an Interval in the tree.

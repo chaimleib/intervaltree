@@ -5,6 +5,7 @@ Queries may be by point, by range overlap, or by range envelopment.
 Interval class
 
 Copyright 2013-2014 Chaim-Leib Halbert
+Modifications copyright 2014 Konstantin Tretyakov
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,9 +19,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-
 from numbers import Number
 from collections import namedtuple
+
 
 class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
     __slots__ = ()  # Saves memory, avoiding the need to create __dict__ for each interval
@@ -73,10 +74,11 @@ class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
         """
         return self.begin >= self.end
 
-    def __len__(self):
-        # NB: This redefines the tuple's own "len" which would always return 3
+    def length(self):
+        if self.is_null():
+            return 0
         return self.end - self.begin
-    
+
     def __hash__(self):
         return hash((self.begin, self.end))
 
@@ -141,4 +143,3 @@ class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
         For pickle-ing.
         """
         return Interval, self._get_fields()
-

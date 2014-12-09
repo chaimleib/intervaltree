@@ -74,7 +74,7 @@ Features
 * Equal-able
 * Pickle-friendly
 * Automatic AVL balancing
-    
+
 Examples
 --------
 
@@ -93,13 +93,13 @@ Examples
 
         ivs = t[6]            # set([Interval(4, 7, (4, 7)), Interval(5, 9, {5: 9})])
         iv = sorted(ivs)[0]   # Interval(4, 7, (4, 7))
-  
+
 * Accessing an `Interval` object
 
         iv.begin  # 4
         iv.end    # 7
         iv.data   # (4, 7)
-  
+
 * Query by range
 
   Note that ranges are inclusive of the lower limit, but non-inclusive of the upper limit. So:
@@ -118,24 +118,24 @@ Examples
         t = IntervalTree(
             Interval(begin, end, "%d-%d" % (begin, end)) for begin, end in ivs
         )
-   
+
   Or, if we don't need the data fields:
-    
+
         t = IntervalTree(Interval(*iv) for iv in ivs)
 
 * Removing intervals
 
         t.remove( Interval(1, 2, "1-2") )
         list(t)     # [Interval(4, 7, '4-7'), Interval(5, 9, '5-9')]
-        
+
         t.remove( Interval(500, 1000, "Doesn't exist")) # raises ValueError
         t.discard(Interval(500, 1000, "Doesn't exist")) # quietly does nothing
-        
-        t.remove_overlap(5)   
+
+        t.remove_overlap(5)
         list(t)     # []
 
   We could also empty a tree by removing all intervals, from the lowest bound to the highest bound of the `IntervalTree`:
-  
+
         t.remove_overlap(t.begin(), t.end())
 
 Future improvements
@@ -155,12 +155,14 @@ Copyright
 ---------
 * [Chaim-Leib Halbert][GH], 2014
 
+
 [build status badge]: https://travis-ci.org/chaimleib/intervaltree.svg?branch=master
 [build status]: https://travis-ci.org/chaimleib/intervaltree
 [GH]: https://github.com/chaimleib/intervaltree
 [issue tracker]: https://github.com/chaimleib/intervaltree/issues
-[Konstantin intervaltree]: https://github.com/konstantint/PyIntervalTree 
+[Konstantin intervaltree]: https://github.com/konstantint/PyIntervalTree
 [Confuzzled AVL tree]: http://www.eternallyconfuzzled.com/tuts/datastructures/jsw_tut_avl.aspx
 [Wiki intervaltree]: http://en.wikipedia.org/wiki/Interval_tree
 [Kahn intervaltree]: http://zurb.com/forrst/posts/Interval_Tree_implementation_in_python-e0K
 [Kahn intervaltree GH]: https://github.com/tylerkahn/intervaltree-python
+
