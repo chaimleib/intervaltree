@@ -519,16 +519,11 @@ class Node(object):
         Count the number of Nodes in this subtree.
         :rtype: int
         """
-        count = 0
-        stack = []
-        push = stack.append
-        pop = stack.pop
-        push(self)
-        while stack:
-            cur = pop()
-            count += 1
-            if cur[0]: push(cur[0])
-            if cur[1]: push(cur[1])
+        count = 1
+        if self.left_branch:
+            count += self.left_branch.count_nodes()
+        if self.right_node:
+            count += self.right_node.count_nodes()
         return count
 
     def depth_score(self, n, m):
