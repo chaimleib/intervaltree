@@ -4,11 +4,15 @@ Change log
 Version 1.0.0
 -------------
 - Renamed from PyIntervalTree to intervaltree
+- Speed improvements for adding and removing Intervals
 
 Version 0.4
 -------------
 
-    - Turns out, the tree was not balancing itself at all, as the corresponding code was wrong.
+- Faster balancing (~80% faster)
+- Bug fixes:
+    - Double rotations were performed in place of a single rotation when presented and unbalanced Node with a balanced child.
+    - During single rotation, kept referencing an unrotated Node instead of the new, rotated one
       
 Version 0.3.3
 -------------
