@@ -21,7 +21,7 @@ limitations under the License.
 """
 from __future__ import absolute_import
 from .interval import Interval
-from .mnode import Node
+from .node import Node
 from numbers import Number
 
 try:
