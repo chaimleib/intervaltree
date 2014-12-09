@@ -48,6 +48,18 @@ clean-deps:
 clean-temps:
 	rm -rf $(TEMPS)
 
+install-testpypi:
+	pip install -i https://testpypi.python.org/pypi intervaltree
+
+install-pypi:
+	pip install intervaltree
+
+install-develop:
+	python setup.py develop
+	
+uninstall:
+	pip uninstall intervaltree
+
 # Convert README to rst and check the result
 rst: pydocutils pyandoc
 	python setup.py check --restructuredtext --strict

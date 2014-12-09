@@ -1,6 +1,10 @@
 Change log
 ==========
 
+Version 1.0.1
+-------------
+- Fix: pip install failure because of failure to generate README.rst
+
 Version 1.0.0
 -------------
 - Renamed from PyIntervalTree to intervaltree

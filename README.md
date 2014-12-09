@@ -7,6 +7,11 @@ A mutable, self-balancing interval tree for Python 2 and 3. Queries may be by po
 
 This library was designed to allow tagging text and time intervals, where the intervals include the lower bound but not the upper bound.
 
+Installing
+----------
+
+    pip install intervaltree
+
 Features
 --------
 

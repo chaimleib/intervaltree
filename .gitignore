@@ -6,7 +6,6 @@
 *.pyc
 dist/
 build/
-*.rst
 
 # Dev dependencies
 pyandoc/

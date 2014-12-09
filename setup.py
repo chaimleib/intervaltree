@@ -31,13 +31,12 @@ import re
 try:
     import pandoc
 except ImportError as e:
-    print(sys.version_info)
-    raise e
+    print(e)
 pandoc.PANDOC_PATH = 'pandoc'  # until pyandoc gets updated
 
 
 ## CONFIG
-version = '1.0.0'
+version = '1.0.1'
 create_rst = True
 
 
@@ -55,11 +54,21 @@ class PyTest(TestCommand):
         sys.exit(pytest.main(self.test_args))
 
 
+def get_rst():
+    if os.path.isdir('pyandoc/pandoc') and os.path.islink('pandoc'):
+        print("Generating README.rst from README.md")
+        return generate_rst()
+    elif os.path.isfile('README.rst'):
+        print("Reading README.rst")
+        return read_file('README.rst')
+    else:
+        print("No README.rst found!")
+        return read_file('README.md')
+
 ## Convert README to rst for PyPI
-def rst_readme():
+def generate_rst():
     """Converts Markdown to RST for PyPI"""
-    with open("README.md", "r") as readme:
-        md = readme.read()
+    md = read_file("README.md")
 
     md = pypi_sanitize_markdown(md)
     rst = markdown2rst(md)
@@ -137,6 +146,13 @@ def remove_markdown_links(md):
 
 
 ## Filesystem utilities
+def read_file(path):
+    """Reads file into string."""
+    with open(path, 'r') as f:
+        data = f.read()
+    return data
+
+
 def mkdir_p(path):
     """Like `mkdir -p` in unix"""
     if not path.strip():
@@ -182,7 +198,7 @@ setup(
     version=version,
     install_requires=[],
     description='Mutable, self-balancing interval tree',
-    long_description=rst_readme(),
+    long_description=get_rst(),
     classifiers=[  # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
