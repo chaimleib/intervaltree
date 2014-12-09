@@ -505,7 +505,11 @@ class Node(object):
         user, I'm not bothering to make this copy-paste-executable as a
         constructor.
         """
-        return "Node<{}, balance={}>".format(self.x_center, self.balance)
+        return "Node<{0}, depth={1}, balance={2}>".format(
+            self.x_center,
+            self.depth,
+            self.balance
+        )
         #fieldcount = 'c_count,has_l,has_r = <{}, {}, {}>'.format(
         #    len(self.s_center),
         #    bool(self.left_node),
