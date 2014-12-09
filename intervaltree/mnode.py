@@ -91,7 +91,7 @@ class Node(object):
         Assuming not center_hit(interval), return which branch
         (left=0, right=1) interval is in.
         """
-        return 1 if interval.begin > self.x_center else 0
+        return interval.begin > self.x_center
 
     def refresh_balance(self):
         """
