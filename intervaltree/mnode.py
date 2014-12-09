@@ -32,7 +32,7 @@ def l2(num):
     return lg(num, 2)
 
 
-class Node:
+class Node(object):
     def __init__(self,
                  x_center=None,
                  s_center=set(),
@@ -46,6 +46,7 @@ class Node:
         self.balance = 0  # ditto
         self.rotate()
 
+    # noinspection PyTypeChecker
     @classmethod
     def from_interval(cls, interval):
         if interval is None:
@@ -210,8 +211,7 @@ class Node:
         # since this is a list, called methods can set this to [1],
         # making it true
         done = []
-        return self.remove_interval_helper(interval, done,
-                                           shouldRaiseError=True)
+        return self.remove_interval_helper(interval, done, should_raise_error=True)
 
     def discard(self, interval):
         """
@@ -220,10 +220,9 @@ class Node:
         If interval is not present, do nothing.
         """
         done = []
-        return self.remove_interval_helper(interval, done,
-                                           shouldRaiseError=False)
+        return self.remove_interval_helper(interval, done, should_raise_error=False)
 
-    def remove_interval_helper(self, interval, done, shouldRaiseError):
+    def remove_interval_helper(self, interval, done, should_raise_error):
         """
         Returns self after removing interval and balancing.
         If interval doesn't exist, raise ValueError.
@@ -239,7 +238,7 @@ class Node:
         #   self.x_center, interval))
         if self.center_hit(interval):
             #if trace: print('Hit at {}'.format(self.x_center))
-            if not shouldRaiseError and interval not in self.s_center:
+            if not should_raise_error and interval not in self.s_center:
                 done.append(1)
                 #if trace: print('Doing nothing.')
                 return self
@@ -258,11 +257,11 @@ class Node:
             # If we reach here, no intervals are left in self.s_center.
             # So, prune self.
             return self.prune()
-        else: # interval not in s_center
+        else:  # interval not in s_center
             direction = self.hit_branch(interval)
 
             if not self[direction]:
-                if shouldRaiseError:
+                if should_raise_error:
                     raise ValueError
                 done.append(1)
                 return self
@@ -271,8 +270,7 @@ class Node:
             #   print('Descending to {} branch'.format(
             #       ['left', 'right'][direction]
             #       ))
-            self[direction] = self[direction].remove_interval_helper(
-                interval, done, shouldRaiseError)
+            self[direction] = self[direction].remove_interval_helper(interval, done, should_raise_error)
 
             # Clean up
             if not done:
@@ -410,7 +408,7 @@ class Node:
                 #    new_self.print_structure(tostring=True)
                 #    ))
                 #new_self.verify()
-                return (greatest_child, new_self)
+                return greatest_child, new_self
             else:
                 new_self = new_self.prune()
                 #print('and returning prune = {}'.format(

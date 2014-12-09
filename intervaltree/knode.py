@@ -252,8 +252,7 @@ class Node:
             #   print('Descending to {} branch'.format(
             #       ['left', 'right'][direction]
             #       ))
-            self[direction] = self[direction].remove_interval_helper(
-                interval, done, shouldRaiseError)
+            self[direction] = self[direction].remove_interval_helper(interval, done, shouldRaiseError)
 
             # Clean up
             if not done:
