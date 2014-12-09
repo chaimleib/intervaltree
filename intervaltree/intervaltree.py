@@ -164,7 +164,7 @@ class IntervalTree(object):
         True
         >>> tree.overlaps(1.7, 1.8)
         False
-        >>> tree.overlaps(-1.2, -1.1)998
+        >>> tree.overlaps(-1.2, -1.1)
         False
         >>> tree.overlaps(-1.2, -1.0)
         True
