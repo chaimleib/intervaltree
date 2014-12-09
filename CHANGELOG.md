@@ -4,7 +4,7 @@ Change log
 Version 1.0.0
 -------------
 - Renamed from PyIntervalTree to intervaltree
-- Speed improvements for adding and removing Intervals
+- Speed improvements for adding and removing Intervals (~70% faster than 0.4)
 
 Version 0.4
 -------------
