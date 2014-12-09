@@ -478,18 +478,16 @@ class IntervalTree(object):
             return
         if len(self.boundary_table) == 2:
             return
-        temp = IntervalTree()
-        
+
         bounds = sorted(self.boundary_table)  # get bound locations
 
+        new_ivs = set()
         for lbound, ubound in zip(bounds[:-1], bounds[1:]):
             for iv in self[lbound]:
-                temp[lbound:ubound] = iv.data
+                new_ivs.add(Interval(lbound, ubound, iv.data))
 
-        self.all_intervals = temp.all_intervals
-        self.top_node = temp.top_node
-        # self.boundary_table unchanged
-        
+        self.__init__(new_ivs)
+
     def items(self):
         """
         Constructs and returns a set of all intervals in the tree. 
