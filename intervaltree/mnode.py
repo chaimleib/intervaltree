@@ -49,7 +49,7 @@ class Node(object):
     # noinspection PyTypeChecker
     @classmethod
     def from_interval(cls, interval):
-        if interval is None:
+        if not interval:
             return None
         center = interval.begin
         #print(center)
@@ -357,7 +357,7 @@ class Node(object):
         in his AVL tree article for reference.
         """
         #print('Popping from {}'.format(self.x_center))
-        if self[1] is None:         # This node is the greatest child.
+        if not self[1]:         # This node is the greatest child.
             # To reduce the chances of an overlap with a parent, return
             # a child node containing the smallest possible number of
             # intervals, as close as possible to the maximum bound.

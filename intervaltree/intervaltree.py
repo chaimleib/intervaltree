@@ -301,7 +301,7 @@ class IntervalTree(object):
         #if self.top_node:
         #    assert(interval not in self.top_node.search_point(interval.begin, set()))
         self.all_intervals.add(interval)
-        if self.top_node is None:
+        if not self.top_node:
             self.top_node = Node.from_interval(interval)
         else:
             self.top_node = self.top_node.add(interval)
@@ -517,7 +517,7 @@ class IntervalTree(object):
           * m = number of matches
           * k = size of the search range (this is 1 for a point)
         """
-        if self.top_node is None:
+        if not self.top_node:
             return set()
         if end is None:
             try:
