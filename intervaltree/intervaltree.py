@@ -702,11 +702,8 @@ class IntervalTree(object):
         
         Completes in O(log n) time.
         """
-        try:
-            self.add(Interval(index.start, index.stop, value))
-        except:
-            raise IndexError
-    
+        self.addi(index.start, index.stop, value)
+
     def __contains__(self, item):
         """
         Returns whether item exists as an Interval in the tree.
