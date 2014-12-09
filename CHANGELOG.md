@@ -5,6 +5,8 @@ Version 1.0.0
 -------------
 - Renamed from PyIntervalTree to intervaltree
 - Speed improvements for adding and removing Intervals (~70% faster than 0.4)
+- Bug fixes:
+    - When inserting an `Interval` via `__setitem__` and improper parameters given, all errors were transformed to `IndexError`
 
 Version 0.4
 -------------
