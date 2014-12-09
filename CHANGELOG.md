@@ -6,7 +6,7 @@ Version 1.0.0
 - Renamed from PyIntervalTree to intervaltree
 - Speed improvements for adding and removing Intervals (~70% faster than 0.4)
 - Bug fixes:
-    - BACKWARD INCOMPATIBLE: `len()` of an `Interval` is always 3, reverting to default behavior for `namedtuples`. In Python 3, `len` returning a non-integer raises an exception. Instead, use `Interval.length()`, which returns 0 for null intervals and `end - begin` otherwise.
+    - BACKWARD INCOMPATIBLE: `len()` of an `Interval` is always 3, reverting to default behavior for `namedtuples`. In Python 3, `len` returning a non-integer raises an exception. Instead, use `Interval.length()`, which returns 0 for null intervals and `end - begin` otherwise. Also, if the `len() === 0`, then `not iv` is `True`.
     - When inserting an `Interval` via `__setitem__` and improper parameters given, all errors were transformed to `IndexError`
     - `split_overlaps` did not update the `boundary_table` counts
 - Internal improvements:
