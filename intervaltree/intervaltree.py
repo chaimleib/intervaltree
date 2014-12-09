@@ -528,11 +528,10 @@ class IntervalTree(object):
         else:
             result = self.top_node.search_point(begin, set())
             
-            # TODO: add support for open and closed intervals
-            result.update(self.top_node.search_overlap([
+            result.update(self.top_node.search_overlap(
                 bound for bound in self.boundary_table
                 if begin < bound < end
-            ]))
+            ))
             # TODO: improve strict search to use node info instead of less-efficient filtering
             if strict:
                 result = set(
