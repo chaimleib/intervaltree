@@ -21,3 +21,6 @@ bin/
 
 # Mac noise
 .DS_Store
+
+# Other temps
+restats
