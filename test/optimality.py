@@ -29,17 +29,6 @@ except NameError:
     xrange = range
 
 
-IVS_NAMES = [
-    '1',
-]
-
-
-TEST_TYPES = [
-    'init',
-    'add ascending',
-    'add descending',
-]
-
 class OptimalityTestMatrix(object):
     def __init__(self, ivs_names=None, verbose=False):
         self.verbose = verbose
@@ -60,6 +49,9 @@ class OptimalityTestMatrix(object):
 
         # set ivs
         self.ivs = intervals.ivs_data.copy()
+        for name in self.ivs.keys():
+            if 'copy_structure' in name:
+                del self.ivs[name]
 
         # set result matrix
         self.result_matrix = {
