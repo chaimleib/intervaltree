@@ -109,17 +109,17 @@ class OptimalityTestMatrix(object):
         self.result_matrix['test type'][test_type][ivs_name] = score
 
     def summarize(self):
-        def awb(report):
+        def stats(report):
             assert isinstance(report, dict)
             cumulatives = [test['_cumulative'] for test in report.values()]
             return {
-                '_average': sum(cumulatives) / len(cumulatives),
-                '_worst': max(cumulatives),
-                '_best': min(cumulatives),
+                'mean': sum(cumulatives) / len(cumulatives),
+                'worst': max(cumulatives),
+                'best': min(cumulatives),
             }
         for report_type in self.result_matrix:
             for name, report in self.result_matrix[report_type].items():
-                self.summary_matrix[report_type][name] = awb(report)
+                self.summary_matrix[report_type][name] = stats(report)
         return self.result_matrix
 
 
