@@ -1,3 +1,6 @@
+'''
+Tiny IntervalTree data. For tiny testing.
+'''
 data = \
 [(1, 2, '[1,2)'),
  (4, 7, '[4,7)'),
