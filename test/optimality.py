@@ -20,7 +20,7 @@ limitations under the License.
 """
 from __future__ import absolute_import
 from intervaltree import IntervalTree
-import test.intervals as intervals
+from test import intervals
 from copy import deepcopy
 from pprint import pprint
 try:
