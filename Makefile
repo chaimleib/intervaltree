@@ -108,5 +108,29 @@ env:
 	@echo PYPI="\"$(PYPI)\""
 
 
-.PHONY: clean clean-build clean-eggs clean-all test release sdist-upload deps-dev upload env pm-update pydocutils pytest quicktest
+.PHONY: all \
+	test \
+	quicktest \
+	pytest \
+	clean \
+	distclean \
+	clean-build \
+	clean-eggs \
+	clean-deps \
+	clean-temps \
+	install-testpypi \
+	install-pypi \
+	install-develop \
+	uninstall \
+	rst \
+	register \
+	release \
+	sdist-upload \
+	deps-dev \
+	pyandoc \
+	pandoc-bin \
+	pydocutils \
+	pm-update \
+	upload \
+	env
 
