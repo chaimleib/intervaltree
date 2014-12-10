@@ -20,10 +20,38 @@ limitations under the License.
 """
 from __future__ import absolute_import
 from test.optimality_test_matrix import OptimalityTestMatrix
+from test.intervaltrees import trees
 from pprint import pprint
+from warnings import warn
 
 matrix = OptimalityTestMatrix()
 matrix.run()
+
+def test_ivs1():
+    """
+    Small, but has overlaps.
+    """
+    report = matrix.result_matrix['ivs name']['ivs1']
+    prev_score = 0.375
+    worst = 0.0
+    for test in matrix.test_types:
+        # score of this test
+        score = report[test]['_cumulative']
+
+        # update worst score
+        if score > worst:
+            worst = score
+
+        # make sure we did at least as well as before's worst-case
+        assert score <= prev_score
+
+    if worst < prev_score:  # worst-case has improved!
+        warn(trees['ivs1']().print_structure(True))
+        warn("ivs1 scored {0} < {1} worst-case, better than expected!".format(
+            score,
+            prev_score
+        ))
+
 
 def test_ivs2():
     """
@@ -45,6 +73,8 @@ def test_ivs3():
 
 
 if __name__ == "__main__":
+    test_ivs1()
     test_ivs2()
     test_ivs3()
     pprint(matrix.summary_matrix)
+    pprint(matrix.result_matrix)
