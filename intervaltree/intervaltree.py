@@ -30,6 +30,7 @@ except NameError:
     xrange = range
 
 
+# noinspection PyBroadException
 class IntervalTree(object):
     """
     A binary lookup tree of intervals.
@@ -246,6 +247,7 @@ class IntervalTree(object):
         intervals in the source tree.
         
         Completes in O(n*log n) time.
+        :rtype: IntervalTree
         """
         return IntervalTree(iv.copy() for iv in self)
     
@@ -406,6 +408,7 @@ class IntervalTree(object):
         intervals overlapped by and contained in the parent.
         
         Completes in O(n^2) time.
+        :rtype: dict of [Interval, set of Interval]
         """
         result = {}
         
@@ -493,6 +496,7 @@ class IntervalTree(object):
         Constructs and returns a set of all intervals in the tree. 
         
         Completes in O(n) time.
+        :rtype: set of Interval
         """
         return set(self.all_intervals)
     
@@ -501,6 +505,7 @@ class IntervalTree(object):
         Returns whether the tree is empty.
         
         Completes in O(1) time.
+        :rtype: bool
         """
         return 0 == len(self)
 
@@ -514,6 +519,7 @@ class IntervalTree(object):
           * n = size of the tree
           * m = number of matches
           * k = size of the search range (this is 1 for a point)
+        :rtype: set of Interval
         """
         if not self.top_node:
             return set()
@@ -543,6 +549,7 @@ class IntervalTree(object):
         Returns the lower bound of the first interval in the tree.
         
         Completes in O(n) time.
+        :rtype: Number
         """
         if not self.boundary_table:
             return 0
@@ -553,6 +560,7 @@ class IntervalTree(object):
         Returns the upper bound of the last interval in the tree.
         
         Completes in O(n) time.
+        :rtype: Number
         """
         if not self.boundary_table:
             return 0
@@ -563,6 +571,7 @@ class IntervalTree(object):
         ## FOR DEBUGGING ONLY ##
         Pretty-prints the structure of the tree. 
         If tostring is true, prints nothing and returns a string.
+        :rtype: None or str
         """
         if self.top_node:
             return self.top_node.print_structure(tostring=tostring)
@@ -646,7 +655,7 @@ class IntervalTree(object):
         Returns a number between 0 and 1, indicating how suboptimal the tree
         is. The lower, the better. Roughly, this number represents the
         fraction of flawed Intervals in the tree.
-        :rtype: real
+        :rtype: float
         """
         if len(self) <= 2:
             return 0.0
@@ -659,7 +668,7 @@ class IntervalTree(object):
             Returns a normalized score, indicating roughly how many times
             intervals share s_center with other intervals. Output is full-scale
             from 0 to 1.
-            :rtype: real
+            :rtype: float
             """
             raw = n - m
             maximum = n - 1
@@ -684,6 +693,7 @@ class IntervalTree(object):
           * n = size of the tree
           * m = number of matches
           * k = size of the search range (this is 1 for a point)
+        :rtype: set of Interval
         """
         try:
             return self.search(index.start, index.stop)
@@ -709,6 +719,7 @@ class IntervalTree(object):
         overlaps, see the overlaps() method.
         
         Completes in O(1) time.
+        :rtype: bool
         """
         # Removed point-checking code; it might trick the user into
         # thinking that this is O(1), which point-checking isn't.
@@ -722,6 +733,7 @@ class IntervalTree(object):
         Shortcut for (Interval(begin, end, data) in tree).
         
         Completes in O(1) time.
+        :rtype: bool
         """
         return Interval(begin, end, data) in self
     
@@ -730,6 +742,7 @@ class IntervalTree(object):
         Returns an iterator over all the intervals in the tree.
         
         Completes in O(1) time.
+        :rtype: collections.Iterable[Interval]
         """
         return self.all_intervals.__iter__()
     iter = __iter__
@@ -739,6 +752,7 @@ class IntervalTree(object):
         Returns how many intervals are in the tree.
         
         Completes in O(1) time.
+        :rtype: int
         """
         return len(self.all_intervals)
     
@@ -747,6 +761,7 @@ class IntervalTree(object):
         Whether two IntervalTrees are equal.
         
         Completes in O(n) time if sizes are equal; O(1) time otherwise.
+        :rtype: bool
         """
         return (
             isinstance(other, IntervalTree) and 
@@ -765,5 +780,6 @@ class IntervalTree(object):
     def __reduce__(self):
         """
         For pickle-ing.
+        :rtype: tuple
         """
         return IntervalTree, (sorted(self.all_intervals),)
