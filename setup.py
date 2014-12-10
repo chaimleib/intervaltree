@@ -36,7 +36,7 @@ pandoc.PANDOC_PATH = 'pandoc'  # until pyandoc gets updated
 
 
 ## CONFIG
-version = '1.0.1'
+version = '1.0.2'
 create_rst = True
 
 
