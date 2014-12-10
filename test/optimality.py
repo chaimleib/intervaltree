@@ -21,6 +21,7 @@ limitations under the License.
 from __future__ import absolute_import
 from intervaltree import IntervalTree
 import test.intervals as intervals
+from copy import deepcopy
 from pprint import pprint
 try:
     xrange
@@ -40,7 +41,9 @@ TEST_TYPES = [
 ]
 
 class OptimalityTestMatrix(object):
-    def __init__(self, ivs_names=None):
+    def __init__(self, ivs_names=None, verbose=False):
+        self.verbose = verbose
+
         # set test_tupes
         self.test_types = {}
         tests = [
@@ -77,6 +80,7 @@ class OptimalityTestMatrix(object):
             self.result_matrix['ivs name'][name] = {}
         for name in self.test_types:
             self.result_matrix['test type'][name] = {}
+        self.summary_matrix = deepcopy(self.result_matrix)
 
     def bind_test_function(self, function_name):
         function = getattr(self.__class__, function_name)
@@ -108,31 +112,39 @@ class OptimalityTestMatrix(object):
         def awb(report):
             assert isinstance(report, dict)
             cumulatives = [test['_cumulative'] for test in report.values()]
-            report.update({
+            return {
                 '_average': sum(cumulatives) / len(cumulatives),
                 '_worst': max(cumulatives),
                 '_best': min(cumulatives),
-            })
+            }
         for report_type in self.result_matrix:
-            for report in self.result_matrix[report_type].values():
-                awb(report)
+            for name, report in self.result_matrix[report_type].items():
+                self.summary_matrix[report_type][name] = awb(report)
         return self.result_matrix
 
 
     def run(self):
         for test_name, test in self.test_types.items():
             for ivs_name, ivs in self.ivs.items():
-                print("{0}: {1}".format(ivs_name, test_name))
                 tree = test(ivs)
-                tree.print_structure()
-
                 score = tree.score(True)
+
+                if self.verbose:
+                    print("{0}: {1}".format(ivs_name, test_name))
+                    tree.print_structure()
+
                 self.register_score(ivs_name, test_name, score)
 
-        return self.summarize()
-
+        self.summarize()
+        results = {
+            'summary': self.summary_matrix,
+            'results': self.result_matrix,
+        }
+        return results
 
 
 if __name__ == "__main__":
     matrix = OptimalityTestMatrix()
-    pprint(matrix.run())
+    matrix.run()
+    pprint(matrix.summary_matrix)
+    pprint(matrix.result_matrix)
