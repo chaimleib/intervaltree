@@ -76,6 +76,7 @@ def nogaps_rand(size=100, labels=False):
     """
     Create a random list of Intervals with no gaps or overlaps
     between the intervals.
+    :rtype: list of Intervals
     """
     cur = -50
     ivs = []
@@ -90,6 +91,8 @@ def gaps_rand(size=100, labels=False):
     """
     Create a random list of intervals  with random gaps, but no
     overlaps between the intervals.
+
+    :rtype: list of Intervals
     """
     cur = -50
     ivs = []
@@ -137,4 +140,9 @@ def write_ivs_data(name, ivs, imports=None, docstring=''):
 
 
 if __name__ == '__main__':
+#     ivs = gaps_rand()
+#     write_ivs_data('ivs3', ivs, docstring="""
+# Random integer ranges, with gaps.
+# """
+#     )
     pprint(ivs_data)
