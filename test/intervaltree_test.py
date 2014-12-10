@@ -230,7 +230,7 @@ def test_basic_structuring():
     t.verify()
     orig = t.print_structure(True)
         
-    assert orig == """
+    assert orig == """\
 Node<8, depth=3, balance=0>
  Interval(5, 9, '[5,9)')
  Interval(6, 10, '[6,10)')
@@ -246,7 +246,7 @@ Node<8, depth=3, balance=0>
          Interval(10, 12, '[10,12)')
     >:  Node<14, depth=1, balance=0>
          Interval(14, 15, '[14,15)')
-"""[1:]
+"""
 
 
 def test_queries():
