@@ -23,6 +23,7 @@ limitations under the License.
 """
 import sys
 import os
+import subprocess
 import errno
 from warnings import warn
 from setuptools import setup, find_packages
@@ -36,8 +37,19 @@ except ImportError as e:
 pandoc.PANDOC_PATH = 'pandoc'  # until pyandoc gets updated
 
 
+def development_version():
+    p = subprocess.Popen('git describe'.split(), stdout=subprocess.PIPE)
+    version = p.communicate()[0].strip()
+    return version
+
+
 ## CONFIG
 version = '1.1.0'
+if 'PYPI' in os.environ and os.environ['PYPI'] == 'pypitest':
+    dev_version = development_version() + '-%s' % version
+    version = dev_version
+print('Version %s' % version)
+
 create_rst = True
 
 
