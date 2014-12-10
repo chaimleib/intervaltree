@@ -524,8 +524,8 @@ class Node(object):
         :rtype: int
         """
         count = 1
-        if self.left_branch:
-            count += self.left_branch.count_nodes()
+        if self.left_node:
+            count += self.left_node.count_nodes()
         if self.right_node:
             count += self.right_node.count_nodes()
         return count
