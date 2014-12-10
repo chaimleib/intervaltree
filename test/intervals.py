@@ -79,3 +79,22 @@ def gaps_rand(size=100, labels=False):
         ivs.append(make_iv(cur, cur + length, labels))
         cur += length
     return ivs
+
+
+def write_ivs_data(name, ivs, imports=None):
+    data = [tuple(iv) for iv in ivs]
+    with open('test/data/{0}.py'.format(name), 'w') as f:
+        if isinstance(imports, basestring):
+            f.write(imports)
+            f.write('\n\n')
+        elif isinstance(imports, (list, tuple, set)):
+            for line in imports:
+                f.write(line + '\n')
+            f.write('\n')
+
+        f.write('data = \\\n')
+        pprint(data, f)
+
+
+if __name__ == '__main__':
+    write_ivs_data('ivs1', ivs1())
