@@ -12,7 +12,7 @@ where the intervals include the lower bound but not the upper bound.
 Installing
 ----------
 
-::
+.. code:: sh
 
     pip install intervaltree
 
@@ -24,68 +24,69 @@ Features
    n).
 -  Insertions
 
--  ``tree[begin:end] = data``
--  ``tree.add(interval)``
--  ``tree.addi(begin, end, data)``
--  ``tree.extend(list_of_interval_objs)``
+   -  ``tree[begin:end] = data``
+   -  ``tree.add(interval)``
+   -  ``tree.addi(begin, end, data)``
+   -  ``tree.extend(list_of_interval_objs)``
 
 -  Deletions
 
--  ``tree.remove(interval)`` (raises ``ValueError`` if not present)
--  ``tree.discard(interval)`` (quiet if not present)
--  ``tree.removei(begin, end, data)`` (short for
-   ``tree.remove(Interval(begin, end, data))``)
--  ``tree.discardi(begin, end, data)`` (short for
-   ``tree.discard(Interval(begin, end, data))``)
--  ``tree.remove_overlap(point)``
--  ``tree.remove_overlap(begin, end)`` (removes all overlapping the
-   range)
--  ``tree.remove_envelop(begin, end)`` (removes all enveloped in the
-   range)
+   -  ``tree.remove(interval)`` (raises ``ValueError`` if not present)
+   -  ``tree.discard(interval)`` (quiet if not present)
+   -  ``tree.removei(begin, end, data)`` (short for
+      ``tree.remove(Interval(begin, end, data))``)
+   -  ``tree.discardi(begin, end, data)`` (short for
+      ``tree.discard(Interval(begin, end, data))``)
+   -  ``tree.remove_overlap(point)``
+   -  ``tree.remove_overlap(begin, end)`` (removes all overlapping the
+      range)
+   -  ``tree.remove_envelop(begin, end)`` (removes all enveloped in the
+      range)
 
 -  Overlap queries:
 
--  ``tree[point]``
--  ``tree[begin, end]``
--  ``tree.search(point)``
--  ``tree.search(begin, end)``
+   -  ``tree[point]``
+   -  ``tree[begin, end]``
+   -  ``tree.search(point)``
+   -  ``tree.search(begin, end)``
 
 -  Envelop queries:
 
--  ``tree.search(begin, end, strict=True)``
+   -  ``tree.search(begin, end, strict=True)``
 
 -  Membership queries:
 
--  ``interval_obj in tree`` (this is fastest, O(1))
--  ``tree.containsi(begin, end, data)``
--  ``tree.overlaps(point)``
--  ``tree.overlaps(begin, end)``
+   -  ``interval_obj in tree`` (this is fastest, O(1))
+   -  ``tree.containsi(begin, end, data)``
+   -  ``tree.overlaps(point)``
+   -  ``tree.overlaps(begin, end)``
 
 -  Iterable:
 
--  ``for interval_obj in tree:``
--  ``tree.items()``
+   -  ``for interval_obj in tree:``
+   -  ``tree.items()``
 
 -  Sizing:
 
--  ``len(tree)``
--  ``tree.is_empty()``
--  ``not tree``
--  ``tree.begin()`` (the ``begin`` coordinate of the leftmost interval)
--  ``tree.end()`` (the ``end`` coordinate of the rightmost interval)
+   -  ``len(tree)``
+   -  ``tree.is_empty()``
+   -  ``not tree``
+   -  ``tree.begin()`` (the ``begin`` coordinate of the leftmost
+      interval)
+   -  ``tree.end()`` (the ``end`` coordinate of the rightmost interval)
 
 -  Restructuring
 
--  ``split_overlaps()``
+   -  ``split_overlaps()``
 
 -  Copy- and typecast-able:
 
--  ``IntervalTree(tree)`` (``Interval`` objects are same as those in
-   tree)
--  ``tree.copy()`` (``Interval`` objects are shallow copies of those in
-   tree)
--  ``set(tree)`` (can later be fed into ``IntervalTree()``)
--  ``list(tree)`` (ditto)
+   -  ``IntervalTree(tree)`` (``Interval`` objects are same as those in
+      tree)
+   -  ``tree.copy()`` (``Interval`` objects are shallow copies of those
+      in tree)
+   -  ``set(tree)`` (can later be fed into ``IntervalTree()``)
+   -  ``list(tree)`` (ditto)
 
 -  Equal-able
 -  Pickle-friendly
@@ -96,14 +97,14 @@ Examples
 
 -  Getting started
 
-   ::
+   .. code:: python
 
        from intervaltree import Interval, IntervalTree
        t = IntervalTree()
 
 -  Adding intervals - any object works!
 
-   ::
+   .. code:: python
 
        t[1:2] = "1-2"
        t[4:7] = (4, 7)
@@ -111,14 +112,14 @@ Examples
 
 -  Query by point
 
-   ::
+   .. code:: python
 
        ivs = t[6]            # set([Interval(4, 7, (4, 7)), Interval(5, 9, {5: 9})])
        iv = sorted(ivs)[0]   # Interval(4, 7, (4, 7))
 
 -  Accessing an ``Interval`` object
 
-   ::
+   .. code:: python
 
        iv.begin  # 4
        iv.end    # 7
@@ -126,39 +127,39 @@ Examples
 
 -  Query by range
 
-Note that ranges are inclusive of the lower limit, but non-inclusive of
-the upper limit. So:
+   Note that ranges are inclusive of the lower limit, but non-inclusive
+   of the upper limit. So:
 
-::
+   .. code:: python
 
-        t[2:4]    # set()
+       t[2:4]    # set()
 
-But:
+   But:
 
-::
+   .. code:: python
 
-        t[1:5]    # set([Interval(1, 2, '1-2'), Interval(4, 7, (4, 7))])
+       t[1:5]    # set([Interval(1, 2, '1-2'), Interval(4, 7, (4, 7))])
 
 -  Constructing from lists of ``Interval``\ s
 
-We could have made a similar tree this way:
+   We could have made a similar tree this way:
 
-::
+   .. code:: python
 
-        ivs = [(1, 2), (4, 7), (5, 9)]
-        t = IntervalTree(
-            Interval(begin, end, "%d-%d" % (begin, end)) for begin, end in ivs
-        )
+       ivs = [(1, 2), (4, 7), (5, 9)]
+       t = IntervalTree(
+           Interval(begin, end, "%d-%d" % (begin, end)) for begin, end in ivs
+       )
 
-Or, if we don't need the data fields:
+   Or, if we don't need the data fields:
 
-::
+   .. code:: python
 
-        t = IntervalTree(Interval(*iv) for iv in ivs)
+       t = IntervalTree(Interval(*iv) for iv in ivs)
 
 -  Removing intervals
 
-   ::
+   .. code:: python
 
        t.remove( Interval(1, 2, "1-2") )
        list(t)     # [Interval(4, 7, '4-7'), Interval(5, 9, '5-9')]
@@ -169,12 +170,12 @@ Or, if we don't need the data fields:
        t.remove_overlap(5)
        list(t)     # []
 
-We could also empty a tree by removing all intervals, from the lowest
-bound to the highest bound of the ``IntervalTree``:
+   We could also empty a tree by removing all intervals, from the lowest
+   bound to the highest bound of the ``IntervalTree``:
 
-::
+   .. code:: python
 
-        t.remove_overlap(t.begin(), t.end())
+       t.remove_overlap(t.begin(), t.end())
 
 Future improvements
 -------------------
@@ -193,5 +194,10 @@ Based on
 Copyright
 ---------
 
--  Chaim-Leib Halbert, 2014
+-  Chaim-Leib Halbert, 2013-2014
+-  Modifications, Konstantin Tretyakov, 2014
 
+Licensed under the Apache License, version 2.0.
+
+The source code for this project is at
+https://github.com/chaimleib/intervaltree
