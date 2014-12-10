@@ -25,25 +25,32 @@ from os import listdir
 from os.path import join
 from random import randint, choice
 
+
+def from_import(module, member):
+    """
+    Like `from module import number`, but returns the imported member.
+    """
+    # print('from {0} import {1}'.format(module, member))
+    module = __import__(module, fromlist=[member])
+    return getattr(module, member)
+
+
+def ivs_names():
+    """
+    Get the names of the modules containing our interval data.
+    """
+    data_dir = join(from_import('test', 'data').__path__)[0]
+    modules = [
+        module[:-len('.py')] for module in listdir(data_dir)
+        if
+        module.startswith(('ivs')) and module.endswith('.py')
+    ]
+    return modules
+
+
 def load_ivs_data():
     """Import data from test/data to construct our intervals"""
     result = {}
-    def from_import(module, member):
-        # print('from {0} import {1}'.format(module, member))
-        module = __import__(module, fromlist=[member])
-        return getattr(module, member)
-
-    def ivs_names():
-        """
-        Get the names of the modules containing our interval data.
-        """
-        data_dir = join(from_import('test', 'data').__path__)[0]
-        modules = [
-            module[:-len('.py')] for module in listdir(data_dir)
-            if
-            module.startswith(('ivs')) and module.endswith('.py')
-        ]
-        return modules
 
     # pprint(ivs_names())
     for module in ivs_names():
@@ -106,9 +113,23 @@ def gaps_rand(size=100, labels=False):
     return ivs
 
 
-def write_ivs_data(name, ivs, imports=None):
+def write_ivs_data(name, ivs, imports=None, docstring=''):
+    def trepr(s):
+        """Like repr, but triple-quoted. NOT perfect!"""
+        text = '\n'.join([repr(line)[1:-1] for line in s.split('\n')])
+        quotes, dquotes = "'''", '"""'
+        if quotes in text:
+            if dquotes in text:
+                text = text.replace(quotes, "\\'\\'\\'")
+            else:
+                quotes = dquotes
+        return "%s%s%s" % (quotes, text, quotes)
+
     data = [tuple(iv) for iv in ivs]
     with open('test/data/{0}.py'.format(name), 'w') as f:
+        if docstring:
+            f.write(trepr(docstring))
+            f.write('\n')
         if isinstance(imports, basestring):
             f.write(imports)
             f.write('\n\n')
@@ -122,5 +143,4 @@ def write_ivs_data(name, ivs, imports=None):
 
 
 if __name__ == '__main__':
-    #write_ivs_data('ivs2', nogaps_rand())
     pprint(ivs_data)
