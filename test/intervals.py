@@ -54,7 +54,8 @@ def load_ivs_data():
 
     # pprint(ivs_names())
     for module in ivs_names():
-        result[module] = from_import('test.data.' + module, 'data')
+        iv_tuples = from_import('test.data.' + module, 'data')
+        result[module] = [Interval(*item) for item in iv_tuples]
     return result
 
 ivs_data = load_ivs_data()
