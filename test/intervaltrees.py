@@ -2,7 +2,7 @@
 intervaltree: A mutable, self-balancing interval tree for Python 2 and 3.
 Queries may be by point, by range overlap, or by range envelopment.
 
-Test module: test utilities
+Test module: utilities to generate test trees
 
 Copyright 2013-2014 Chaim-Leib Halbert
 
@@ -21,18 +21,11 @@ limitations under the License.
 from __future__ import absolute_import
 from intervaltree import Interval, IntervalTree
 from pprint import pprint
-from random import randint, choice
+import test.intervals as intervals
 try:
     xrange
 except NameError:
     xrange = range
-
-
-def make_iv(begin, end, label=False):
-    if label:
-        return Interval(begin, end, "[{0},{1})".format(begin, end))
-    else:
-        return Interval(begin, end)
 
 
 def sdata(s):
@@ -44,17 +37,7 @@ def sdata(s):
 
 def tree1():
     """Sample IntervalTree for tests."""
-    ivs = [make_iv(*iv, label=True) for iv in [
-        [1, 2],
-        [4, 7],
-        [5, 9],
-        [6, 10],
-        [8, 10],
-        [8, 15],
-        [10, 12],
-        [12, 14],
-        [14, 15],
-    ]]
+    ivs = intervals.ivs1()
     t = IntervalTree(ivs)
     return t
 
@@ -64,13 +47,7 @@ def nogaps_rand(size=100, labels=False):
     Create a random IntervalTree with no gaps or overlaps between
     the intervals.
     """
-    cur = -50
-    ivs = []
-    for i in xrange(size):
-        length = randint(1, 10)
-        ivs.append(make_iv(cur, cur + length, labels))
-        cur += length
-    return IntervalTree(ivs)
+    return IntervalTree(intervals.nogaps_rand(size, labels))
 
 
 def gaps_rand(size=100, labels=False):
@@ -78,16 +55,7 @@ def gaps_rand(size=100, labels=False):
     Create a random IntervalTree with random gaps, but no overlaps
     between the intervals.
     """
-    cur = -50
-    ivs = []
-    for i in xrange(size):
-        length = randint(1, 10)
-        if choice([True, False]):
-            cur += length
-            length = randint(1, 10)
-        ivs.append(make_iv(cur, cur + length, labels))
-        cur += length
-    return IntervalTree(ivs)
+    return IntervalTree(intervals.gaps_rand(size, labels))
 
 
 if __name__ == "__main__":
