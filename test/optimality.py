@@ -59,7 +59,7 @@ class OptimalityTestMatrix(object):
             self.test_types[name] = test_function
 
         # set ivs
-        self.ivs = deepcopy(intervals.ivs_data)
+        self.ivs = intervals.ivs_data.copy()
 
         # set result matrix
         self.result_matrix = {
