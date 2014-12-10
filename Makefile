@@ -62,7 +62,7 @@ uninstall:
 
 # Convert README to rst and check the result
 rst: pydocutils pyandoc
-	python setup.py check --restructuredtext --strict
+	python setup.py check --restructuredtext
 	@echo "README is ready for PyPI"
 
 # Register at PyPI
