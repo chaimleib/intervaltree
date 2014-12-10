@@ -21,11 +21,32 @@ limitations under the License.
 from __future__ import absolute_import
 from intervaltree import Interval
 from pprint import pprint
+from os import listdir
+from os.path import join
 from random import randint, choice
-try:
-    xrange
-except NameError:
-    xrange = range
+
+# import data to construct our intervals
+def from_import(module, member):
+    print('from {0} import {1}'.format(module, member))
+    module = __import__(module, fromlist=[member])
+    return getattr(module, member)
+
+def ivs_names():
+    """
+    Get the names of the modules containing our interval data.
+    """
+    data_dir = join(from_import('test', 'data').__path__)[0]
+    modules = [
+        module[:-len('.py')] for module in listdir(data_dir)
+        if
+        module.startswith(('ivs')) and module.endswith('.py')
+    ]
+    return modules
+
+ivs_data = {}
+pprint(ivs_names())
+for module in ivs_names():
+    ivs_data[module] = from_import('test.data.' + module, 'data')
 
 
 def make_iv(begin, end, label=False):
@@ -97,4 +118,5 @@ def write_ivs_data(name, ivs, imports=None):
 
 
 if __name__ == '__main__':
-    write_ivs_data('ivs1', ivs1())
+    #write_ivs_data('ivs1', ivs1())
+    pprint(ivs_data)
