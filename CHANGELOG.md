@@ -1,9 +1,11 @@
 Change log
 ==========
 
-Version 1.0.3
+Version 1.1.0
 -------------
-- Added documentation on return types to `IntervalTree`
+- Added documentation on return types to `IntervalTree` and `Interval`
+- Added ability to use `Interval.distance_to()` with points, not just `Intervals`
+- `Interval.__cmp__()` works with points too
 - Fix: `IntervalTree.score()` returned maximum score of 0.5 instead of 1.0. Now returns max of subscores instead of avg
 - Internal improvements:
     - Optimality tests added
