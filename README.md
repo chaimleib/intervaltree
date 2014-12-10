@@ -10,7 +10,9 @@ This library was designed to allow tagging text and time intervals, where the in
 Installing
 ----------
 
-    pip install intervaltree
+```sh
+pip install intervaltree
+```
 
 Features
 --------
