@@ -180,7 +180,9 @@ Based on
 
 Copyright
 ---------
-* [Chaim-Leib Halbert][GH], 2014
+
+* [Chaim-Leib Halbert][GH], 2013-2014
+* Modifications, [Konstantin Tretyakov][Konstantin intervaltree], 2014
 
 
 [build status badge]: https://travis-ci.org/chaimleib/intervaltree.svg?branch=master
