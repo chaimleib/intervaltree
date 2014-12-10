@@ -431,6 +431,7 @@ class IntervalTree(object):
         
         Completes in O(r*log n) time, where r is the size of the
         search range.
+        :rtype: bool
         """
         if end is not None:
             return self.overlaps_range(begin, end)
@@ -444,6 +445,7 @@ class IntervalTree(object):
         Returns whether some interval in the tree overlaps p.
         
         Completes in O(log n) time.
+        :rtype: bool
         """
         if self.is_empty():
             return False
@@ -456,6 +458,7 @@ class IntervalTree(object):
         
         Completes in O(r*log n) time, where r is the range length and n
         is the table size.
+        :rtype: bool
         """
         if self.is_empty():
             return False
@@ -769,6 +772,9 @@ class IntervalTree(object):
         )
     
     def __repr__(self):
+        """
+        :rtype: str
+        """
         ivs = sorted(self)
         if not ivs:
             return "IntervalTree()"
