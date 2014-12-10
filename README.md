@@ -184,6 +184,10 @@ Copyright
 * [Chaim-Leib Halbert][GH], 2013-2014
 * Modifications, [Konstantin Tretyakov][Konstantin intervaltree], 2014
 
+Licensed under the [Apache License, version 2.0][Apache].
+
+The source code for this project is at https://github.com/chaimleib/intervaltree
+
 
 [build status badge]: https://travis-ci.org/chaimleib/intervaltree.svg?branch=master
 [build status]: https://travis-ci.org/chaimleib/intervaltree
@@ -194,4 +198,4 @@ Copyright
 [Wiki intervaltree]: http://en.wikipedia.org/wiki/Interval_tree
 [Kahn intervaltree]: http://zurb.com/forrst/posts/Interval_Tree_implementation_in_python-e0K
 [Kahn intervaltree GH]: https://github.com/tylerkahn/intervaltree-python
-
+[Apache]: http://www.apache.org/licenses/LICENSE-2.0
