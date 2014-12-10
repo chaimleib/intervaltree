@@ -24,6 +24,10 @@ from pprint import pprint
 from os import listdir
 from os.path import join
 from random import randint, choice
+try:
+    xrange
+except NameError:
+    xrange = range
 
 
 def from_import(module, member):
@@ -43,7 +47,7 @@ def ivs_names():
     modules = [
         module[:-len('.py')] for module in listdir(data_dir)
         if
-        module.startswith(('ivs')) and module.endswith('.py')
+        module.startswith('ivs') and module.endswith('.py')
     ]
     return modules
 
@@ -120,7 +124,7 @@ def write_ivs_data(name, ivs, imports=None, docstring=''):
         if docstring:
             f.write(trepr(docstring))
             f.write('\n')
-        if isinstance(imports, basestring):
+        if isinstance(imports, (str, unicode)):
             f.write(imports)
             f.write('\n\n')
         elif isinstance(imports, (list, tuple, set)):
