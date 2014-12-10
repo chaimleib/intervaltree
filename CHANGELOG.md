@@ -1,6 +1,10 @@
 Change log
 ==========
 
+Version 1.1.0
+-------------
+- Fix: `IntervalTree.score()` returned maximum score of 0.5 instead of 1.0. Now returns max of subscores instead of avg
+
 Version 1.0.2
 -------------
 -Bug fixes:

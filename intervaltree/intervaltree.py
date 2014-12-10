@@ -669,7 +669,7 @@ class IntervalTree(object):
             "depth": self.top_node.depth_score(n, m),
             "s_center": s_center_score(),
         }
-        cumulative = sum(report.values()) / len(report)
+        cumulative = max(report.values())
         report["_cumulative"] = cumulative
         if full_report:
             return report
