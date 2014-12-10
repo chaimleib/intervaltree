@@ -68,21 +68,6 @@ def make_iv(begin, end, label=False):
         return Interval(begin, end)
 
 
-def ivs1():
-    """Sample list of intervals for tests."""
-    ivs = [make_iv(*iv, label=True) for iv in [
-        [1, 2],
-        [4, 7],
-        [5, 9],
-        [6, 10],
-        [8, 10],
-        [8, 15],
-        [10, 12],
-        [12, 14],
-        [14, 15],
-    ]]
-    return ivs
-
 def nogaps_rand(size=100, labels=False):
     """
     Create a random list of Intervals with no gaps or overlaps

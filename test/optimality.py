@@ -129,4 +129,4 @@ if __name__ == "__main__":
     matrix = OptimalityTestMatrix()
     matrix.run()
     pprint(matrix.summary_matrix)
-    pprint(matrix.result_matrix)
+    # pprint(matrix.result_matrix)
