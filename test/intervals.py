@@ -25,8 +25,8 @@ from os import listdir
 from os.path import join
 from random import randint, choice
 
-# import data to construct our intervals
 def load_ivs_data():
+    """Import data from test/data to construct our intervals"""
     result = {}
     def from_import(module, member):
         # print('from {0} import {1}'.format(module, member))
