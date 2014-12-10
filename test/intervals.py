@@ -115,7 +115,11 @@ def gaps_rand(size=100, labels=False):
 
 def write_ivs_data(name, ivs, imports=None, docstring=''):
     def trepr(s):
-        """Like repr, but triple-quoted. NOT perfect!"""
+        """
+        Like repr, but triple-quoted. NOT perfect!
+
+        Taken from http://compgroups.net/comp.lang.python/re-triple-quoted-repr/1635367
+        """
         text = '\n'.join([repr(line)[1:-1] for line in s.split('\n')])
         quotes, dquotes = "'''", '"""'
         if quotes in text:
