@@ -6,7 +6,7 @@ Version 1.0.2
 -Bug fixes:
     - `Node.depth_score_helper()` raised `AttributeError`
     - README formatting
-    
+
 Version 1.0.1
 -------------
 - Fix: pip install failure because of failure to generate README.rst
