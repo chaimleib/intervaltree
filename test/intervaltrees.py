@@ -28,18 +28,16 @@ except NameError:
     xrange = range
 
 
+trees = intervals.ivs_data.copy()
+for name, ivs in trees.items():
+    trees[name] = IntervalTree(ivs).copy
+
+
 def sdata(s):
     """
     Makes a set of all data fields in an interable of Intervals.
     """
     return set(iv.data for iv in s)
-
-
-def tree1():
-    """Sample IntervalTree for tests."""
-    ivs = intervals.ivs1()
-    t = IntervalTree(ivs)
-    return t
 
 
 def nogaps_rand(size=100, labels=False):

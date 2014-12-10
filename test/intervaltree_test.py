@@ -21,7 +21,7 @@ limitations under the License.
 from __future__ import absolute_import
 import pytest
 from intervaltree import Interval, IntervalTree
-from .intervaltrees import tree1, sdata
+from .intervaltrees import trees, sdata
 from pprint import pprint
 try:
     import cPickle as pickle
@@ -227,7 +227,7 @@ def test_init_invalid_interval():
 
 # TODO: replace this with optimality test
 def test_basic_structuring():
-    t = tree1()
+    t = trees['ivs1']()
     t.verify()
     orig = t.print_structure(True)
         
@@ -251,7 +251,7 @@ Node<8, depth=3, balance=0>
 
 
 def test_queries():
-    t = tree1()
+    t = trees['ivs1']()
 
     assert sdata(t[4]) == set(['[4,7)'])
     assert sdata(t[4:5]) == set(['[4,7)'])
@@ -263,7 +263,7 @@ def test_queries():
     
 
 def test_membership():
-    t = tree1()
+    t = trees['ivs1']()
     assert Interval(1, 2, '[1,2)') in t
     assert Interval(1, 3, '[1,3)') not in t
     assert t.overlaps(4)
@@ -279,7 +279,7 @@ def test_membership():
 
 
 def test_insert_to_filled_tree():
-    t = tree1()
+    t = trees['ivs1']()
     orig = t.print_structure(True)  # original structure record
 
     assert sdata(t[1]) == set(['[1,2)'])
@@ -302,7 +302,7 @@ def test_insert_to_filled_tree():
 
 
 def test_duplicates():
-    t = tree1()
+    t = trees['ivs1']()
 
     t.add(Interval(14, 15, '[14,15)####'))
     assert sdata(t[14]) == set(['[8,15)', '[14,15)', '[14,15)####'])
@@ -310,7 +310,7 @@ def test_duplicates():
 
 
 def test_copy_cast():
-    t = tree1()
+    t = trees['ivs1']()
 
     tcopy = IntervalTree(t)
     tcopy.verify()
@@ -327,7 +327,7 @@ def test_copy_cast():
 
 
 def test_delete():
-    t = tree1()
+    t = trees['ivs1']()
     try:
         t.remove(Interval(1, 3, "Doesn't exist"))
     except ValueError:
@@ -364,7 +364,7 @@ def test_delete():
 
 
 def test_emptying():
-    t = tree1()
+    t = trees['ivs1']()
 
     for iv in sorted(iter(t)):
         t.remove(iv)
@@ -375,7 +375,7 @@ def test_emptying():
 
 
 def test_remove_overlap():
-    t = tree1()
+    t = trees['ivs1']()
     assert t[1]
     t.remove_overlap(1)
     assert not t[1]
@@ -388,7 +388,7 @@ def test_remove_overlap():
 
 
 def test_split_overlap():
-    t = tree1()
+    t = trees['ivs1']()
 
     t.split_overlaps()
     t.verify()
@@ -402,7 +402,7 @@ def test_split_overlap():
 
 
 def test_pickle():
-    t = tree1()
+    t = trees['ivs1']()
 
     p = pickle.dumps(t)
     t2 = pickle.loads(p)
