@@ -57,4 +57,4 @@ def gaps_rand(size=100, labels=False):
 
 
 if __name__ == "__main__":
-    pprint(gaps_rand(labels=False))
+    trees['ivs3']().print_structure()

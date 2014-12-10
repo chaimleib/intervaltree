@@ -49,7 +49,7 @@ class OptimalityTestMatrix(object):
 
         # set ivs
         self.ivs = intervals.ivs_data.copy()
-        for name in self.ivs.keys():
+        for name in list(self.ivs):
             if 'copy_structure' in name:
                 del self.ivs[name]
 
@@ -124,9 +124,28 @@ class OptimalityTestMatrix(object):
         }
         return results
 
+matrix = OptimalityTestMatrix()
+matrix.run()
+
+def test_ivs2():
+    """
+    No gaps, no overlaps.
+    """
+    report = matrix.result_matrix['ivs name']['ivs2']
+    assert 0.0 == report['add ascending']['_cumulative']
+    assert 0.0 == report['add descending']['_cumulative']
+    assert 0.0 == report['init']['_cumulative']
+
+def test_ivs3():
+    """
+    Gaps, no overlaps.
+    """
+    report = matrix.result_matrix['ivs name']['ivs2']
+    assert 0.0 == report['add ascending']['_cumulative']
+    assert 0.0 == report['add descending']['_cumulative']
+    assert 0.0 == report['init']['_cumulative']
+
 
 if __name__ == "__main__":
-    matrix = OptimalityTestMatrix()
-    matrix.run()
     pprint(matrix.summary_matrix)
-    # pprint(matrix.result_matrix)
+    pprint(matrix.result_matrix)
