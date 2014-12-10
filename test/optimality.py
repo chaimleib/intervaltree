@@ -59,17 +59,7 @@ class OptimalityTestMatrix(object):
             self.test_types[name] = test_function
 
         # set ivs
-        self.ivs = {}
-        if not ivs_names:
-            ivs_names = [
-                name for name in intervals.__dict__
-                if
-                callable(getattr(intervals, name)) and
-                name.startswith('ivs')
-            ]
-        for name in ivs_names:
-            generate_ivs =  getattr(intervals, name)
-            self.ivs[name] = generate_ivs()
+        self.ivs = deepcopy(intervals.ivs_data)
 
         # set result matrix
         self.result_matrix = {
