@@ -26,27 +26,31 @@ from os.path import join
 from random import randint, choice
 
 # import data to construct our intervals
-def from_import(module, member):
-    print('from {0} import {1}'.format(module, member))
-    module = __import__(module, fromlist=[member])
-    return getattr(module, member)
+def load_ivs_data():
+    result = {}
+    def from_import(module, member):
+        # print('from {0} import {1}'.format(module, member))
+        module = __import__(module, fromlist=[member])
+        return getattr(module, member)
 
-def ivs_names():
-    """
-    Get the names of the modules containing our interval data.
-    """
-    data_dir = join(from_import('test', 'data').__path__)[0]
-    modules = [
-        module[:-len('.py')] for module in listdir(data_dir)
-        if
-        module.startswith(('ivs')) and module.endswith('.py')
-    ]
-    return modules
+    def ivs_names():
+        """
+        Get the names of the modules containing our interval data.
+        """
+        data_dir = join(from_import('test', 'data').__path__)[0]
+        modules = [
+            module[:-len('.py')] for module in listdir(data_dir)
+            if
+            module.startswith(('ivs')) and module.endswith('.py')
+        ]
+        return modules
 
-ivs_data = {}
-pprint(ivs_names())
-for module in ivs_names():
-    ivs_data[module] = from_import('test.data.' + module, 'data')
+    # pprint(ivs_names())
+    for module in ivs_names():
+        result[module] = from_import('test.data.' + module, 'data')
+    return result
+
+ivs_data = load_ivs_data()
 
 
 def make_iv(begin, end, label=False):
@@ -118,5 +122,5 @@ def write_ivs_data(name, ivs, imports=None):
 
 
 if __name__ == '__main__':
-    #write_ivs_data('ivs1', ivs1())
+    #write_ivs_data('ivs2', nogaps_rand())
     pprint(ivs_data)
