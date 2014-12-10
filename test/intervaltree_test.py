@@ -225,6 +225,7 @@ def test_init_invalid_interval():
         IntervalTree(Interval(b, e) for b, e in [(1, 2), (1, 1)])
 
 
+# TODO: replace this with optimality test
 def test_basic_structuring():
     t = tree1()
     t.verify()
