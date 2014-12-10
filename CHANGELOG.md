@@ -1,12 +1,10 @@
 Change log
 ==========
 
-Version 1.1.0
+Version 2.0.0
 -------------
-- Added documentation on return types to `IntervalTree`
-- Fix: `IntervalTree.score()` returned maximum score of 0.5 instead of 1.0. Now returns max of subscores instead of avg
-- Internal improvements:
-    - Optimality tests added
+- Bug fixes:
+    - BACKWARD INCOMPATIBLE:`Interval` no longer parrots `__cmp__()` when doing comparison with `<` and `>`. Returns `False` if ther is an overlap. Before, it returned sorting information, which is not always the same thing
 
 Version 1.0.2
 -------------

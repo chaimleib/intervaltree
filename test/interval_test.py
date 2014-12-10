@@ -130,6 +130,35 @@ def test_interval_overlaps_range():
     assert not iv0.overlaps(*iv9)
 
 
+def test_interval_comparisons():
+    iv = Interval(0, 10)
+
+    assert (iv > -5)
+    assert (-5 < iv)
+    assert not (iv < -5)
+    assert not (-5 > iv)
+
+    assert not (iv > 0)
+    assert not (0 < iv)
+    assert not (iv < 0)
+    assert not (0 > iv)
+
+    assert not (iv > 5)
+    assert not (5 < iv)
+    assert not (iv < 5)
+    assert not (5 > iv)
+
+    assert not (iv > 10)
+    assert not (10 < iv)
+    assert (iv < 10)
+    assert (10 > iv)
+
+    assert not (iv > 15)
+    assert not (15 < iv)
+    assert (iv < 15)
+    assert (15 > iv)
+
+
 if __name__ == "__main__":
     import pytest
     pytest.main([__file__, '-v'])
