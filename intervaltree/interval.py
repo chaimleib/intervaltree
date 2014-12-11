@@ -159,7 +159,7 @@ class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
         try:
             o = other[0:2]
         except:
-            o = other
+            o = (other,)
         if s != o:
             return -1 if s < o else 1
         try:
@@ -172,7 +172,8 @@ class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
             if s == o:
                 return 0
             return -1 if s < o else 1
-        
+
+
     def __lt__(self, other):
         """
         Less than operator. Returns False if there is an overlap.
