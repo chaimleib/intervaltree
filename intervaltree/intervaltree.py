@@ -191,7 +191,11 @@ class IntervalTree(object):
     Iteration::
 
         >>> tree = IntervalTree([Interval(-11, 11), Interval(-5, 15), Interval(5, 17)])
-        >>> [iv.begin for iv in sorted(tree)]
+
+    Note that as of 2.0.0, with the new behavior of the < operator, stable sorting
+    must be performed using Interval.sorted, or sorted(lst, key = Interval.key).
+
+        >>> [iv.begin for iv in Interval.sorted(tree)]
         [-11, -5, 5]
         >>> assert tree.items() == set([Interval(-5, 15), Interval(-11, 11), Interval(5, 17)])
 
@@ -418,7 +422,7 @@ class IntervalTree(object):
                     result[parent] = set()
                 result[parent].add(child)
                 
-        long_ivs = sorted(self.all_intervals, key=len, reverse=True)
+        long_ivs = sorted(self.all_intervals, key=Interval.length, reverse=True)
         for i, parent in enumerate(long_ivs):
             for child in long_ivs[i + 1:]:
                 add_if_nested()
@@ -775,7 +779,7 @@ class IntervalTree(object):
         """
         :rtype: str
         """
-        ivs = sorted(self)
+        ivs = Interval.sorted(self)
         if not ivs:
             return "IntervalTree()"
         else:
@@ -788,4 +792,4 @@ class IntervalTree(object):
         For pickle-ing.
         :rtype: tuple
         """
-        return IntervalTree, (sorted(self.all_intervals),)
+        return IntervalTree, (Interval.sorted(self.all_intervals),)

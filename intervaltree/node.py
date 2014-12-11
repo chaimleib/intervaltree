@@ -20,9 +20,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+from __future__ import absolute_import
 from operator import attrgetter
 from math import floor, log as lg
-
+from .interval import Interval
 
 def l2(num):
     """
@@ -60,7 +61,7 @@ class Node(object):
         if not intervals:
             return None
         node = Node()
-        node = node.init_from_sorted(sorted(intervals))
+        node = node.init_from_sorted(Interval.sorted(intervals))
         return node
 
     def init_from_sorted(self, intervals):
@@ -573,7 +574,7 @@ class Node(object):
 
         rlist = [str(self) + nl]
         if self.s_center:
-            for iv in sorted(self.s_center):
+            for iv in Interval.sorted(self.s_center):
                 rlist.append(sp + ' ' + repr(iv) + nl)
         if self.left_node:
             rlist.append(sp + '<:  ')  # no CR

@@ -21,10 +21,44 @@ limitations under the License.
 """
 from numbers import Number
 from collections import namedtuple
+from pprint import pprint
+try:
+    from functools import cmp_to_key
+except ImportError:
+    def cmp_to_key(mycmp):
+        """Convert a cmp= function into a key= function"""
+        class K(object):
+            def __init__(self, obj):
+                self.obj = obj
+
+            def __lt__(self, other):
+                return mycmp(self.obj, other.obj) < 0
+
+            def __gt__(self, other):
+                return mycmp(self.obj, other.obj) > 0
+
+            def __eq__(self, other):
+                return mycmp(self.obj, other.obj) == 0
+
+            def __le__(self, other):
+                return mycmp(self.obj, other.obj) <= 0
+
+            def __ge__(self, other):
+                return mycmp(self.obj, other.obj) >= 0
+
+            def __ne__(self, other):
+                return mycmp(self.obj, other.obj) != 0
+
+            def __hash__(self):
+                raise TypeError('hash not implemented')
+
+        return K
 
 
+# noinspection PyBroadException
 class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
     __slots__ = ()  # Saves memory, avoiding the need to create __dict__ for each interval
+
     def __new__(cls, begin, end, data=None):
         return super(Interval, cls).__new__(cls, begin, end, data)
     
@@ -172,6 +206,26 @@ class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
             if s == o:
                 return 0
             return -1 if s < o else 1
+    cmp = __cmp__
+
+    """
+    Sorting keys, for use in
+        sorted(list(...), key=Interval.key)
+
+    TODO: figure out a way that users don't have to specify the key.
+    http://stackoverflow.com/questions/27413491/python-sorting-intervals-with-cmp-with-lt-meaning-strictly-less-than
+    """
+    key = __key__ = cmp_to_key(cmp)
+
+
+    @classmethod
+    def sorted(cls, *args, **kwargs):
+        """
+        Same as sorted(lst, key=Interval.key).
+        :param lst: an iterable
+        :return: list of Interval
+        """
+        return sorted(*args, key=cls.key, **kwargs)
 
 
     def __lt__(self, other):

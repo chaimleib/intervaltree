@@ -19,7 +19,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from __future__ import absolute_import
-from intervaltree import IntervalTree
+from intervaltree import IntervalTree, Interval
 from test import intervals
 from copy import deepcopy
 from pprint import pprint
@@ -76,13 +76,13 @@ class OptimalityTestMatrix(object):
 
     def test_add_ascending(self, ivs):
         t = IntervalTree()
-        for iv in sorted(ivs):
+        for iv in Interval.sorted(ivs):
             t.add(iv)
         return t
 
     def test_add_descending(self, ivs):
         t = IntervalTree()
-        for iv in sorted(ivs, reverse=True):
+        for iv in Interval.sorted(ivs, reverse=True):
             t.add(iv)
         return t
 

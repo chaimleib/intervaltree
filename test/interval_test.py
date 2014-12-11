@@ -74,7 +74,7 @@ def test_length():
 
 def test_interval_overlaps_interval():
     iv0 = Interval(0, 10)
-    iv1 = Interval(-10, -1)
+    iv1 = Interval(-10, -5)
     iv2 = Interval(-10, 0)
     iv3 = Interval(-10, 5)
     iv4 = Interval(-10, 10)
@@ -108,7 +108,7 @@ def test_interval_overlaps_point():
 
 def test_interval_overlaps_range():
     iv0 = Interval(0, 10)
-    iv1 = (-10, -1)
+    iv1 = (-10, -5)
     iv2 = (-10, 0)
     iv3 = (-10, 5)
     iv4 = (-10, 10)
@@ -161,7 +161,7 @@ def test_interval_int_comparisons():
 
 def test_interval_cmp_interval():
     iv0 = Interval(0, 10)
-    iv1 = Interval(-10, -1)
+    iv1 = Interval(-10, -5)
     iv2 = Interval(-10, 0)
     iv3 = Interval(-10, 5)
     iv4 = Interval(-10, 10)
@@ -192,6 +192,31 @@ def test_interval_cmp_int():
     assert iv.__cmp__(10) == -1
     assert iv.__cmp__(15) == -1
 
+
+def test_interval_sort_interval():
+    base = Interval(0, 10)
+    ivs = [
+        Interval(-10, -5),
+        Interval(-10, 0),
+        Interval(-10, 5),
+        Interval(-10, 10),
+        Interval(-10, 20),
+        Interval(0, 20),
+        Interval(5, 20),
+        Interval(10, 20),
+        Interval(15, 20),
+    ]
+
+    for iv in ivs:
+        sort = sorted([base, iv], key=Interval.key)
+        isort = Interval.sorted([base, iv])
+        assert sort == isort
+        assert sort[0].__cmp__(sort[1]) in (-1, 0)
+
+        sort = sorted([iv, base], key=Interval.key)
+        isort = Interval.sorted([iv, base])
+        assert sort == isort
+        assert sort[0].__cmp__(sort[1]) in (-1, 0)
 
 if __name__ == "__main__":
     import pytest
