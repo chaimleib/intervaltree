@@ -82,7 +82,7 @@ def test_interval_overlaps_interval():
     iv6 = Interval(0, 20)
     iv7 = Interval(5, 20)
     iv8 = Interval(10, 20)
-    iv9 = Interval(15,20)
+    iv9 = Interval(15, 20)
 
     assert iv0.overlaps(iv0)
     assert not iv0.overlaps(iv1)
@@ -116,7 +116,7 @@ def test_interval_overlaps_range():
     iv6 = (0, 20)
     iv7 = (5, 20)
     iv8 = (10, 20)
-    iv9 = (15,20)
+    iv9 = (15, 20)
 
     assert iv0.overlaps(iv0)
     assert not iv0.overlaps(*iv1)
@@ -130,7 +130,7 @@ def test_interval_overlaps_range():
     assert not iv0.overlaps(*iv9)
 
 
-def test_interval_comparisons():
+def test_interval_int_comparisons():
     iv = Interval(0, 10)
 
     assert (iv > -5)
@@ -157,6 +157,40 @@ def test_interval_comparisons():
     assert not (15 < iv)
     assert (iv < 15)
     assert (15 > iv)
+
+
+def test_interval_cmp_interval():
+    iv0 = Interval(0, 10)
+    iv1 = Interval(-10, -1)
+    iv2 = Interval(-10, 0)
+    iv3 = Interval(-10, 5)
+    iv4 = Interval(-10, 10)
+    iv5 = Interval(-10, 20)
+    iv6 = Interval(0, 20)
+    iv7 = Interval(5, 20)
+    iv8 = Interval(10, 20)
+    iv9 = Interval(15, 20)
+
+    assert iv0.__cmp__(iv0) == 0
+    assert iv0.__cmp__(iv1) == 1
+    assert iv0.__cmp__(iv2) == 1
+    assert iv0.__cmp__(iv3) == 1
+    assert iv0.__cmp__(iv4) == 1
+    assert iv0.__cmp__(iv5) == 1
+    assert iv0.__cmp__(iv6) == -1
+    assert iv0.__cmp__(iv7) == -1
+    assert iv0.__cmp__(iv8) == -1
+    assert iv0.__cmp__(iv9) == -1
+
+
+def test_interval_cmp_int():
+    iv = Interval(0, 10)
+
+    assert iv.__cmp__(-5) == 1
+    assert iv.__cmp__(0) == 1
+    assert iv.__cmp__(5) == -1
+    assert iv.__cmp__(10) == -1
+    assert iv.__cmp__(15) == -1
 
 
 if __name__ == "__main__":
