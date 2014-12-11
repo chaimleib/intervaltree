@@ -247,9 +247,12 @@ class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
         return not self.overlaps(other) and self.begin > other
 
     def _get_fields(self):
-        """Used by str, unicode, repr and __reduce__.
+        """
+        Used by str, unicode, repr and __reduce__.
 
         Returns only the fields necessary to reconstruct the Interval.
+        :return: reconstruction info
+        :rtype: tuple
         """
         if self.data is not None:
             return self.begin, self.end, self.data
@@ -257,6 +260,11 @@ class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
             return self.begin, self.end
     
     def __repr__(self):
+        """
+        Executable string representation of this Interval.
+        :return: string representation
+        :rtype: str
+        """
         if isinstance(self.begin, Number):
             s_begin = str(self.begin)
             s_end = str(self.end)
@@ -271,10 +279,17 @@ class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
     __str__ = __repr__
 
     def copy(self):
+        """
+        Shallow copy.
+        :return: copy of self
+        :rtype: Interval
+        """
         return Interval(self.begin, self.end, self.data)
     
     def __reduce__(self):
         """
         For pickle-ing.
+        :return: pickle data
+        :rtype: tuple
         """
         return Interval, self._get_fields()

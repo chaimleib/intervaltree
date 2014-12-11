@@ -6,6 +6,17 @@ Version 2.0.0
 - Bug fixes:
     - BACKWARD INCOMPATIBLE:`Interval` no longer parrots `__cmp__()` when doing comparison with `<` and `>`. Returns `False` if ther is an overlap. Before, it returned sorting information, which is not always the same thing
 
+Version 1.1.0
+-------------
+- Added ability to use `Interval.distance_to()` with points, not just `Intervals`
+- Added documentation on return types to `IntervalTree` and `Interval`
+- `Interval.__cmp__()` works with points too
+- Fix: `IntervalTree.score()` returned maximum score of 0.5 instead of 1.0. Now returns max of subscores instead of avg
+- Internal improvements:
+    - Development version numbering scheme, based on `git describe` the "building towards" release is appended after a hyphen, eg. 1.0.2-37-g2da2ef0-1.10. The previous tagged release is 1.0.2, and there have been 37 commits since then, current tag is g2da2ef0, and we are getting ready for a 1.1.0 release
+    - Optimality tests added
+    - `Interval` overlap tests for ranges, `Interval`s and points added
+
 Version 1.0.2
 -------------
 -Bug fixes:
