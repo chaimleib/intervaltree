@@ -18,19 +18,17 @@ def write(s):
     sys.stdout.write(s)
     sys.stdout.flush()
 
-try:
-    from functools import lru_cache
-except ImportError:
-    from repoze.lru import lru_cache
-
 
 class ProgressBar(object):
-    def __init__(self, total, width=80, format=r'\i/\t \p% \b \ss', throttle=0.05):
+    def __init__(self, total, width=80, format=r'\i/\t \p% \b \ss', time_throttle=0.05, dynamic_throttle=True):
         self.i = 0
         self.total = total
 
+        # throttling
+        self.enamble_dynamic_throttle = dynamic_throttle  # TODO: dynamic rate-based throttle
+        self.time_throttle = time_throttle
+
         # time
-        self.throttle = throttle
         # clock starts ticking on first update call
         self.start_time = None
         self.now = None  # set later. make sure all numbers match, and for caching
@@ -61,7 +59,7 @@ class ProgressBar(object):
             self.last_output_time = self.start_time = now
         self.i += increment
 
-        should_output |= now - self.last_output_time > self.throttle
+        should_output |= now - self.last_output_time > self.time_throttle
         should_output |= self.i == self.total
         if should_output:
             self.last_output_time = now
@@ -165,32 +163,26 @@ class ProgressBar(object):
         ])
         return output
 
-    @lru_cache(1)
     def make_eta(self):
         return str(int(self.eta))
 
     @property
-    @lru_cache(1)
     def fraction(self):
         return self.i / self.total
 
     @property
-    @lru_cache(1)
     def elapsed(self, now):
         return self.now - self.start_time
 
     @property
-    @lru_cache(1)
     def int_elapsed(self):
         return int(self.elapsed)
 
     @property
-    @lru_cache(1)
     def rate(self):
         return self.i / self.elapsed
 
     @property
-    @lru_cache(1)
     def eta(self):
         remaining_fraction = 1 - self.fraction
         return remaining_fraction / self.rate
@@ -214,6 +206,7 @@ def _slow_test():
         pbar()
         sleep(0.5)
 
+
 def _fast_test():
     from time import sleep
     total = 5 * 10**4
@@ -221,7 +214,6 @@ def _fast_test():
     for i in xrange(total):
         pbar()
         sleep(0.0001)
-
 
 
 if __name__ == "__main__":

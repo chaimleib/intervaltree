@@ -250,7 +250,7 @@ setup(
     zip_safe=True,
     tests_require=[
         'pytest',
-        'repoze.lru',
+        #'repoze.lru',
     ],
     cmdclass={'test': PyTest},
     entry_points={}
