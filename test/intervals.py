@@ -24,6 +24,7 @@ from pprint import pprint
 from os import listdir
 from os.path import join
 from random import randint, choice
+from test.progress_bar import ProgressBar
 try:
     xrange
 except NameError:
@@ -47,22 +48,26 @@ def ivs_names():
     modules = [
         module[:-len('.py')] for module in listdir(data_dir)
         if
-        module.startswith('ivs') and module.endswith('.py')
+        not module.startswith('__') and module.endswith('.py')
     ]
     return modules
 
 
-def load_ivs_data():
+def load_test_data_ivs():
     """Import data from test/data to construct our intervals"""
     result = {}
 
     # pprint(ivs_names())
-    for module in ivs_names():
+    names = ivs_names()
+    pbar = ProgressBar(len(names))
+    print("Importing test data...")
+    for module in names:
+        pbar()
         iv_tuples = from_import('test.data.' + module, 'data')
         result[module] = [Interval(*item) for item in iv_tuples]
     return result
 
-ivs_data = load_ivs_data()
+ivs = load_test_data_ivs()
 
 
 def make_iv(begin, end, label=False):
@@ -106,7 +111,16 @@ def gaps_rand(size=100, labels=False):
     return ivs
 
 
-def write_ivs_data(name, ivs, imports=None, docstring=''):
+def write_ivs_data(name, ivs, docstring='', imports=None):
+    """
+    Write the provided ivs to test/name.py.
+    :param name: file name, minus the extension
+    :type name: str
+    :param ivs: an iterable of Intervals
+    :type ivs: collections.i
+    :param docstring: a string to be inserted at the head of the file
+    :param imports: executable code to be inserted before data=...
+    """
     def trepr(s):
         """
         Like repr, but triple-quoted. NOT perfect!
@@ -145,4 +159,4 @@ if __name__ == '__main__':
 # Random integer ranges, with gaps.
 # """
 #     )
-    pprint(ivs_data)
+    pprint(ivs)
