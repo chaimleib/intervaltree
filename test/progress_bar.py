@@ -21,7 +21,8 @@ limitations under the License.
 from __future__ import print_function
 from __future__ import division
 from time import time
-
+import inspect
+from functools import partial
 import sys
 from pprint import pprint, pformat
 
@@ -36,7 +37,14 @@ def write(s):
 
 
 class ProgressBar(object):
-    def __init__(self, total, width=80, format=r'\i/\t \p% \b \ss', time_throttle=0.05, dynamic_throttle=True):
+    def __init__(self,
+                 total,
+                 width=80,
+                 format=r'\i/\t \p% \b \es',
+                 time_throttle=0.05,
+                 custom_outputters={},
+                 dynamic_throttle=True):
+        # cache the values calculated during the self.i-th iteration
         self.i = 0
         self.total = total
 
@@ -46,8 +54,8 @@ class ProgressBar(object):
 
         # time
         # clock starts ticking on first update call
+        self.nowi = (time(), self.i)
         self.start_time = None
-        self.now = None  # set later. make sure all numbers match, and for caching
         self.last_output_time = None
 
         # output string
@@ -55,11 +63,19 @@ class ProgressBar(object):
         self.outputters = {
             't': str(self.total),
             'i': lambda: str(self.i),
-            'p': lambda: str(int(100 * self.i / self.total)),
-            's': lambda: str(int(time() - self.start_time)),
             'b': self.make_progress_bar,
-            'e': lambda: self.make_eta,
+            'p': lambda: self.float_formatter(100 * self.fraction),
+            'P': lambda: self.float_formatter(100 * (1 - self.fraction)),
+            'r': lambda: str(self.remaining),
+            'e': lambda: self.float_formatter(self.elapsed),
+            'E': lambda: self.float_formatter(self.eta),
+            'v': lambda: self.float_formatter(self.rate),
         }
+        bound_outputters = {}
+        for k, v in custom_outputters.items():
+            bound_outputters[k] = partial(v, self)
+        self.outputters.update(bound_outputters)
+
         # stuff that fills the rest of the space
         self.resized = set([self.make_progress_bar])
         self.tokens = []
@@ -179,29 +195,42 @@ class ProgressBar(object):
         ])
         return output
 
-    def make_eta(self):
-        return str(int(self.eta))
+    @staticmethod
+    def float_formatter(f):
+        if f > 10:
+            return str(int(f))
+        if f > 1:
+            return "%0.1f" % f
+        return "%0.2f" % f
 
     @property
     def fraction(self):
         return self.i / self.total
 
     @property
-    def elapsed(self, now):
+    def elapsed(self):
         return self.now - self.start_time
-
-    @property
-    def int_elapsed(self):
-        return int(self.elapsed)
 
     @property
     def rate(self):
         return self.i / self.elapsed
 
     @property
+    def remaining(self):
+        return self.total - self.i
+
+    @property
     def eta(self):
-        remaining_fraction = 1 - self.fraction
-        return remaining_fraction / self.rate
+        return self.remaining / self.rate
+
+    @property
+    def now(self):
+        now, i = self.nowi
+        if i == self.i:
+            return now
+        now = time()
+        self.nowi = now, self.i
+        return now
 
     def __str__(self):
         d = {
@@ -225,13 +254,16 @@ def _slow_test():
 
 def _fast_test():
     from time import sleep
-    total = 5 * 10**4
-    pbar = ProgressBar(total)
+    total = 5 * 10**5
+    pbar = ProgressBar(
+        total,
+        format=r'\i/\t \p% \b \es @\v/s, ETA \Es',
+    )
     for i in xrange(total):
         pbar()
         sleep(0.0001)
 
 
 if __name__ == "__main__":
-    _slow_test()
+    # _slow_test()
     _fast_test()
