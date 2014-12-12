@@ -7,6 +7,11 @@ Test contributed by jacekt
 from intervaltree import Interval, IntervalTree
 from progress_bar import ProgressBar
 from test.data.issue4 import data as items, MAX
+from test.intervaltrees import trees
+from test.intervals import write_ivs_data
+from test.optimality_test_matrix import OptimalityTestMatrix
+from pprint import pprint
+import cProfile
 
 
 def test_build_tree():
@@ -47,33 +52,26 @@ def test_build_tree():
 
 
 def optimality_core():
-    from pprint import pprint
-    from test.optimality_test_matrix import OptimalityTestMatrix
-    from test.intervals import write_ivs_data
-
-    tree = test_build_tree()
-    write_ivs_data('issue4', tree, '''
-Final tree data from test/issue4.py.
-''')
-    print(len(tree))
-    matrix = OptimalityTestMatrix({
-        'issue4': tree,
-    })
+    #tree = test_build_tree()
+    #write_result(tree)
+    #print(len(tree))
+    matrix = OptimalityTestMatrix({'issue4result': trees['issue4_result']()})
     pprint(matrix.summary_matrix)
 
 
 def optimality():
-    import cProfile
     cProfile.run('optimality_core()', 'restats')
 
 
 def profile():
-    import cProfile
     cProfile.run('test_issue4()', 'restats')
 
+def write_result(tree):
+    write_ivs_data('issue4_result', tree, docstring='''
+Result tree data from test/issue4.py.
+''')
 
 def write_items():
-    from test.intervals import write_ivs_data
     items = [(begin, end, data) for data, begin, end in items]
     write_ivs_data('issue4', items, docstring = """
 Source data for test/issue4. Very long!
