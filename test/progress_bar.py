@@ -21,15 +21,14 @@ limitations under the License.
 from __future__ import print_function
 from __future__ import division
 from time import time
-import inspect
 from functools import partial
 import sys
-from pprint import pprint, pformat
 
 try:
     xrange
 except NameError:
     xrange = range
+
 
 def write(s):
     sys.stdout.write(s)
@@ -37,12 +36,22 @@ def write(s):
 
 
 class ProgressBar(object):
+    class Formats(object):
+        basic = '[%b] %p%%'
+        fraction = '|%b| %i/%t'
+        timer = basic + ' %es'
+        predictive = '(%b) %p%% %es elapsed, ETA %Es'
+        speed = '[%b] %v/s %p%%'
+        advanced = '%r/%t remaining %p%% [%b] ETA %Es @ %v/s %es elapsed'
+        items_remaining = '{%b} %r/%t remaining'
+        stats_only = '%p%%, %r/%t remaining, %i done %_ ETA %Es @ %v/s %es elapsed'
+
     def __init__(self,
                  total,
                  width=80,
-                 format=r'%i/%t %p%% %b %es',
+                 fmt='%i/%t %p%% %b %es',
                  time_throttle=0.05,
-                 custom_outputters={}):
+                 custom_outputters=None):
         # cache the values calculated during the self.i-th iteration
         self.i = 0
         self.total = total
@@ -58,26 +67,37 @@ class ProgressBar(object):
 
         # output string
         self.width = width
+        self.last_output_width = 0
         self.outputters = {
             't': str(self.total),
             'i': lambda: str(self.i),
             'b': self.make_progress_bar,
+            '_': self.make_expanding_space,
             'p': lambda: self.float_formatter(100 * self.fraction),
             'r': lambda: str(self.remaining),
             'e': lambda: self.float_formatter(self.elapsed),
             'E': lambda: self.float_formatter(self.eta),
             'v': lambda: self.float_formatter(self.rate),
         }
-        bound_outputters = {}
-        for k, v in custom_outputters.items():
-            bound_outputters[k] = partial(v, self)
-        self.outputters.update(bound_outputters)
+        if custom_outputters:
+            bound_outputters = {}
+            for k, v in custom_outputters.items():
+                if not callable(v):
+                    # test concatenation early, let it raise if it fails
+                    '' + v
+                else:
+                    v = partial(v, self)
+                bound_outputters[k] = v
+            self.outputters.update(bound_outputters)
 
         # stuff that fills the rest of the space
-        self.resized = set([self.make_progress_bar])
+        self.resized = [
+            self.make_progress_bar,
+            self.make_expanding_space,
+        ]
         self.tokens = []
-        self.format = format
-        self.parse_format(format)
+        self.format = fmt
+        self.parse_format(fmt)
 
     def __call__(self, increment=1):
         """
@@ -95,7 +115,6 @@ class ProgressBar(object):
         :return: bool
         """
         self.last_output_time = self.start_time = time()
-        self.last_output_count = self.i
         self.should_output = self.should_output_middle
         return True
 
@@ -110,11 +129,11 @@ class ProgressBar(object):
         )
         return systems_go
 
-    def parse_format(self, format):
-        tokens = self.tokenize(format)
+    def parse_format(self, fmt):
+        tokens = self.tokenize(fmt)
         self.tokens = self.join_tokens(tokens)
 
-    def tokenize(self, format):
+    def tokenize(self, fmt):
         """
         Splits format string into tokens. Used by parse_format.
         :returns: list of characters and outputter functions
@@ -123,7 +142,7 @@ class ProgressBar(object):
         output = []
         hot_char = '%'
         in_code = []
-        for c in format:
+        for c in fmt:
             if not in_code:
                 if c == hot_char:
                     in_code.append(c)
@@ -199,22 +218,26 @@ class ProgressBar(object):
 
     def write(self):
         output = self.make_output_string()
+        underrun = self.last_output_width - len(output)
+        self.last_output_width = len(output.rstrip())
+        output += underrun*' '  # completely erase last line with spaces
+
         write('\r' + output)
         if self.i >= self.total:
             print()
 
     def make_progress_bar(self, size):
-        size -= 2
         frac = self.i / self.total
         num_segs = int(frac * size)
 
         output = ''.join([
-            '[',
             num_segs * '=',
             (size - num_segs) * ' ',
-            ']'
         ])
         return output
+
+    def make_expanding_space(self, size):
+        return size*' '
 
     @staticmethod
     def float_formatter(f):
@@ -249,14 +272,7 @@ class ProgressBar(object):
         return self.remaining / self.rate
 
     def __str__(self):
-        d = {
-            'i': self.i,
-            'start_time': self.start_time,
-            'last_output_time': self.last_output_time,
-            'format': self.format,
-            'tokens': self.tokens,
-        }
-        return pformat(d)
+        return self.make_output_string()
 
 
 def _slow_test():
@@ -269,14 +285,14 @@ def _slow_test():
 
 
 def _fast_test():
-    from time import sleep
-    total = 5 * 10**6
+    total = 5 * 10**7
     pbar = ProgressBar(
         total,
-        format=r'%i/%t %p%% %b %es @%v/s, ETA %Es',
+        fmt=ProgressBar.Formats.stats_only,
     )
     for i in xrange(total):
         pbar()
+
 
 def _profile():
     import cProfile
