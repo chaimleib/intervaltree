@@ -42,19 +42,17 @@ class ProgressBar(object):
                  width=80,
                  format=r'%i/%t %p%% %b %es',
                  time_throttle=0.05,
-                 custom_outputters={},
-                 dynamic_throttle=True):
+                 custom_outputters={}):
         # cache the values calculated during the self.i-th iteration
         self.i = 0
         self.total = total
 
         # throttling
-        self.enamble_dynamic_throttle = dynamic_throttle  # TODO: dynamic rate-based throttle
         self.time_throttle = time_throttle
+        self.should_output = self.should_output_first
 
         # time
         # clock starts ticking on first update call
-        self.nowi = (time(), self.i)
         self.start_time = None
         self.last_output_time = None
 
@@ -82,19 +80,35 @@ class ProgressBar(object):
         self.parse_format(format)
 
     def __call__(self, increment=1):
-        should_output = False
-
-        now = time()
-        if not self.start_time:  # initialize clocks
-            should_output = True
-            self.last_output_time = self.start_time = now
+        """
+        Update the ProgressBar state.
+        :param increment: how much to increase self.i
+        """
         self.i += increment
-
-        should_output |= now - self.last_output_time > self.time_throttle
-        should_output |= self.i == self.total
-        if should_output:
-            self.last_output_time = now
+        if self.should_output():
+            self.last_output_time = time()
             self.write()
+
+    def should_output_first(self):
+        """
+        Initializes throttle control
+        :return: bool
+        """
+        self.last_output_time = self.start_time = time()
+        self.last_output_count = self.i
+        self.should_output = self.should_output_middle
+        return True
+
+    def should_output_middle(self):
+        """
+        Implements throttle control
+        :return: bool
+        """
+        systems_go = (
+            time() - self.last_output_time > self.time_throttle or
+            self.i == self.total
+        )
+        return systems_go
 
     def parse_format(self, format):
         tokens = self.tokenize(format)
@@ -216,10 +230,12 @@ class ProgressBar(object):
 
     @property
     def elapsed(self):
-        return self.now - self.start_time
+        return time() - self.start_time
 
     @property
     def rate(self):
+        if not self.elapsed:
+            return 0
         return self.i / self.elapsed
 
     @property
@@ -228,16 +244,9 @@ class ProgressBar(object):
 
     @property
     def eta(self):
+        if not self.rate:
+            return 1
         return self.remaining / self.rate
-
-    @property
-    def now(self):
-        now, i = self.nowi
-        if i == self.i:
-            return now
-        now = time()
-        self.nowi = now, self.i
-        return now
 
     def __str__(self):
         d = {
@@ -261,16 +270,18 @@ def _slow_test():
 
 def _fast_test():
     from time import sleep
-    total = 5 * 10**5
+    total = 5 * 10**6
     pbar = ProgressBar(
         total,
         format=r'%i/%t %p%% %b %es @%v/s, ETA %Es',
     )
     for i in xrange(total):
         pbar()
-        sleep(0.0001)
 
+def _profile():
+    import cProfile
+    cProfile.run('_fast_test()', sort='cumulative')
 
 if __name__ == "__main__":
     # _slow_test()
-    _fast_test()
+    _profile()
