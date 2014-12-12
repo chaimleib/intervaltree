@@ -40,7 +40,7 @@ class ProgressBar(object):
     def __init__(self,
                  total,
                  width=80,
-                 format=r'\i/\t \p% \b \es',
+                 format=r'%i/%t %p%% %b %es',
                  time_throttle=0.05,
                  custom_outputters={},
                  dynamic_throttle=True):
@@ -65,7 +65,6 @@ class ProgressBar(object):
             'i': lambda: str(self.i),
             'b': self.make_progress_bar,
             'p': lambda: self.float_formatter(100 * self.fraction),
-            'P': lambda: self.float_formatter(100 * (1 - self.fraction)),
             'r': lambda: str(self.remaining),
             'e': lambda: self.float_formatter(self.elapsed),
             'E': lambda: self.float_formatter(self.eta),
@@ -108,21 +107,29 @@ class ProgressBar(object):
         :rtype: list of (str or callable)
         """
         output = []
-        last = None
+        hot_char = '%'
+        in_code = []
         for c in format:
-            if last != '\\':
-                output.append(c)
-                last = c
+            if not in_code:
+                if c == hot_char:
+                    in_code.append(c)
+                else:
+                    output.append(c)
                 continue
-            #else:  last == '\\':
-            if c not in self.outputters:
+            #else:  in_code:
+            if c == hot_char:
                 output.append(c)
-                last = c
+                in_code = []
                 continue
-            func = self.outputters[c]
-            output.pop()  # discard the \
-            output.append(func)
-            last = func
+            if c in self.outputters:
+                func_or_str = self.outputters[c]
+                output.append(func_or_str)
+                in_code = []
+                continue
+
+            output.append(c)
+            in_code = []
+
         return output
 
     @staticmethod
@@ -257,7 +264,7 @@ def _fast_test():
     total = 5 * 10**5
     pbar = ProgressBar(
         total,
-        format=r'\i/\t \p% \b \es @\v/s, ETA \Es',
+        format=r'%i/%t %p%% %b %es @%v/s, ETA %Es',
     )
     for i in xrange(total):
         pbar()
