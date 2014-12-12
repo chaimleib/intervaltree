@@ -248,7 +248,10 @@ setup(
     packages=find_packages(exclude=['test', 'pandoc', 'docutils']),
     include_package_data=True,
     zip_safe=True,
-    tests_require=['pytest'],
+    tests_require=[
+        'pytest',
+        'repoze.lru',
+    ],
     cmdclass={'test': PyTest},
     entry_points={}
 )
