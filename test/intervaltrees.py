@@ -28,7 +28,7 @@ except NameError:
     xrange = range
 
 
-trees = intervals.ivs_data.copy()
+trees = intervals.ivs.copy()
 for name, ivs in trees.items():
     trees[name] = IntervalTree(ivs).copy
 
