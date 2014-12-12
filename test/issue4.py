@@ -4,8 +4,9 @@ https://github.com/konstantint/PyIntervalTree/issues/4
 
 Test contributed by jacekt
 '''
+from __future__ import absolute_import
 from intervaltree import Interval, IntervalTree
-from progress_bar import ProgressBar
+from test.progress_bar import ProgressBar
 from test.data.issue4 import data as items, MAX
 from test.intervaltrees import trees
 from test.intervals import write_ivs_data
