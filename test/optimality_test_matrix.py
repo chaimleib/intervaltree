@@ -85,13 +85,12 @@ class OptimalityTestMatrix(object):
         return test_function
 
     def test_init(self, ivs):
-        t = IntervalTree(ivs, verbose=self.verbose)
+        t = IntervalTree(ivs)
         return t
 
     def test_add_ascending(self, ivs):
         if self.verbose:
             pbar = ProgressBar(len(ivs))
-            print('Add ascending...')
         t = IntervalTree()
         for iv in Interval.sorted(ivs):
             t.add(iv)
@@ -101,7 +100,6 @@ class OptimalityTestMatrix(object):
     def test_add_descending(self, ivs):
         if self.verbose:
             pbar = ProgressBar(len(ivs))
-            print('Add descending...')
         t = IntervalTree()
         for iv in Interval.sorted(ivs, reverse=True):
             t.add(iv)
