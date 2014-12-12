@@ -30,7 +30,16 @@ except NameError:
 
 
 class OptimalityTestMatrix(object):
-    def __init__(self, ivs_names=None, verbose=False):
+    def __init__(self, ivs=None, verbose=False):
+        """
+        Initilize a test matrix. To run it, see run().
+        :param ivs: A dictionary mapping each test name to its
+        iterable of Intervals. If not set, uses intervals.ivs_data,
+        which loads test data from test/data/ivs*.py
+        :type ivs: None or dict of [str, list of Interval]
+        :param verbose: Whether to print the structure of the trees
+        :type verbose: bool
+        """
         self.verbose = verbose
 
         # set test_tupes
@@ -48,12 +57,15 @@ class OptimalityTestMatrix(object):
             self.test_types[name] = test_function
 
         # set ivs
-        self.ivs = intervals.ivs_data.copy()
-        for name in list(self.ivs):
-            if 'copy_structure' in name:
-                del self.ivs[name]
+        if ivs:
+            self.ivs = ivs
+        else:
+            self.ivs = intervals.ivs_data.copy()
+            for name in list(self.ivs):
+                if 'copy_structure' in name:
+                    del self.ivs[name]
 
-        # set result matrix
+        # initialize result matrix
         self.result_matrix = {
             'ivs name': {},
             'test type': {}
@@ -86,6 +98,11 @@ class OptimalityTestMatrix(object):
             t.add(iv)
         return t
 
+    def test_prebuilt(self, tree):
+        if isinstance(tree, IntervalTree):
+            return tree
+        return None  # N/A
+
     def register_score(self, ivs_name, test_type, score):
         self.result_matrix['ivs name'][ivs_name][test_type] = score
         self.result_matrix['test type'][test_type][ivs_name] = score
@@ -101,14 +118,21 @@ class OptimalityTestMatrix(object):
             }
         for report_type in self.result_matrix:
             for name, report in self.result_matrix[report_type].items():
-                self.summary_matrix[report_type][name] = stats(report)
+                if report:
+                    self.summary_matrix[report_type][name] = stats(report)
+                elif report_type == "test type":
+                    del self.test_types[name]
         return self.result_matrix
 
-
-    def run(self):
+    def tabulate(self):
+        """
+        Store all the score results in self.result_matrix.
+        """
         for test_name, test in self.test_types.items():
             for ivs_name, ivs in self.ivs.items():
                 tree = test(ivs)
+                if not tree:
+                    continue
                 score = tree.score(True)
 
                 if self.verbose:
@@ -117,6 +141,8 @@ class OptimalityTestMatrix(object):
 
                 self.register_score(ivs_name, test_name, score)
 
+    def run(self):
+        self.tabulate()
         self.summarize()
         results = {
             'summary': self.summary_matrix,
