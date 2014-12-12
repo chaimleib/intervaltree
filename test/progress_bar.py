@@ -36,22 +36,148 @@ def write(s):
 
 
 class ProgressBar(object):
+    """
+    See how far a process has gone.
+
+    Example:
+        from progress_bar import ProgressBar
+
+        big_list = ...
+
+        pbar = ProgressBar(len(big_list))
+        for item in big_list:
+            process_item(item)
+            pbar()
+
+    You can increment by different amounts by calling
+    `pbar(increment)` instead of just `pbar()`.
+
+    ## Creating a `ProgressBar`
+    You can customize the format for the output using arguments to
+    the initializer.
+
+    `width`:
+        how many characters wide
+    `fmt`:
+        a format string. Choose from ProgressBar.Formats.* or create
+        your own. Available predesigned formats:
+
+            class Formats(object):
+                basic = '[%=] %p%%'
+                fraction = '|%=| %i/%t'
+                timer = basic + ' %es'
+                predictive = '(%=) %p%% %es elapsed, ETA %Es'
+                speed = '[%=] %R/s %p%%'
+                advanced = '%r/%t remaining [%=] %p%% ETA %Es @ %R/s %es elapsed'
+                items_remaining = '{%=} %r/%t remaining'
+                stats_only = '%p%% %r/%t remaining %_ ETA %Es @ %R/s %es elapsed'
+
+    `time_throttle`:
+        minimum time in seconds before updating the display
+    `custom_outputter`:
+        a dict mapping character strings to strings or callables that
+        generate strings. The callable will be invoked with the
+        `ProgressBar` instance as its first argument. Example:
+
+            def kbytes_copied(pbar):
+                kbytes = pbar.i / 1024
+                return pbar.float_formatter(kbytes) + 'KB'
+
+            pbar = ProgressBar(max_val,
+                fmt='%p%% %[%=] %k copied',    # '%k' turns into kbytes_copied()
+                custom_outputters={'k': kbytes_copied})
+
+    `custom_expanding_outputters`:
+        Like `custom_outputter`, but for output that expands to fill
+        available space. These are invoked with two arguments: the
+        `ProgressBar` instance, and the calculated remaining width
+        for your outputter. Example:
+
+            def hash_progressbar(pbar, size):
+                segs = pbar.fraction * size
+                return segs*'#' + (size-segs)*' '
+
+            pbar = ProgressBar(max_val,
+                fmt='%p%% [%#]',    # '%#' turns into my hash_progressbar
+                custom_expanding_outputters={'#': hash_progressbar})
+
+
+    ## Predefined outputters
+    All these are preceded with a percent symbol in the `fmt` string
+    provided when creating a `ProgressBar`.
+
+    `t`:
+        Maximum progress count.
+    `i`:
+        Current count.
+    `=`:
+        Progress bar, without endcaps. Expands to fill available width.
+    `_` (underscore):
+        Expanding space.
+    `p`:
+        Percent progress, without percent symbol. To add that, use '%%'
+    `r`:
+        Count remaining.
+    `e`:
+        Time elapsed. Counted from first `pbar()` call, where `pbar` is
+        your `ProgressBar` instance.
+    `E`:
+        ETA (estimated time of arrival). Based on current rate, linearly
+        extrapolate to predict how much time in seconds is left.
+    `R`:
+        Count rate. In units of counts per second.
+    `%`:
+        A literal percent symbol.
+
+    ## Fields available for your outputter
+    When writing custom outputters, it is sometimes useful to access the
+    internal fields of the `ProgressBar` instance. The following are
+    available:
+
+    `i`:
+        Current count.
+    `total`:
+        Maximum progress count.
+    `start_time`:
+        Time of first display update. (from `time.time()`)
+    `last_output_time`:
+        Time of most recent display update. (from `time.time()`)
+    `time_throttle`:
+        Minimum time between display updates.
+    `width`:
+        Total available width for entire `ProgressBar` line.
+    `last_output_width`:
+        Width of last output, minus trailing spaces on the right.
+    `rate`:
+        How many counts per second.
+    `fraction`:
+        A float of what amount is done. A value between 0 and 1.
+    `remaining:
+        How many counts left.
+    `elapsed`:
+        Total time elapsed since first count.
+    `eta`:
+        ETA (estimated time of arrival) of final count, based on
+        current count rate.
+    """
     class Formats(object):
-        basic = '[%b] %p%%'
-        fraction = '|%b| %i/%t'
+        basic = '[%=] %p%%'
+        fraction = '|%=| %i/%t'
         timer = basic + ' %es'
-        predictive = '(%b) %p%% %es elapsed, ETA %Es'
-        speed = '[%b] %v/s %p%%'
-        advanced = '%r/%t remaining %p%% [%b] ETA %Es @ %v/s %es elapsed'
-        items_remaining = '{%b} %r/%t remaining'
-        stats_only = '%p%%, %r/%t remaining, %i done %_ ETA %Es @ %v/s %es elapsed'
+        predictive = '(%=) %p%% %es elapsed, ETA %Es'
+        speed = '[%=] %R/s %p%%'
+        advanced = '%r/%t remaining [%=] %p%% ETA %Es @ %R/s %es elapsed'
+        items_remaining = '{%=} %r/%t remaining'
+        stats_only = '%p%% %r/%t remaining %_ ETA %Es @ %R/s %es elapsed'
 
     def __init__(self,
                  total,
                  width=80,
-                 fmt='%i/%t %p%% %b %es',
+                 fmt=Formats.advanced,
                  time_throttle=0.05,
-                 custom_outputters=None):
+                 custom_outputters=None,
+                 custom_expanding_outputters=None
+                 ):
         # cache the values calculated during the self.i-th iteration
         self.i = 0
         self.total = total
@@ -66,20 +192,24 @@ class ProgressBar(object):
         self.last_output_time = None
 
         # output string
+        self.format = fmt
         self.width = width
         self.last_output_width = 0
         self.outputters = {
             't': str(self.total),
             'i': lambda: str(self.i),
-            'b': self.make_progress_bar,
+            '=': self.make_progress_bar,
             '_': self.make_expanding_space,
             'p': lambda: self.float_formatter(100 * self.fraction),
             'r': lambda: str(self.remaining),
             'e': lambda: self.float_formatter(self.elapsed),
             'E': lambda: self.float_formatter(self.eta),
-            'v': lambda: self.float_formatter(self.rate),
+            'R': lambda: self.float_formatter(self.rate),
         }
-        if custom_outputters:
+        if custom_outputters or custom_expanding_outputters:
+            custom_outputters = custom_outputters or {}
+            if custom_expanding_outputters:
+                custom_outputters.update(custom_expanding_outputters)
             bound_outputters = {}
             for k, v in custom_outputters.items():
                 if not callable(v):
@@ -91,13 +221,14 @@ class ProgressBar(object):
             self.outputters.update(bound_outputters)
 
         # stuff that fills the rest of the space
-        self.resized = [
+        self.expanding_outputters = [
             self.make_progress_bar,
             self.make_expanding_space,
         ]
+        if custom_expanding_outputters:
+            self.expanding_outputters.extend(custom_expanding_outputters.items())
         self.tokens = []
-        self.format = fmt
-        self.parse_format(fmt)
+        self.update_format(fmt)
 
     def __call__(self, increment=1):
         """
@@ -108,6 +239,10 @@ class ProgressBar(object):
         if self.should_output():
             self.last_output_time = time()
             self.write()
+
+    def update_format(self, fmt):
+        self.format = fmt
+        self.parse_format(fmt)
 
     def should_output_first(self):
         """
@@ -197,7 +332,7 @@ class ProgressBar(object):
     def make_output_string_static(self, tokens):
         output = []
         for token in tokens:
-            if callable(token) and token not in self.resized:
+            if callable(token) and token not in self.expanding_outputters:
                 generated = token()
                 output.append(generated)
             else:
