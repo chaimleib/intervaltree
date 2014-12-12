@@ -151,7 +151,14 @@ class OptimalityTestMatrix(object):
         return results
 
 if __name__ == "__main__":
+    from test.intervaltrees import trees
     matrix = OptimalityTestMatrix()
+    matrix.run()
+    pprint(matrix.summary_matrix)
+
+    matrix = OptimalityTestMatrix({
+        'ivs': trees['ivs1'](),
+    })
     matrix.run()
     pprint(matrix.summary_matrix)
     # pprint(matrix.result_matrix)
