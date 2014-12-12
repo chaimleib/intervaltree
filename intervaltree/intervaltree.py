@@ -5,7 +5,7 @@ Queries may be by point, by range overlap, or by range envelopment.
 Core logic.
 
 Copyright 2013-2014 Chaim-Leib Halbert
-Modifications Copyright 2014 Konstantin Tretrakov
+Modifications Copyright 2014 Konstantin Tretyakov
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ from __future__ import absolute_import
 from .interval import Interval
 from .node import Node
 from numbers import Number
+import collections
 
 try:
     xrange  # Python 2?
@@ -31,7 +32,9 @@ except NameError:
 
 
 # noinspection PyBroadException
-class IntervalTree(object):
+class IntervalTree(
+    collections.MutableMapping,
+    collections.MutableSet):
     """
     A binary lookup tree of intervals.
     The intervals contained in the tree are represented using ``Interval(a, b, data)`` objects.
@@ -379,7 +382,7 @@ class IntervalTree(object):
         Completes in O(log n) time.
         """
         return self.discard(Interval(begin, end, data))
-    
+
     def remove_overlap(self, begin, end=None):
         """
         Removes all intervals overlapping the given point or range.
@@ -718,6 +721,12 @@ class IntervalTree(object):
         Completes in O(log n) time.
         """
         self.addi(index.start, index.stop, value)
+
+    def __delitem__(self, point):
+        """
+        Delete all items overlapping point.
+        """
+        self.remove_overlap(point)
 
     def __contains__(self, item):
         """
