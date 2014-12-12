@@ -23,6 +23,8 @@ from intervaltree import IntervalTree, Interval
 from test import intervals
 from copy import deepcopy
 from pprint import pprint
+from test.progress_bar import ProgressBar
+
 try:
     xrange
 except NameError:
@@ -60,7 +62,7 @@ class OptimalityTestMatrix(object):
         if ivs:
             self.ivs = ivs
         else:
-            self.ivs = intervals.ivs_data.copy()
+            self.ivs = intervals.ivs.copy()
             for name in list(self.ivs):
                 if 'copy_structure' in name:
                     del self.ivs[name]
@@ -83,19 +85,27 @@ class OptimalityTestMatrix(object):
         return test_function
 
     def test_init(self, ivs):
-        t = IntervalTree(ivs)
+        t = IntervalTree(ivs, verbose=self.verbose)
         return t
 
     def test_add_ascending(self, ivs):
+        if self.verbose:
+            pbar = ProgressBar(len(ivs))
+            print('Add ascending...')
         t = IntervalTree()
         for iv in Interval.sorted(ivs):
             t.add(iv)
+            if self.verbose: pbar()
         return t
 
     def test_add_descending(self, ivs):
+        if self.verbose:
+            pbar = ProgressBar(len(ivs))
+            print('Add descending...')
         t = IntervalTree()
         for iv in Interval.sorted(ivs, reverse=True):
             t.add(iv)
+            if self.verbose: pbar()
         return t
 
     def test_prebuilt(self, tree):
@@ -130,13 +140,13 @@ class OptimalityTestMatrix(object):
         """
         for test_name, test in self.test_types.items():
             for ivs_name, ivs in self.ivs.items():
+                if self.verbose:
+                    print("{0}: {1}".format(ivs_name, test_name))
                 tree = test(ivs)
                 if not tree:
                     continue
                 score = tree.score(True)
-
-                if self.verbose:
-                    print("{0}: {1}".format(ivs_name, test_name))
+                if self.verbose > 1:
                     tree.print_structure()
 
                 self.register_score(ivs_name, test_name, score)

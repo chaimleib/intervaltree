@@ -24,7 +24,7 @@ from test.intervaltrees import trees
 from pprint import pprint
 from warnings import warn
 
-matrix = OptimalityTestMatrix()
+matrix = OptimalityTestMatrix(verbose=1)
 matrix.run()
 
 def test_ivs1():
