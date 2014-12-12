@@ -149,14 +149,14 @@ class ProgressBar(object):
         return output
 
     def make_output_string(self):
-        output = self.make_output_string_static(self.tokens)
-        output = self.make_output_string_resized(output)
-        output = ''.join(output)
+        tokens = self.make_output_string_static(self.tokens)
+        tokens = self.make_output_string_resized(tokens)
+        output = ''.join(tokens)
         return output
 
     def make_output_string_static(self, tokens):
         output = []
-        for token in self.tokens:
+        for token in tokens:
             if callable(token) and token not in self.resized:
                 generated = token()
                 output.append(generated)
@@ -167,11 +167,11 @@ class ProgressBar(object):
 
     def make_output_string_resized(self, tokens):
         output = []
-        size = sum(len(s) for s in tokens if hasattr(s, '__len__'))
-        size = self.width - size #+ 1  # +1 is for the \r
+        static_size = sum(len(s) for s in tokens if hasattr(s, '__len__'))
+        remaining_width = self.width - static_size
         for token in tokens:
             if callable(token):
-                token = token(size)
+                token = token(remaining_width)
             output.append(token)
         output = self.join_tokens(output)
         return output
