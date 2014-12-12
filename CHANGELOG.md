@@ -3,6 +3,8 @@ Change log
 
 Version 2.0.0
 -------------
+- `IntervalTree` now supports the full `MutableMapping` and `MutableSet` APIs from the `collections` module
+- Added `__delslice__` and `__delitem__` to `IntervalTree`
 - Bug fixes:
     - BACKWARD INCOMPATIBLE:`Interval` no longer parrots `__cmp__()` when doing comparison with `<` and `>`. Returns `False` if ther is an overlap. Before, it returned sorting information, which is not always the same thing
 
