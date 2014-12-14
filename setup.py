@@ -30,11 +30,6 @@ from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 
 import re
-try:
-    import pandoc
-except ImportError as e:
-    print(e)
-pandoc.PANDOC_PATH = 'pandoc'  # until pyandoc gets updated
 
 
 def development_version():
@@ -100,6 +95,14 @@ def generate_rst():
 
 def markdown2rst(md):
     """Convert markdown to rst format using pandoc. No other processing."""
+    # import here, because outside it may arent't used
+    try:
+        import pandoc
+    except ImportError as e:
+        raise
+    else:
+        pandoc.PANDOC_PATH = 'pandoc'  # until pyandoc gets updated
+
     doc = pandoc.Document()
     doc.markdown_github = md
     rst = doc.rst
