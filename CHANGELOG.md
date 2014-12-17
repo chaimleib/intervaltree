@@ -7,6 +7,10 @@ Version 2.0.0
 - Added `__delslice__` and `__delitem__` to `IntervalTree`
 - Bug fixes:
     - BACKWARD INCOMPATIBLE:`Interval` no longer parrots `__cmp__()` when doing comparison with `<` and `>`. Returns `False` if ther is an overlap. Before, it returned sorting information, which is not always the same thing
+- Internal improvements:
+    - More verbose tests with progress bars
+    - More automatic test harnesses
+    - More tests for comparison and sorting behavior
 
 Version 1.1.0
 -------------
