@@ -19,10 +19,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from __future__ import absolute_import
-from intervaltree import IntervalTree
+from intervaltree import IntervalTree, Interval
 from test import intervals
 from copy import deepcopy
 from pprint import pprint
+from test.progress_bar import ProgressBar
+
 try:
     xrange
 except NameError:
@@ -30,7 +32,16 @@ except NameError:
 
 
 class OptimalityTestMatrix(object):
-    def __init__(self, ivs_names=None, verbose=False):
+    def __init__(self, ivs=None, verbose=False):
+        """
+        Initilize a test matrix. To run it, see run().
+        :param ivs: A dictionary mapping each test name to its
+        iterable of Intervals. If not set, uses intervals.ivs_data,
+        which loads test data from test/data/ivs*.py
+        :type ivs: None or dict of [str, list of Interval]
+        :param verbose: Whether to print the structure of the trees
+        :type verbose: bool
+        """
         self.verbose = verbose
 
         # set test_tupes
@@ -48,12 +59,15 @@ class OptimalityTestMatrix(object):
             self.test_types[name] = test_function
 
         # set ivs
-        self.ivs = intervals.ivs_data.copy()
-        for name in list(self.ivs):
-            if 'copy_structure' in name:
-                del self.ivs[name]
+        if ivs:
+            self.ivs = ivs
+        else:
+            self.ivs = intervals.ivs.copy()
+            for name in list(self.ivs):
+                if 'copy_structure' in name:
+                    del self.ivs[name]
 
-        # set result matrix
+        # initialize result matrix
         self.result_matrix = {
             'ivs name': {},
             'test type': {}
@@ -75,16 +89,27 @@ class OptimalityTestMatrix(object):
         return t
 
     def test_add_ascending(self, ivs):
+        if self.verbose:
+            pbar = ProgressBar(len(ivs))
         t = IntervalTree()
-        for iv in sorted(ivs):
+        for iv in Interval.sorted(ivs):
             t.add(iv)
+            if self.verbose: pbar()
         return t
 
     def test_add_descending(self, ivs):
+        if self.verbose:
+            pbar = ProgressBar(len(ivs))
         t = IntervalTree()
-        for iv in sorted(ivs, reverse=True):
+        for iv in Interval.sorted(ivs, reverse=True):
             t.add(iv)
+            if self.verbose: pbar()
         return t
+
+    def test_prebuilt(self, tree):
+        if isinstance(tree, IntervalTree):
+            return tree
+        return None  # N/A
 
     def register_score(self, ivs_name, test_type, score):
         self.result_matrix['ivs name'][ivs_name][test_type] = score
@@ -101,22 +126,31 @@ class OptimalityTestMatrix(object):
             }
         for report_type in self.result_matrix:
             for name, report in self.result_matrix[report_type].items():
-                self.summary_matrix[report_type][name] = stats(report)
+                if report:
+                    self.summary_matrix[report_type][name] = stats(report)
+                elif report_type == "test type":
+                    del self.test_types[name]
         return self.result_matrix
 
-
-    def run(self):
+    def tabulate(self):
+        """
+        Store all the score results in self.result_matrix.
+        """
         for test_name, test in self.test_types.items():
             for ivs_name, ivs in self.ivs.items():
-                tree = test(ivs)
-                score = tree.score(True)
-
                 if self.verbose:
                     print("{0}: {1}".format(ivs_name, test_name))
+                tree = test(ivs)
+                if not tree:
+                    continue
+                score = tree.score(True)
+                if self.verbose > 1:
                     tree.print_structure()
 
                 self.register_score(ivs_name, test_name, score)
 
+    def run(self):
+        self.tabulate()
         self.summarize()
         results = {
             'summary': self.summary_matrix,
@@ -125,7 +159,14 @@ class OptimalityTestMatrix(object):
         return results
 
 if __name__ == "__main__":
+    from test.intervaltrees import trees
     matrix = OptimalityTestMatrix()
+    matrix.run()
+    pprint(matrix.summary_matrix)
+
+    matrix = OptimalityTestMatrix({
+        'ivs': trees['ivs1'](),
+    })
     matrix.run()
     pprint(matrix.summary_matrix)
     # pprint(matrix.result_matrix)

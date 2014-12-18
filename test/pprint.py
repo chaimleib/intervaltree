@@ -107,6 +107,10 @@ def _sorted(iterable):
         if _sys.py3kwarning:
             warnings.filterwarnings("ignore", "comparing unequal types "
                                     "not supported", DeprecationWarning)
+        iterable = list(iterable)
+        if iterable and hasattr(iterable[0], '__key__'):
+            key = iterable[0].__key__
+            return sorted(iterable, key=key)
         return sorted(iterable)
 
 class PrettyPrinter:

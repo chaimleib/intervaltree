@@ -22,16 +22,22 @@ from __future__ import absolute_import
 from intervaltree import IntervalTree
 from pprint import pprint
 from test import intervals
+from test.progress_bar import ProgressBar
 try:
     xrange
 except NameError:
     xrange = range
 
+def create_trees():
+    pbar = ProgressBar(len(intervals.ivs))
+    print('Creating trees from interval lists...')
+    trees = intervals.ivs.copy()
+    for name, ivs in trees.items():
+        pbar()
+        trees[name] = IntervalTree(ivs).copy
+    return trees
 
-trees = intervals.ivs_data.copy()
-for name, ivs in trees.items():
-    trees[name] = IntervalTree(ivs).copy
-
+trees = create_trees()
 
 def sdata(s):
     """

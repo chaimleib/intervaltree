@@ -24,7 +24,7 @@ from test.intervaltrees import trees
 from pprint import pprint
 from warnings import warn
 
-matrix = OptimalityTestMatrix()
+matrix = OptimalityTestMatrix(verbose=1)
 matrix.run()
 
 def test_ivs1():
@@ -44,6 +44,7 @@ def test_ivs1():
 
         # make sure we did at least as well as before's worst-case
         assert score <= prev_score
+        assert 0.0 == report[test]['depth']
 
     if worst < prev_score:  # worst-case has improved!
         warn(trees['ivs1']().print_structure(True))

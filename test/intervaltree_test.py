@@ -172,10 +172,10 @@ def test_copy():
     itree4.verify()
 
     list(itree[1])[0].data[0] = "y"
-    assert sorted(itree) == [Interval(0, 1, 'x'), Interval(1, 2, ['y'])]
-    assert sorted(itree2) == [Interval(0, 1, 'x'), Interval(1, 2, ['y'])]
-    assert sorted(itree3) == [Interval(0, 1, 'x'), Interval(1, 2, ['y'])]
-    assert sorted(itree4) == [Interval(0, 1, 'x'), Interval(1, 2, ['x'])]
+    assert Interval.sorted(itree) == [Interval(0, 1, 'x'), Interval(1, 2, ['y'])]
+    assert Interval.sorted(itree2) == [Interval(0, 1, 'x'), Interval(1, 2, ['y'])]
+    assert Interval.sorted(itree3) == [Interval(0, 1, 'x'), Interval(1, 2, ['y'])]
+    assert Interval.sorted(itree4) == [Interval(0, 1, 'x'), Interval(1, 2, ['x'])]
 
 
 def test_add_invalid_interval():
@@ -366,7 +366,7 @@ def test_delete():
 def test_emptying():
     t = trees['ivs1']()
 
-    for iv in sorted(iter(t)):
+    for iv in Interval.sorted(iter(t)):
         t.remove(iv)
         t.verify()
     assert len(t) == 0
