@@ -12,6 +12,7 @@ Version 1.2.0
     - More tests for comparison and sorting behavior
 - Fixes
     - Sorting `Interval`s and numbers in the same list gathered all the numbers at the beginning and the `Interval`s at the end
+    - When a developer runs `make install-testpypi`, the `pip` invocation was missing a `--pre` flag.
 
 Version 1.1.1
 -------------
