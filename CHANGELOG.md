@@ -1,6 +1,10 @@
 Change log
 ==========
 
+Version 1.1.1
+-------------
+- Removed requirement for pyandoc in order to run functionality tests.
+
 Version 1.1.0
 -------------
 - Added ability to use `Interval.distance_to()` with points, not just `Intervals`
