@@ -26,7 +26,7 @@ all: test
 test: pytest rst
 	
 quicktest: rst
-	python setup.py test
+	PYPI=$(PYPI) python setup.py test
 
 pytest: deps-dev
 	"$(SCRIPTS_DIR)/testall.sh"
@@ -62,12 +62,12 @@ uninstall:
 
 # Convert README to rst and check the result
 rst: pydocutils pyandoc
-	python setup.py check --restructuredtext
+	PYPI=$(PYPI) python setup.py check --restructuredtext
 	@echo "README is ready for PyPI"
 
 # Register at PyPI
 register: rst
-	python setup.py register -r $(PYPI)
+	PYPI=$(PYPI) python setup.py register -r $(PYPI)
 
 # Setup for live upload
 release:
@@ -75,7 +75,7 @@ release:
 
 # Build source distribution
 sdist-upload:
-	python setup.py sdist upload -r $(PYPI)
+	PYPI=$(PYPI) python setup.py sdist upload -r $(PYPI)
 
 deps-dev: pyandoc
 

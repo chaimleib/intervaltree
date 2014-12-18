@@ -23,21 +23,28 @@ limitations under the License.
 """
 import sys
 import os
+import subprocess
 import errno
 from warnings import warn
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 
 import re
-try:
-    import pandoc
-except ImportError as e:
-    print(e)
-pandoc.PANDOC_PATH = 'pandoc'  # until pyandoc gets updated
+
+
+def development_version():
+    p = subprocess.Popen('git describe'.split(), stdout=subprocess.PIPE)
+    version = p.communicate()[0].strip()
+    return version
 
 
 ## CONFIG
-version = '1.0.3'
+version = '1.1.1'
+if 'PYPI' in os.environ and os.environ['PYPI'] == 'pypitest':
+    dev_version = development_version() + '-%s' % version
+    version = dev_version
+print('Version %s' % version)
+
 create_rst = True
 
 
@@ -88,6 +95,14 @@ def generate_rst():
 
 def markdown2rst(md):
     """Convert markdown to rst format using pandoc. No other processing."""
+    # import here, because outside it may arent't used
+    try:
+        import pandoc
+    except ImportError as e:
+        raise
+    else:
+        pandoc.PANDOC_PATH = 'pandoc'  # until pyandoc gets updated
+
     doc = pandoc.Document()
     doc.markdown_github = md
     rst = doc.rst
