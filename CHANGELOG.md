@@ -1,6 +1,18 @@
 Change log
 ==========
 
+Version 1.2.0
+-------------
+- `IntervalTree` now supports the full `MutableMapping` and `MutableSet` APIs from the `collections` module
+- Added `__delitem__` to `IntervalTree`
+- Added comparison methods `lt()`, `gt()`, `le()` and `ge()` to `Interval`, as an alternative to the comparison operators, which are designed for sorting.
+- Internal improvements:
+    - More verbose tests with progress bars
+    - More automatic test harnesses
+    - More tests for comparison and sorting behavior
+- Fixes
+    - Sorting `Interval`s and numbers in the same list gathered all the numbers at the beginning and the `Interval`s at the end
+
 Version 1.1.1
 -------------
 - Removed requirement for pyandoc in order to run functionality tests.

@@ -23,6 +23,7 @@ from __future__ import absolute_import
 from .interval import Interval
 from .node import Node
 from numbers import Number
+import collections
 
 try:
     xrange  # Python 2?
@@ -31,7 +32,9 @@ except NameError:
 
 
 # noinspection PyBroadException
-class IntervalTree(object):
+class IntervalTree(
+    collections.MutableMapping,
+    collections.MutableSet):
     """
     A binary lookup tree of intervals.
     The intervals contained in the tree are represented using ``Interval(a, b, data)`` objects.
@@ -375,7 +378,7 @@ class IntervalTree(object):
         Completes in O(log n) time.
         """
         return self.discard(Interval(begin, end, data))
-    
+
     def remove_overlap(self, begin, end=None):
         """
         Removes all intervals overlapping the given point or range.
@@ -388,7 +391,7 @@ class IntervalTree(object):
         hitlist = self.search(begin, end)
         for iv in hitlist: 
             self.remove(iv)
-    
+
     def remove_envelop(self, begin, end):
         """
         Removes all intervals completely enveloped in the given range.
@@ -418,7 +421,7 @@ class IntervalTree(object):
                     result[parent] = set()
                 result[parent].add(child)
                 
-        long_ivs = sorted(self.all_intervals, key=len, reverse=True)
+        long_ivs = sorted(self.all_intervals, key=Interval.length, reverse=True)
         for i, parent in enumerate(long_ivs):
             for child in long_ivs[i + 1:]:
                 add_if_nested()
@@ -464,7 +467,6 @@ class IntervalTree(object):
             return False
         elif self.overlaps_point(begin):
             return True
-        # TODO: add support for open and closed intervals
         return any(
             self.overlaps_point(bound) 
             for bound in self.boundary_table 
@@ -714,6 +716,12 @@ class IntervalTree(object):
         Completes in O(log n) time.
         """
         self.addi(index.start, index.stop, value)
+
+    def __delitem__(self, point):
+        """
+        Delete all items overlapping point.
+        """
+        self.remove_overlap(point)
 
     def __contains__(self, item):
         """

@@ -19,8 +19,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+from __future__ import absolute_import
 from operator import attrgetter
-from math import floor, log as lg
+from math import floor, log
 
 
 def l2(num):
@@ -28,7 +29,7 @@ def l2(num):
     log base 2
     :rtype real
     """
-    return lg(num, 2)
+    return log(num, 2)
 
 
 class Node(object):

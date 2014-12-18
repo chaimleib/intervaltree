@@ -129,8 +129,7 @@ def test_interval_overlaps_range():
     assert not iv0.overlaps(*iv8)
     assert not iv0.overlaps(*iv9)
 
-
-def test_interval_int_comparisons():
+def test_interval_int_comparison_operators():
     iv = Interval(0, 10)
 
     assert (iv > -5)
@@ -138,15 +137,15 @@ def test_interval_int_comparisons():
     assert not (iv < -5)
     assert not (-5 > iv)
 
-    assert not (iv > 0)
-    assert not (0 < iv)
+    assert (iv > 0)  # special for sorting
+    assert (0 < iv)  # special for sorting
     assert not (iv < 0)
     assert not (0 > iv)
 
     assert not (iv > 5)
     assert not (5 < iv)
-    assert not (iv < 5)
-    assert not (5 > iv)
+    assert (iv < 5)  # special for sorting
+    assert (5 > iv)  # special for sorting
 
     assert not (iv > 10)
     assert not (10 < iv)
@@ -157,6 +156,35 @@ def test_interval_int_comparisons():
     assert not (15 < iv)
     assert (iv < 15)
     assert (15 > iv)
+
+
+def test_interval_int_comparison_methods():
+    iv = Interval(0, 10)
+
+    assert iv.gt(-5)
+    assert iv.ge(-5)
+    assert not iv.lt(-5)
+    assert not iv.le(-5)
+
+    assert not iv.gt(0)
+    assert iv.ge(0)
+    assert not iv.lt(0)
+    assert not iv.le(0)
+
+    assert not iv.gt(5)
+    assert not iv.ge(5)
+    assert not iv.lt(5)
+    assert not iv.le(5)
+
+    assert not iv.gt(10)
+    assert not iv.ge(10)
+    assert iv.lt(10)
+    assert iv.le(10)
+
+    assert not iv.gt(15)
+    assert not iv.ge(15)
+    assert iv.lt(15)
+    assert iv.le(15)
 
 
 def test_interval_cmp_interval():
@@ -208,15 +236,12 @@ def test_interval_sort_interval():
     ]
 
     for iv in ivs:
-        sort = sorted([base, iv], key=Interval.key)
-        isort = Interval.sorted([base, iv])
-        assert sort == isort
+        sort = sorted([base, iv])
         assert sort[0].__cmp__(sort[1]) in (-1, 0)
 
-        sort = sorted([iv, base], key=Interval.key)
-        isort = Interval.sorted([iv, base])
-        assert sort == isort
+        sort = sorted([iv, base])
         assert sort[0].__cmp__(sort[1]) in (-1, 0)
+
 
 if __name__ == "__main__":
     import pytest

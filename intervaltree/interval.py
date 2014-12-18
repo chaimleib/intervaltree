@@ -26,6 +26,7 @@ from collections import namedtuple
 # noinspection PyBroadException
 class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
     __slots__ = ()  # Saves memory, avoiding the need to create __dict__ for each interval
+
     def __new__(cls, begin, end, data=None):
         return super(Interval, cls).__new__(cls, begin, end, data)
     
@@ -160,7 +161,7 @@ class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
         try:
             o = other[0:2]
         except:
-            o = other
+            o = (other,)
         if s != o:
             return -1 if s < o else 1
         try:
@@ -173,7 +174,7 @@ class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
             if s == o:
                 return 0
             return -1 if s < o else 1
-        
+
     def __lt__(self, other):
         """
         Less than operator. Parrots __cmp__()
@@ -191,6 +192,66 @@ class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
         :rtype: bool
         """
         return self.__cmp__(other) > 0
+
+    def _raise_if_null(self, other):
+        """
+        :raises ValueError: if either self or other is a null Interval
+        """
+        if self.is_null():
+            raise ValueError("Cannot compare null Intervals!")
+        if hasattr(other, 'is_null') and other.is_null():
+            raise ValueError("Cannot compare null Intervals!")
+
+    def lt(self, other):
+        """
+        Strictly less than. Returns True if no part of this Interval
+        extends higher than or into other.
+        :raises ValueError: if either self or other is a null Interval
+        :param other: Interval or point
+        :return: True or False
+        :rtype: bool
+        """
+        self._raise_if_null(other)
+        return self.end <= getattr(other, 'begin', other)
+
+    def le(self, other):
+        """
+        Less than or overlaps. Returns True if no part of this Interval
+        extends higher than other.
+        :raises ValueError: if either self or other is a null Interval
+        :param other: Interval or point
+        :return: True or False
+        :rtype: bool
+        """
+        self._raise_if_null(other)
+        return self.end <= getattr(other, 'end', other)
+
+    def gt(self, other):
+        """
+        Strictly greater than. Returns True if no part of this Interval
+        extends lower than or into other.
+        :raises ValueError: if either self or other is a null Interval
+        :param other: Interval or point
+        :return: True or False
+        :rtype: bool
+        """
+        self._raise_if_null(other)
+        if hasattr(other, 'end'):
+            return self.begin >= other.end
+        else:
+            return self.begin > other
+
+    def ge(self, other):
+        """
+        Greater than or overlaps. Returns True if no part of this Interval
+        extends lower than other.
+        :raises ValueError: if either self or other is a null Interval
+        :param other: Interval or point
+        :return: True or False
+        :rtype: bool
+        """
+        self._raise_if_null(other)
+        return self.begin >= getattr(other, 'begin', other)
 
     def _get_fields(self):
         """
