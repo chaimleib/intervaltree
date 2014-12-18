@@ -352,7 +352,6 @@ def test_delete():
     assert sdata(t[14]) == set(['[8,15)'])
     t.verify()
 
-
     t.discard(Interval(8, 15, '[8,15)'))
     assert sdata(t[14]) == set()
     t.verify()
