@@ -19,7 +19,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from __future__ import absolute_import
-from intervaltree import IntervalTree, Interval
+from intervaltree import IntervalTree
 from test import intervals
 from copy import deepcopy
 from pprint import pprint
@@ -55,7 +55,7 @@ class OptimalityTestMatrix(object):
         for test in tests:
             name = test[len('test_'):]
             name = ' '.join(name.split('_'))
-            test_function = self.bind_test_function(test)
+            test_function = getattr(self, test)
             self.test_types[name] = test_function
 
         # set ivs
@@ -77,12 +77,6 @@ class OptimalityTestMatrix(object):
         for name in self.test_types:
             self.result_matrix['test type'][name] = {}
         self.summary_matrix = deepcopy(self.result_matrix)
-
-    def bind_test_function(self, function_name):
-        function = getattr(self.__class__, function_name)
-        def test_function(ivs):
-            return function(self, ivs)
-        return test_function
 
     def test_init(self, ivs):
         t = IntervalTree(ivs)
