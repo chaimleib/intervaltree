@@ -92,7 +92,7 @@ class OptimalityTestMatrix(object):
         if self.verbose:
             pbar = ProgressBar(len(ivs))
         t = IntervalTree()
-        for iv in Interval.sorted(ivs):
+        for iv in sorted(ivs):
             t.add(iv)
             if self.verbose: pbar()
         return t
@@ -101,7 +101,7 @@ class OptimalityTestMatrix(object):
         if self.verbose:
             pbar = ProgressBar(len(ivs))
         t = IntervalTree()
-        for iv in Interval.sorted(ivs, reverse=True):
+        for iv in sorted(ivs, reverse=True):
             t.add(iv)
             if self.verbose: pbar()
         return t
