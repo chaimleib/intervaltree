@@ -5,7 +5,7 @@ Queries may be by point, by range overlap, or by range envelopment.
 Core logic.
 
 Copyright 2013-2014 Chaim-Leib Halbert
-Modifications Copyright 2014 Konstantin Tretrakov
+Modifications Copyright 2014 Konstantin Tretyakov
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
