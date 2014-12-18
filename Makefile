@@ -55,7 +55,7 @@ install-pypi:
 	pip install intervaltree
 
 install-develop:
-	python setup.py develop
+	PYPI=$(PYPI) python setup.py develop
 	
 uninstall:
 	pip uninstall intervaltree
