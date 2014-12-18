@@ -49,7 +49,7 @@ clean-temps:
 	rm -rf $(TEMPS)
 
 install-testpypi:
-	pip install -i https://testpypi.python.org/pypi intervaltree
+	pip install --pre -i https://testpypi.python.org/pypi intervaltree
 
 install-pypi:
 	pip install intervaltree
