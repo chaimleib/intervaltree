@@ -27,6 +27,7 @@ from warnings import warn
 matrix = OptimalityTestMatrix(verbose=1)
 matrix.run()
 
+
 def test_ivs1():
     """
     Small, but has overlaps.
