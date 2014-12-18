@@ -225,31 +225,6 @@ def test_init_invalid_interval():
         IntervalTree(Interval(b, e) for b, e in [(1, 2), (1, 1)])
 
 
-# TODO: replace this with optimality test
-def test_basic_structuring():
-    t = trees['ivs1']()
-    t.verify()
-    orig = t.print_structure(True)
-        
-    assert orig == """\
-Node<8, depth=3, balance=0>
- Interval(5, 9, '[5,9)')
- Interval(6, 10, '[6,10)')
- Interval(8, 10, '[8,10)')
- Interval(8, 15, '[8,15)')
-<:  Node<4, depth=2, balance=-1>
-     Interval(4, 7, '[4,7)')
-    <:  Node<1, depth=1, balance=0>
-         Interval(1, 2, '[1,2)')
->:  Node<12, depth=2, balance=0>
-     Interval(12, 14, '[12,14)')
-    <:  Node<10, depth=1, balance=0>
-         Interval(10, 12, '[10,12)')
-    >:  Node<14, depth=1, balance=0>
-         Interval(14, 15, '[14,15)')
-"""
-
-
 def test_queries():
     t = trees['ivs1']()
 
