@@ -19,7 +19,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from __future__ import absolute_import
 from .interval import Interval
 from .node import Node
 from numbers import Number
@@ -119,9 +118,12 @@ class IntervalTree(
         >>> tree.remove_overlap(1.7, 1.8)
         >>> tree
         IntervalTree([Interval(0.5, 1.7)])
-        >>> tree.remove_overlap(1.6, 1.6) # Empty interval still works
+        >>> tree.remove_overlap(1.6, 1.6)  # Null interval does nothing
         >>> tree
-        IntervalTree()
+        IntervalTree([Interval(0.5, 1.7)])
+        >>> tree.remove_overlap(1.6, 1.5)  # Ditto
+        >>> tree
+        IntervalTree([Interval(0.5, 1.7)])
         
     Delete intervals, enveloped in the range::
     
@@ -145,8 +147,10 @@ class IntervalTree(
         >>> assert tree[-1.1]         == set([Interval(-1.1, 1.1)])
         >>> assert tree.search(1.1)   == set([Interval(-0.5, 1.5), Interval(0.5, 1.7)])   # Same as tree[1.1]
         >>> assert tree[-0.5:0.5]     == set([Interval(-0.5, 1.5), Interval(-1.1, 1.1)])  # Interval overlap query
-        >>> assert tree.search(1.5, 1.5) == set([Interval(0.5, 1.7)])                     # Same as tree[1.5:1.5]
-        >>> assert tree.search(1.7, 1.7) == set()
+        >>> assert tree.search(1.5, 1.5) == set()                                         # Same as tree[1.5:1.5]
+        >>> assert tree.search(1.5) == set([Interval(0.5, 1.7)])                          # Same as tree[1.5]
+
+        >>> assert tree.search(1.7, 1.8) == set()
 
     Envelop queries::
     
@@ -541,6 +545,8 @@ class IntervalTree(
                 return self.search(iv.begin, iv.end, strict=strict)
             except:
                 return self.top_node.search_point(begin, set())
+        elif begin >= end:
+            return set()
         else:
             result = self.top_node.search_point(begin, set())
             
@@ -708,8 +714,15 @@ class IntervalTree(
         :rtype: set of Interval
         """
         try:
-            return self.search(index.start, index.stop)
-        except:
+            start, stop = index.start, index.stop
+            if start is None:
+                start = self.begin()
+                if stop is None:
+                    return set(self)
+            if stop is None:
+                stop = self.end()
+            return self.search(start, stop)
+        except AttributeError:
             return self.search(index)
     
     def __setitem__(self, index, value):
@@ -804,3 +817,8 @@ class IntervalTree(
         :rtype: tuple
         """
         return IntervalTree, (sorted(self.all_intervals),)
+
+
+if __name__ == "__main__":
+    import pytest
+    pytest.main([__file__, '-v'])

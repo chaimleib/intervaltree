@@ -1,7 +1,7 @@
 Change log
 ==========
 
-Version 1.2.0
+Version 2.0.0
 -------------
 - `IntervalTree` now supports the full `MutableMapping` and `MutableSet` APIs from the `collections` module
 - Added `__delitem__` to `IntervalTree`
@@ -12,6 +12,7 @@ Version 1.2.0
     - More automatic test harnesses
     - More tests for comparison and sorting behavior
 - Fixes
+    - BACKWARD-INCOMPATIBLE: When deleting or searching over ranges were begin >= end, deleted or searched over the overlaps of begin. This behavior was documented as expected in 1.x; it is now changed to be more consistent with the definition of `Interval`s, which are half-open
     - Sorting `Interval`s and numbers in the same list gathered all the numbers at the beginning and the `Interval`s at the end
     - `IntervalTree.overlaps()` and friends returned None instead of False
     - Maintainers: `make install-testpypi` failed because the `pip` was missing a `--pre` flag
