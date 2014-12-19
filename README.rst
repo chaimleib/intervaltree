@@ -97,7 +97,7 @@ Examples
 
 -  Getting started
 
-   ::
+   .. code:: python
 
        >>> from intervaltree import Interval, IntervalTree
        >>> t = IntervalTree()
@@ -106,7 +106,7 @@ Examples
 
 -  Adding intervals - any object works!
 
-   ::
+   .. code:: python
 
        >>> t[1:2] = "1-2"
        >>> t[4:7] = (4, 7)
@@ -114,7 +114,7 @@ Examples
 
 -  Query by point
 
-   ::
+   .. code:: python
 
        >>> sorted(t[6])
        [Interval(4, 7, (4, 7)), Interval(5, 9, {5: 9})]
@@ -123,7 +123,7 @@ Examples
 
 -  Accessing an ``Interval`` object
 
-   ::
+   .. code:: python
 
        >>> iv = Interval(4, 7, (4, 7))
        >>> iv.begin
@@ -146,14 +146,14 @@ Examples
    Note that ranges are inclusive of the lower limit, but non-inclusive
    of the upper limit. So:
 
-   ::
+   .. code:: python
 
        >>> sorted(t[2:4])
        []
 
    But:
 
-   ::
+   .. code:: python
 
        >>> sorted(t[1:5])
        [Interval(1, 2, '1-2'), Interval(4, 7, (4, 7))]
@@ -162,7 +162,7 @@ Examples
 
    We could have made a similar tree this way:
 
-   ::
+   .. code:: python
 
        >>> ivs = [(1, 2), (4, 7), (5, 9)]
        >>> t = IntervalTree(
@@ -171,13 +171,13 @@ Examples
 
    Or, if we don't need the data fields:
 
-   ::
+   .. code:: python
 
        >>> t2 = IntervalTree(Interval(*iv) for iv in ivs)
 
 -  Removing intervals
 
-   ::
+   .. code:: python
 
        >>> t.remove( Interval(1, 2, "1-2") )
        >>> sorted(t)
@@ -196,7 +196,7 @@ Examples
    We could also empty a tree by removing all intervals, from the lowest
    bound to the highest bound of the ``IntervalTree``:
 
-   ::
+   .. code:: python
 
        >>> t2.empty()
        >>> t2
