@@ -21,7 +21,8 @@ limitations under the License.
 from __future__ import absolute_import
 import pytest
 from intervaltree import Interval, IntervalTree
-from .intervaltrees import trees, sdata
+
+from test.intervaltrees import trees, sdata
 from pprint import pprint
 try:
     import cPickle as pickle
@@ -337,7 +338,7 @@ def test_delete():
     assert not t[5]
 
 
-def test_emptying():
+def test_emptying_iteration():
     t = trees['ivs1']()
 
     for iv in sorted(iter(t)):
@@ -346,6 +347,27 @@ def test_emptying():
     assert len(t) == 0
     assert t.is_empty()
     assert not t
+
+
+def test_emptying_empty():
+    t = trees['ivs1']()
+    assert t
+    t.empty()
+    assert len(t) == 0
+    assert t.is_empty()
+    assert not t
+
+
+def test_emptying_partial():
+    t = trees['ivs1']()
+    assert t[7:]
+    t.remove_overlap(7, t.end())
+    assert not t[7:]
+
+    t = trees['ivs1']()
+    assert t[:7]
+    t.remove_overlap(t.begin(), 7)
+    assert not t[:7]
 
 
 def test_remove_overlap():
@@ -383,3 +405,8 @@ def test_pickle():
 
     assert t == t2
     t2.verify()
+
+
+if __name__ == "__main__":
+    import pytest
+    pytest.main([__file__, '-v'])
