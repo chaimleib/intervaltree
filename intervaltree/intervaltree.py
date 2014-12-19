@@ -403,7 +403,15 @@ class IntervalTree(
         hitlist = self.search(begin, end, strict=True)
         for iv in hitlist:
             self.remove(iv)
-        
+
+    def empty(self):
+        """
+        Empties the tree.
+
+        Completes in O(1) tine.
+        """
+        self.__init__()
+
     def find_nested(self):
         """
         Returns a dictionary mapping parent intervals to sets of 

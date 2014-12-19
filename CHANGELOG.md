@@ -5,7 +5,8 @@ Version 1.2.0
 -------------
 - `IntervalTree` now supports the full `MutableMapping` and `MutableSet` APIs from the `collections` module
 - Added `__delitem__` to `IntervalTree`
-- Added comparison methods `lt()`, `gt()`, `le()` and `ge()` to `Interval`, as an alternative to the comparison operators, which are designed for sorting.
+- Added comparison methods `lt()`, `gt()`, `le()` and `ge()` to `Interval`, as an alternative to the comparison operators, which are designed for sorting
+- Added `IntervalTree.empty()`
 - Internal improvements:
     - More verbose tests with progress bars
     - More automatic test harnesses
