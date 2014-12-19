@@ -97,85 +97,110 @@ Examples
 
 -  Getting started
 
-   .. code:: python
+   ::
 
-       from intervaltree import Interval, IntervalTree
-       t = IntervalTree()
+       >>> from intervaltree import Interval, IntervalTree
+       >>> t = IntervalTree()
+       >>> t
+       IntervalTree()
 
 -  Adding intervals - any object works!
 
-   .. code:: python
+   ::
 
-       t[1:2] = "1-2"
-       t[4:7] = (4, 7)
-       t[5:9] = {5: 9}
+       >>> t[1:2] = "1-2"
+       >>> t[4:7] = (4, 7)
+       >>> t[5:9] = {5: 9}
 
 -  Query by point
 
-   .. code:: python
+   ::
 
-       ivs = t[6]            # set([Interval(4, 7, (4, 7)), Interval(5, 9, {5: 9})])
-       iv = sorted(ivs)[0]   # Interval(4, 7, (4, 7))
+       >>> sorted(t[6])
+       [Interval(4, 7, (4, 7)), Interval(5, 9, {5: 9})]
+       >>> sorted(t[6])[0]
+       Interval(4, 7, (4, 7))
 
 -  Accessing an ``Interval`` object
 
-   .. code:: python
+   ::
 
-       iv.begin  # 4
-       iv.end    # 7
-       iv.data   # (4, 7)
+       >>> iv = Interval(4, 7, (4, 7))
+       >>> iv.begin
+       4
+       >>> iv.end
+       7
+       >>> iv.data
+       (4, 7)
+
+       >>> begin, end, data = iv
+       >>> begin
+       4
+       >>> end
+       7
+       >>> data
+       (4, 7)
 
 -  Query by range
 
    Note that ranges are inclusive of the lower limit, but non-inclusive
    of the upper limit. So:
 
-   .. code:: python
+   ::
 
-       t[2:4]    # set()
+       >>> sorted(t[2:4])
+       []
 
    But:
 
-   .. code:: python
+   ::
 
-       t[1:5]    # set([Interval(1, 2, '1-2'), Interval(4, 7, (4, 7))])
+       >>> sorted(t[1:5])
+       [Interval(1, 2, '1-2'), Interval(4, 7, (4, 7))]
 
 -  Constructing from lists of ``Interval``\ s
 
    We could have made a similar tree this way:
 
-   .. code:: python
+   ::
 
-       ivs = [(1, 2), (4, 7), (5, 9)]
-       t = IntervalTree(
-           Interval(begin, end, "%d-%d" % (begin, end)) for begin, end in ivs
-       )
+       >>> ivs = [(1, 2), (4, 7), (5, 9)]
+       >>> t = IntervalTree(
+       ...    Interval(begin, end, "%d-%d" % (begin, end)) for begin, end in ivs
+       ... )
 
    Or, if we don't need the data fields:
 
-   .. code:: python
+   ::
 
-       t = IntervalTree(Interval(*iv) for iv in ivs)
+       >>> t2 = IntervalTree(Interval(*iv) for iv in ivs)
 
 -  Removing intervals
 
-   .. code:: python
+   ::
 
-       t.remove( Interval(1, 2, "1-2") )
-       list(t)     # [Interval(4, 7, '4-7'), Interval(5, 9, '5-9')]
+       >>> t.remove( Interval(1, 2, "1-2") )
+       >>> sorted(t)
+       [Interval(4, 7, '4-7'), Interval(5, 9, '5-9')]
 
-       t.remove( Interval(500, 1000, "Doesn't exist")) # raises ValueError
-       t.discard(Interval(500, 1000, "Doesn't exist")) # quietly does nothing
+       >>> t.remove( Interval(500, 1000, "Doesn't exist"))  # raises ValueError
+       Traceback (most recent call last):
+       ValueError
 
-       t.remove_overlap(5)
-       list(t)     # []
+       >>> t.discard(Interval(500, 1000, "Doesn't exist"))  # quietly does nothing
+
+       >>> del t[5]  # same as t.remove_overlap(5)
+       >>> t
+       IntervalTree()
 
    We could also empty a tree by removing all intervals, from the lowest
    bound to the highest bound of the ``IntervalTree``:
 
-   .. code:: python
+   ::
 
-       t.remove_overlap(t.begin(), t.end())
+       >>> t2.empty()
+       >>> t2
+       IntervalTree()
 
 Future improvements
 -------------------
