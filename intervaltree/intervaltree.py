@@ -817,8 +817,3 @@ class IntervalTree(
         :rtype: tuple
         """
         return IntervalTree, (sorted(self.all_intervals),)
-
-
-if __name__ == "__main__":
-    import pytest
-    pytest.main([__file__, '-v'])
