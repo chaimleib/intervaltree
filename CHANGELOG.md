@@ -13,6 +13,7 @@ Version 1.2.0
 - Fixes
     - Sorting `Interval`s and numbers in the same list gathered all the numbers at the beginning and the `Interval`s at the end
     - When a developer runs `make install-testpypi`, the `pip` invocation was missing a `--pre` flag.
+    - `IntervalTree.overlaps()` and friends returned None instead of False
 
 Version 1.1.1
 -------------

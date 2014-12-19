@@ -164,8 +164,8 @@ class IntervalTree(
         False
         >>> tree.overlaps(-1.1)
         True
-        >>> not tree.overlaps(1.7) # TODO: itree.overlaps(1.7) returns None, should return False
-        True
+        >>> tree.overlaps(1.7)
+        False
         >>> tree.overlaps(1.7, 1.8)
         False
         >>> tree.overlaps(-1.2, -1.1)
@@ -242,7 +242,6 @@ class IntervalTree(
         self.boundary_table = {}
         for iv in self.all_intervals:
             self._add_boundaries(iv)
-        #self.verify()
 
     def copy(self):
         """
@@ -452,7 +451,7 @@ class IntervalTree(
         """
         if self.is_empty():
             return False
-        return self.top_node.contains_point(p)
+        return bool(self.top_node.contains_point(p))
     
     def overlaps_range(self, begin, end):
         """
