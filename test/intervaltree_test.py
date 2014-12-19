@@ -236,7 +236,36 @@ def test_queries():
     assert sdata(t[15]) == set()
     assert sdata(t.search(5)) == set(['[4,7)', '[5,9)'])
     assert sdata(t.search(6, 11, strict=True)) == set(['[6,10)', '[8,10)'])
-    
+
+
+def test_partial_slice_query():
+    def assert_chop(t, limit):
+        s = set(t)
+        assert t[:] == s
+
+        s = set(iv for iv in t if iv.begin < limit)
+        assert t[:limit] == s
+
+        s = set(iv for iv in t if iv.end > limit)
+        assert t[limit:] == s
+
+    t = trees['ivs1']()
+    assert_chop(trees['ivs1'](), 7)
+    assert_chop(trees['ivs2'](), -3)
+
+
+def test_tree_bounds():
+    def assert_tree_bounds(t):
+        begin, end, _ = set(t).pop()
+        for iv in t:
+            if iv.begin < begin: begin = iv.begin
+            if iv.end > end: end = iv.end
+        assert t.begin() == begin
+        assert t.end() == end
+
+    assert_tree_bounds(trees['ivs1']())
+    assert_tree_bounds(trees['ivs2']())
+
 
 def test_membership():
     t = trees['ivs1']()
@@ -262,7 +291,7 @@ def test_insert_to_filled_tree():
     t.add(Interval(1, 2, '[1,2)'))  # adding duplicate should do nothing
     assert sdata(t[1]) == set(['[1,2)'])
     assert orig == t.print_structure(True)
-    
+
     t[1:2] = '[1,2)'                # adding duplicate should do nothing
     assert sdata(t[1]) == set(['[1,2)'])
     assert orig == t.print_structure(True)
@@ -271,7 +300,7 @@ def test_insert_to_filled_tree():
     t.add(Interval(2, 4, '[2,4)'))
     assert sdata(t[2]) == set(['[2,4)'])
     t.verify()
-    
+
     t[13:15] = '[13,15)'
     assert sdata(t[14]) == set(['[8,15)', '[13,15)', '[14,15)'])
     t.verify()
@@ -291,13 +320,13 @@ def test_copy_cast():
     tcopy = IntervalTree(t)
     tcopy.verify()
     assert t == tcopy
-    
+
     tlist = list(t)
     for iv in tlist:
         assert iv in t
     for iv in t:
         assert iv in tlist
-    
+
     tset = set(t)
     assert tset == t.items()
 
@@ -310,19 +339,19 @@ def test_delete():
         pass
     else:
         raise AssertionError("Expected ValueError")
-    
+
     try:
         t.remove(Interval(500, 1000, "Doesn't exist"))
     except ValueError:
         pass
     else:
         raise AssertionError("Expected ValueError")
-    
+
     orig = t.print_structure(True)
     t.discard(Interval(1, 3, "Doesn't exist"))
     t.discard(Interval(500, 1000, "Doesn't exist"))
     assert orig == t.print_structure(True)
-    
+
     assert sdata(t[14]) == set(['[8,15)', '[14,15)'])
     t.remove(Interval(14, 15, '[14,15)'))
     assert sdata(t[14]) == set(['[8,15)'])
@@ -331,7 +360,7 @@ def test_delete():
     t.discard(Interval(8, 15, '[8,15)'))
     assert sdata(t[14]) == set()
     t.verify()
-    
+
     assert t[5]
     t.remove_overlap(5)
     t.verify()
@@ -356,6 +385,9 @@ def test_emptying_empty():
     assert len(t) == 0
     assert t.is_empty()
     assert not t
+
+    # make sure emptying an empty tree does not crash
+    t.empty()
 
 
 def test_emptying_partial():
