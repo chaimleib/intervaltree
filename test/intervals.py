@@ -110,6 +110,12 @@ def gaps_rand(size=100, labels=False):
         cur += length
     return ivs
 
+def overlaps_nogaps_rand(size=100, labels=False):
+    l1 = nogaps_rand(size, labels)
+    l2 = nogaps_rand(size, labels)
+    ivs = set(l1) + set(l2)
+    return list(ivs)
+
 
 def write_ivs_data(name, ivs, docstring='', imports=None):
     """
