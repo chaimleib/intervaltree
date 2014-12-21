@@ -114,6 +114,24 @@ Examples
     
     ```
 
+* Query by range
+
+    Note that ranges are inclusive of the lower limit, but non-inclusive of the upper limit. So:
+
+    ``` python
+    >>> sorted(t[2:4])
+    []
+    
+    ```
+
+    But:
+
+    ``` python
+    >>> sorted(t[1:5])
+    [Interval(1, 2, '1-2'), Interval(4, 7, (4, 7))]
+    
+    ```
+
 * Accessing an `Interval` object
 
     ``` python
@@ -132,24 +150,6 @@ Examples
     7
     >>> data
     (4, 7)
-    
-    ```
-
-* Query by range
-
-    Note that ranges are inclusive of the lower limit, but non-inclusive of the upper limit. So:
-
-    ``` python
-    >>> sorted(t[2:4])
-    []
-    
-    ```
-
-    But:
-
-    ``` python
-    >>> sorted(t[1:5])
-    [Interval(1, 2, '1-2'), Interval(4, 7, (4, 7))]
     
     ```
 
