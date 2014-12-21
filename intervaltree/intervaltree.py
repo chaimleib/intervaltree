@@ -388,12 +388,63 @@ class IntervalTree(collections.MutableSet):
         """
         return self.discard(Interval(begin, end, data))
 
+    def difference(self, other):
+        """
+        Returns a new tree, comprising all intervals in self but not
+        in other.
+        """
+        return IntervalTree(iv for iv in self if iv not in other)
+
     def difference_update(self, other):
         """
         Removes all intervals in other from self.
         """
         for iv in other:
             self.discard(iv)
+
+    def union(self, other):
+        """
+        Returns a new tree, comprising all intervals from self
+        and other.
+        """
+        return IntervalTree(set(self).update(other))
+
+    def intersection(self, other):
+        """
+        Returns a new tree of all intervals common to both self and
+        other.
+        """
+        return IntervalTree(iv for iv in self if iv in other)
+
+    def intersection_update(self, other):
+        """
+        Removes intervals from self unless they also exist in other.
+        """
+        for iv in self:
+            if iv not in other:
+                self.remove(iv)
+
+    def symmetric_difference(self, other):
+        """
+        Return a tree with elements only in self or other but not
+        both.
+        """
+        if not isinstance(other, set): other = set(other)
+        me = set(self)
+        ivs = me  - other + (other - me)
+        return IntervalTree(ivs)
+
+    def symmetric_difference_update(self, other):
+        """
+        Throws out all intervals except those only in self or other,
+        not both.
+        """
+        other = set(other)
+        for iv in self:
+            if iv in other:
+                self.remove(iv)
+                other.remove(iv)
+        self.update(other)
 
     def remove_overlap(self, begin, end=None):
         """
