@@ -270,6 +270,7 @@ Examples
     >>> sorted(t)[1]
     Interval(10, 15, 'oldlimit: 5, islower: False')
     
+    ```
     
 Future improvements
 -------------------
