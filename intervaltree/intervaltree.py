@@ -388,6 +388,13 @@ class IntervalTree(collections.MutableSet):
         """
         return self.discard(Interval(begin, end, data))
 
+    def difference_update(self, other):
+        """
+        Removes all intervals in other from self.
+        """
+        for iv in other:
+            self.discard(iv)
+
     def remove_overlap(self, begin, end=None):
         """
         Removes all intervals overlapping the given point or range.
@@ -413,6 +420,53 @@ class IntervalTree(collections.MutableSet):
         hitlist = self.search(begin, end, strict=True)
         for iv in hitlist:
             self.remove(iv)
+
+    def chop(self, begin, end, datafunc=None):
+        """
+        Like remove_envelop(), but trims back Intervals hanging into
+        the chopped area so that nothing overlaps.
+        """
+        insertions = set()
+        begin_hits = [iv for iv in self[begin] if iv.begin < begin]
+        end_hits = [iv for iv in self[end] if iv.end > end]
+
+        if datafunc:
+            for iv in begin_hits:
+                insertions.add(Interval(iv.begin, begin, datafunc(iv, True)))
+            for iv in end_hits:
+                insertions.add(Interval(end, iv.end, datafunc(iv, False)))
+        else:
+            for iv in begin_hits:
+                insertions.add(Interval(iv.begin, begin, iv.data))
+            for iv in end_hits:
+                insertions.add(Interval(end, iv.end, iv.data))
+
+        self.remove_envelop(begin, end)
+        self.difference_update(begin_hits)
+        self.difference_update(end_hits)
+        self.update(insertions)
+
+    def slice(self, point, datafunc=None):
+        """
+        Split Intervals that overlap point into two new Intervals. if
+        specified, uses datafunc(interval, islower=True/False) to
+        set the data field of the new Intervals.
+        :param point: where to slice
+        :param datafunc(interval, isupper): callable returning a new
+        value for the interval's data field
+        """
+        hitlist = set(iv for iv in self[point] if iv.begin < point)
+        insertions = set()
+        if datafunc:
+            for iv in hitlist:
+                insertions.add(Interval(iv.begin, point, datafunc(iv, True)))
+                insertions.add(Interval(point, iv.end, datafunc(iv, False)))
+        else:
+            for iv in hitlist:
+                insertions.add(Interval(iv.begin, point, iv.data))
+                insertions.add(Interval(point, iv.end, iv.data))
+        self.difference_update(hitlist)
+        self.update(insertions)
 
     def empty(self):
         """

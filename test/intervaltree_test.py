@@ -249,7 +249,6 @@ def test_partial_slice_query():
         s = set(iv for iv in t if iv.end > limit)
         assert t[limit:] == s
 
-    t = trees['ivs1']()
     assert_chop(trees['ivs1'](), 7)
     assert_chop(trees['ivs2'](), -3)
 
@@ -413,6 +412,106 @@ def test_remove_overlap():
     t.remove_overlap(8)
     assert not t[8]
     t.verify()
+
+
+def test_chop():
+    t = IntervalTree([Interval(0, 10)])
+    t.chop(3, 7)
+    assert len(t) == 2
+    assert sorted(t)[0] == Interval(0, 3)
+    assert sorted(t)[1] == Interval(7, 10)
+
+    t = IntervalTree([Interval(0, 10)])
+    t.chop(0, 7)
+    assert len(t) == 1
+    assert sorted(t)[0] == Interval(7, 10)
+
+    t = IntervalTree([Interval(0, 10)])
+    t.chop(5, 10)
+    assert len(t) == 1
+    assert sorted(t)[0] == Interval(0, 5)
+
+    t = IntervalTree([Interval(0, 10)])
+    t.chop(-5, 15)
+    assert len(t) == 0
+
+    t = IntervalTree([Interval(0, 10)])
+    t.chop(0, 10)
+    assert len(t) == 0
+
+
+def test_chop_datafunc():
+    def datafunc(iv, islower):
+        oldlimit = iv[islower]
+        return "oldlimit: {0}, islower: {1}".format(oldlimit, islower)
+
+    t = IntervalTree([Interval(0, 10)])
+    t.chop(3, 7, datafunc)
+    assert len(t) == 2
+    assert sorted(t)[0] == Interval(0, 3, 'oldlimit: 10, islower: True')
+    assert sorted(t)[1] == Interval(7, 10, 'oldlimit: 0, islower: False')
+
+    t = IntervalTree([Interval(0, 10)])
+    t.chop(0, 7, datafunc)
+    assert len(t) == 1
+    assert sorted(t)[0] == Interval(7, 10, 'oldlimit: 0, islower: False')
+
+    t = IntervalTree([Interval(0, 10)])
+    t.chop(5, 10, datafunc)
+    assert len(t) == 1
+    assert sorted(t)[0] == Interval(0, 5, 'oldlimit: 10, islower: True')
+
+    t = IntervalTree([Interval(0, 10)])
+    t.chop(-5, 15, datafunc)
+    assert len(t) == 0
+
+    t = IntervalTree([Interval(0, 10)])
+    t.chop(0, 10, datafunc)
+    assert len(t) == 0
+
+
+def test_slice():
+    t = IntervalTree([Interval(5, 15)])
+    t.slice(10)
+    assert sorted(t)[0] == Interval(5, 10)
+    assert sorted(t)[1] == Interval(10, 15)
+
+    t = IntervalTree([Interval(5, 15)])
+    t.slice(5)
+    assert sorted(t)[0] == Interval(5, 15)
+
+    t.slice(15)
+    assert sorted(t)[0] == Interval(5, 15)
+
+    t.slice(0)
+    assert sorted(t)[0] == Interval(5, 15)
+
+    t.slice(20)
+    assert sorted(t)[0] == Interval(5, 15)
+
+
+def test_slice_datafunc():
+    def datafunc(iv, islower):
+        oldlimit = iv[islower]
+        return "oldlimit: {0}, islower: {1}".format(oldlimit, islower)
+
+    t = IntervalTree([Interval(5, 15)])
+    t.slice(10, datafunc)
+    assert sorted(t)[0] == Interval(5, 10, 'oldlimit: 15, islower: True')
+    assert sorted(t)[1] == Interval(10, 15, 'oldlimit: 5, islower: False')
+
+    t = IntervalTree([Interval(5, 15)])
+    t.slice(5, datafunc)
+    assert sorted(t)[0] == Interval(5, 15)
+
+    t.slice(15, datafunc)
+    assert sorted(t)[0] == Interval(5, 15)
+
+    t.slice(0, datafunc)
+    assert sorted(t)[0] == Interval(5, 15)
+
+    t.slice(20, datafunc)
+    assert sorted(t)[0] == Interval(5, 15)
 
 
 def test_split_overlap():

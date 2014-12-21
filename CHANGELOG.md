@@ -7,6 +7,8 @@ Version 2.0.0
 - Added `__delitem__` to `IntervalTree`
 - Added comparison methods `lt()`, `gt()`, `le()` and `ge()` to `Interval`, as an alternative to the comparison operators, which are designed for sorting
 - Added `IntervalTree.empty()`
+- Added `IntervalTree.chop(a, b)`
+- Added `IntervalTree.slice(point)`
 - Deprecated `IntervalTree.extend()` -- use `update()` instead
 - Internal improvements:
     - More verbose tests with progress bars

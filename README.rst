@@ -224,6 +224,56 @@ Examples
        >>> sorted(t)
        [Interval(0, 10)]
 
+-  Chopping
+
+   We could also chop out parts of the tree:
+
+   .. code:: python
+
+       >>> t = IntervalTree([Interval(0, 10)])
+       >>> t.chop(3, 7)
+       >>> sorted(t)
+       [Interval(0, 3), Interval(7, 10)]
+
+   To modify the new intervals' data fields based on which side of the
+   interval is being chopped:
+
+   \`\`\` python
+
+               | def datafunc(iv, islower):
+               | ... oldlimit = iv[islower]
+               | ... return "oldlimit: {0}, islower:
+                 {1}".format(oldlimit, islower)
+               | t = IntervalTree([Interval(0, 10)])
+               | t.chop(3, 7, datafunc)
+               | sorted(t)[0]
+               | Interval(0, 3, 'oldlimit: 10, islower: True')
+               | sorted(t)[1]
+               | Interval(7, 10, 'oldlimit: 0, islower: False')
+
+-  Slicing
+
+   You can also slice intervals in the tree without removing them:
+
+   .. code:: python
+
+       >>> t = IntervalTree([Interval(0, 10), Interval(5, 15)])
+       >>> t.slice(3)
+       >>> sorted(t)
+       [Interval(0, 3), Interval(3, 10), Interval(5, 15)]
+
+   You can also set the data fields, for example, re-using
+   ``datafunc()`` from above:
+
+   \`\`\` python
+
+               | t = IntervalTree([Interval(5, 15)])
+               | t.slice(10, datafunc)
+               | sorted(t)[0]
+               | Interval(5, 10, 'oldlimit: 15, islower: True')
+               | sorted(t)[1]
+               | Interval(10, 15, 'oldlimit: 5, islower: False')
+
 Future improvements
 -------------------
 
