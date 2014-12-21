@@ -18,13 +18,17 @@ Features
 --------
 
 * Supports Python 2.6+ and Python 3.2+
-* Initialize blank or from an iterable of `Intervals` in O(n * log n).
+* Initializing
+
+    * blank `tree = IntervalTree()`
+    * from an iterable of `Interval` objects (`tree = IntervalTree(intervals`)
+    * from an iterable of tuples (`tree = IntervalTree.from_tuples(interval_tuples)`)
+
 * Insertions
 
     * `tree[begin:end] = data`
     * `tree.add(interval)`
     * `tree.addi(begin, end, data)`
-    * `tree.extend(list_of_interval_objs)`
 
 * Deletions
 
@@ -36,30 +40,30 @@ Features
     * `tree.remove_overlap(begin, end)`   (removes all overlapping the range)
     * `tree.remove_envelop(begin, end)`   (removes all enveloped in the range)
 
-* Overlap queries:
+* Overlap queries
 
     * `tree[point]`
     * `tree[begin, end]`
     * `tree.search(point)`
     * `tree.search(begin, end)`
 
-* Envelop queries:
+* Envelop queries
 
     * `tree.search(begin, end, strict=True)`
 
-* Membership queries:
+* Membership queries
 
     * `interval_obj in tree`              (this is fastest, O(1))
     * `tree.containsi(begin, end, data)`
     * `tree.overlaps(point)`
     * `tree.overlaps(begin, end)`
 
-* Iterable:
+* Iterable
 
     * `for interval_obj in tree:`
     * `tree.items()`
 
-* Sizing:
+* Sizing
 
     * `len(tree)`
     * `tree.is_empty()`
@@ -67,18 +71,57 @@ Features
     * `tree.begin()`          (the `begin` coordinate of the leftmost interval)
     * `tree.end()`            (the `end` coordinate of the rightmost interval)
 
+* Set-like operations
+    
+    * union
+    
+        * `result_tree = tree.union(iterable)`
+        * `result_tree = tree1 + tree2`        
+        * `tree.update(iterable)`
+        * `tree += other_tree`
+    
+    * difference
+    
+        * `result_tree = tree.difference(iterable)`
+        * `result_tree = tree1 - tree2`    
+        * `tree.difference_update(iterable)`
+        * `tree -= other_tree`
+    
+    * intersection
+    
+        * `result_tree = tree.intersection(iterable)`
+        * `result_tree = tree1 & tree2`    
+        * `tree.intersection_update(iterable)`
+        * `tree &= other_tree`
+    
+    * symmetric difference
+    
+        * `result_tree = tree.symmetric_difference(iterable)`
+        * `result_tree = tree1 ^ tree2`
+        * `tree.symmetric_difference_update(iterable)`
+        * `tree ^= other_tree`
+    
+    * comparison
+    
+        * `tree1.issubset(tree2)` or `tree1 <= tree2`
+        * `tree1 <= tree2`
+        * `tree1.issuperset(tree2)` or `tree1 > tree2`
+        * `tree1 >= tree2`
+        * `tree1 == tree2`
+        
 * Restructuring
 
-    * `split_overlaps()`
+    * `chop(begin, end)`      (slice intervals and remove everything between `begin` and `end`)
+    * `slice(point)`          (slice intervals at `point`)
+    * `split_overlaps()`      (slice at all interval boundaries)
 
-* Copy- and typecast-able:
+* Copying and typecasting
 
     * `IntervalTree(tree)`    (`Interval` objects are same as those in tree)
     * `tree.copy()`           (`Interval` objects are shallow copies of those in tree)
     * `set(tree)`             (can later be fed into `IntervalTree()`)
     * `list(tree)`            (ditto)
 
-* Equal-able
 * Pickle-friendly
 * Automatic AVL balancing
 
