@@ -23,6 +23,7 @@ from .interval import Interval
 from .node import Node
 from numbers import Number
 import collections
+from warnings import warn
 
 try:
     xrange  # Python 2?
@@ -31,9 +32,7 @@ except NameError:
 
 
 # noinspection PyBroadException
-class IntervalTree(
-    collections.MutableMapping,
-    collections.MutableSet):
+class IntervalTree(collections.MutableSet):
     """
     A binary lookup tree of intervals.
     The intervals contained in the tree are represented using ``Interval(a, b, data)`` objects.
@@ -72,7 +71,7 @@ class IntervalTree(
         >>> tree.addi(19.9, 20)
         >>> tree
         IntervalTree([Interval(0, 1, 'data'), Interval(10, 20), Interval(19.9, 20)])
-        >>> tree.extend([Interval(19.9, 20.1), Interval(20.1, 30)])
+        >>> tree.update([Interval(19.9, 20.1), Interval(20.1, 30)])
         >>> len(tree)
         5
 
@@ -327,7 +326,7 @@ class IntervalTree(
         return self.add(Interval(begin, end, data))
     appendi = addi
     
-    def extend(self, intervals):
+    def update(self, intervals):
         """
         Given an iterable of intervals, add them to the tree.
         
@@ -336,7 +335,14 @@ class IntervalTree(
         """
         for iv in intervals:
             self.add(iv)
-    
+
+    def extend(self, intervals):
+        """
+        Deprecated: Replaced by update().
+        """
+        warn("IntervalTree.extend() has been deprecated. Consider using update() instead", DeprecationWarning)
+        self.update(intervals)
+
     def remove(self, interval):
         """
         Removes an interval from the tree, if present. If not, raises 
