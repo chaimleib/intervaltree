@@ -225,7 +225,15 @@ class IntervalTree(collections.MutableSet):
         >>> IntervalTree([Interval(0, 1)]) == IntervalTree([Interval(0, 1, "x")])
         False
     """
-    
+    @classmethod
+    def from_tuples(cls, tups):
+        """
+        Create a new IntervalTree from an iterable of 2- or 3-tuples,
+         where the tuple lists begin, end, and optionally data.
+        """
+        ivs = [Interval(*t) for t in tups]
+        return IntervalTree(ivs)
+
     def __init__(self, intervals=None):
         """
         Set up a tree. If intervals is provided, add all the intervals 

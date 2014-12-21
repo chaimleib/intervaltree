@@ -7,6 +7,7 @@ Version 2.0.0
 - Added:
     - `__delitem__` to `IntervalTree`
     - comparison methods `lt()`, `gt()`, `le()` and `ge()` to `Interval`, as an alternative to the comparison operators, which are designed for sorting
+    - `IntervalTree.from_tuples(iterable)`
     - `IntervalTree.clear()`
     - `IntervalTree.difference(iterable)`
     - `IntervalTree.difference_update(iterable)`
