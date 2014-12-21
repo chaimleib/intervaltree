@@ -427,9 +427,9 @@ class IntervalTree(collections.MutableSet):
         other.
         """
         ivs = set()
-        longer, b =
-        for iv in other:
-            if iv in self:
+        shorter, longer = sorted([self, other], key=len)
+        for iv in shorter:
+            if iv in longer:
                 ivs.add(iv)
         return IntervalTree(ivs)
 
