@@ -191,7 +191,7 @@ Examples
     
     ```
 
-    We could also empty a tree by removing all intervals, from the lowest bound to the highest bound of the `IntervalTree`:
+    We could also empty a tree by removing all intervals (this works in O(1) time):
 
     ``` python
     >>> t2.empty()
@@ -199,7 +199,30 @@ Examples
     IntervalTree()
     
     ```
+    
+    We can also remove intervals that overlap a range:
+    
+    ``` python
+    >>> t = IntervalTree([
+    ...     Interval(0, 10), 
+    ...     Interval(10, 20), 
+    ...     Interval(20, 30), 
+    ...     Interval(30, 40)])
+    >>> t.remove_overlap(25, 35)
+    >>> sorted(t)
+    [Interval(0, 10), Interval(10, 20)]
 
+    ```
+    
+    And we can remove only those intervals completely enveloped in a range:
+    
+    ``` python
+    >>> t.remove_envelop(5, 20)
+    >>> sorted(t)
+    [Interval(0, 10)]
+    
+    ```
+    
 Future improvements
 -------------------
 
