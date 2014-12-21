@@ -401,7 +401,11 @@ class IntervalTree(collections.MutableSet):
         Returns a new tree, comprising all intervals in self but not
         in other.
         """
-        return IntervalTree(iv for iv in self if iv not in other)
+        ivs = set()
+        for iv in self:
+            if iv not in other:
+                ivs.add(iv)
+        return IntervalTree(ivs)
 
     def difference_update(self, other):
         """
@@ -422,7 +426,12 @@ class IntervalTree(collections.MutableSet):
         Returns a new tree of all intervals common to both self and
         other.
         """
-        return IntervalTree(iv for iv in self if iv in other)
+        ivs = set()
+        longer, b =
+        for iv in other:
+            if iv in self:
+                ivs.add(iv)
+        return IntervalTree(ivs)
 
     def intersection_update(self, other):
         """
