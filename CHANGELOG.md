@@ -6,7 +6,7 @@ Version 2.0.0
 - `IntervalTree` now supports the full and `MutableSet` APIs from the `collections` module
 - Added `__delitem__` to `IntervalTree`
 - Added comparison methods `lt()`, `gt()`, `le()` and `ge()` to `Interval`, as an alternative to the comparison operators, which are designed for sorting
-- Added `IntervalTree.empty()`
+- Added `IntervalTree.clear()`
 - Added `IntervalTree.chop(a, b)`
 - Added `IntervalTree.slice(point)`
 - Deprecated `IntervalTree.extend()` -- use `update()` instead

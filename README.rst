@@ -193,16 +193,15 @@ Examples
        >>> t
        IntervalTree()
 
-   We could also empty a tree by removing all intervals (this works in
-   O(1) time):
+   We could also empty a tree entirely:
 
    .. code:: python
 
-       >>> t2.empty()
+       >>> t2.clear()
        >>> t2
        IntervalTree()
 
-   We can also remove intervals that overlap a range:
+   Or remove intervals that overlap a range:
 
    .. code:: python
 
@@ -215,7 +214,7 @@ Examples
        >>> sorted(t)
        [Interval(0, 10), Interval(10, 20)]
 
-   And we can remove only those intervals completely enveloped in a
+   We can also remove only those intervals completely enveloped in a
    range:
 
    .. code:: python

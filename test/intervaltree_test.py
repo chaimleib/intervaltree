@@ -380,13 +380,13 @@ def test_emptying_iteration():
 def test_emptying_empty():
     t = trees['ivs1']()
     assert t
-    t.empty()
+    t.clear()
     assert len(t) == 0
     assert t.is_empty()
     assert not t
 
     # make sure emptying an empty tree does not crash
-    t.empty()
+    t.clear()
 
 
 def test_emptying_partial():

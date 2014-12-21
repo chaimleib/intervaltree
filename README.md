@@ -191,16 +191,16 @@ Examples
     
     ```
 
-    We could also empty a tree by removing all intervals (this works in O(1) time):
+    We could also empty a tree entirely:
 
     ``` python
-    >>> t2.empty()
+    >>> t2.clear()
     >>> t2
     IntervalTree()
     
     ```
     
-    We can also remove intervals that overlap a range:
+    Or remove intervals that overlap a range:
     
     ``` python
     >>> t = IntervalTree([
@@ -214,7 +214,7 @@ Examples
 
     ```
     
-    And we can remove only those intervals completely enveloped in a range:
+    We can also remove only those intervals completely enveloped in a range:
     
     ``` python
     >>> t.remove_envelop(5, 20)

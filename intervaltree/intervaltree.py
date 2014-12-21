@@ -468,7 +468,7 @@ class IntervalTree(collections.MutableSet):
         self.difference_update(hitlist)
         self.update(insertions)
 
-    def empty(self):
+    def clear(self):
         """
         Empties the tree.
 
