@@ -21,11 +21,26 @@ limitations under the License.
 from __future__ import absolute_import
 from intervaltree import Interval, IntervalTree
 import pytest
-from test.intervaltrees import trees
 try:
     import cPickle as pickle
 except ImportError:
     import pickle
+
+
+def test_invalid_update():
+    t = IntervalTree()
+
+    with pytest.raises(ValueError):
+        t.update([Interval(1, 0)])
+
+    with pytest.raises(ValueError):
+        t.update([Interval(1, 1)])
+
+    with pytest.raises(ValueError):
+        t.extend([Interval(1, 0)])
+
+    with pytest.raises(ValueError):
+        t.extend([Interval(1, 1)])
 
 
 def test_invalid_union():
@@ -35,13 +50,7 @@ def test_invalid_union():
         t.union([Interval(1, 0)])
 
     with pytest.raises(ValueError):
-        t.union([Interval(1, 1)])
-
-    with pytest.raises(ValueError):
-        t.extend([Interval(1, 0)])
-
-    with pytest.raises(ValueError):
-        t.extend([Interval(1, 1)])
+        t.update([Interval(1, 1)])
 
 
 if __name__ == "__main__":
