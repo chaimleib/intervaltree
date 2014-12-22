@@ -419,7 +419,7 @@ class IntervalTree(collections.MutableSet):
         Returns a new tree, comprising all intervals from self
         and other.
         """
-        return IntervalTree(set(self).update(other))
+        return IntervalTree(set(self).union(other))
 
     def intersection(self, other):
         """
