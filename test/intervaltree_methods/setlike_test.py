@@ -27,6 +27,33 @@ except ImportError:
     import pickle
 
 
+def test_update():
+    t = IntervalTree()
+    interval = Interval(0, 1)
+    s = set([interval])
+
+    t.update(s)
+    assert len(t) == 1
+    assert set(t).pop() == interval
+
+    t.clear()
+    assert not t
+    t.extend(s)
+    t.extend(s)
+    assert len(t) == 1
+    assert set(t).pop() == interval
+
+    interval = Interval(2, 3)
+    t.update([interval])
+    assert len(t) == 2
+    assert sorted(t)[1] == interval
+
+    t = IntervalTree(s)
+    t.extend([interval])
+    assert len(t) == 2
+    assert sorted(t)[1] == interval
+
+
 def test_invalid_update():
     t = IntervalTree()
 
