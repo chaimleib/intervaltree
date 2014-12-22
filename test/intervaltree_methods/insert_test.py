@@ -134,12 +134,6 @@ def test_add_invalid_interval():
     with pytest.raises(ValueError):
         itree[1.1:1.1] = "value"
 
-    with pytest.raises(ValueError):
-        itree.extend([Interval(1, 0)])
-
-    with pytest.raises(ValueError):
-        itree.extend([Interval(1, 1)])
-
 
 def test_insert_to_filled_tree():
     t = trees['ivs1']()
