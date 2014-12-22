@@ -21,7 +21,7 @@ limitations under the License.
 from __future__ import absolute_import
 from intervaltree import Interval, IntervalTree
 import pytest
-from test.intervaltrees import trees, sdata
+from test.intervaltrees import trees
 try:
     import cPickle as pickle
 except ImportError:
