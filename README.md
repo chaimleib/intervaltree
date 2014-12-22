@@ -196,7 +196,7 @@ Examples
     
     ```
 
-* Constructing from lists of `Interval`s
+* Constructing from lists of intervals
 
     We could have made a similar tree this way:
 
