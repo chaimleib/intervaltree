@@ -290,6 +290,8 @@ Examples
     Interval(0, 3, 'oldlimit: 10, islower: True')
     >>> sorted(t)[1]
     Interval(7, 10, 'oldlimit: 0, islower: False')
+    
+    ```
 
 * Slicing
 

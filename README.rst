@@ -282,18 +282,17 @@ Examples
    To modify the new intervals' data fields based on which side of the
    interval is being chopped:
 
-   \`\`\` python
+   .. code:: python
 
-               | def datafunc(iv, islower):
-               | ... oldlimit = iv[islower]
-               | ... return "oldlimit: {0}, islower:
-                 {1}".format(oldlimit, islower)
-               | t = IntervalTree([Interval(0, 10)])
-               | t.chop(3, 7, datafunc)
-               | sorted(t)[0]
-               | Interval(0, 3, 'oldlimit: 10, islower: True')
-               | sorted(t)[1]
-               | Interval(7, 10, 'oldlimit: 0, islower: False')
+       >>> def datafunc(iv, islower):
+       ...     oldlimit = iv[islower]
+       ...     return "oldlimit: {0}, islower: {1}".format(oldlimit, islower)
+       >>> t = IntervalTree([Interval(0, 10)])
+       >>> t.chop(3, 7, datafunc)
+       >>> sorted(t)[0]
+       Interval(0, 3, 'oldlimit: 10, islower: True')
+       >>> sorted(t)[1]
+       Interval(7, 10, 'oldlimit: 0, islower: False')
 
 -  Slicing
 
