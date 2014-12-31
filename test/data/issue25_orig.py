@@ -83,4 +83,4 @@ Node<10.58, depth=3, balance=1>
     tree.verify()
 
 reconstruct_tree()
-tree.print_structure()
+# tree.print_structure()
