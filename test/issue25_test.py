@@ -99,5 +99,30 @@ def test_debug_sequence():
     t.verify()
 
 
+def test_orig_structure():
+    """
+    Reconstruct the original tree just before the final removals,
+    then perform the removals. This is needed because with future
+    code changes, the above sequences may not exactly reproduce the
+    internal structure of the tree.
+    """
+    t = trees['issue25_orig']()
+    # t.print_structure()
+    t.verify()
+
+    t.removei(8.65, 13.65)  # remove root node
+    # t.print_structure()
+    t.verify()
+
+    t.removei(5.66, 9.66)
+    # t.print_structure()
+    t.verify()
+
+    t.removei(5.38, 10.38)  # try removing root node again
+    # t.print_structure()
+    t.verify()
+
+
 if __name__ == "__main__":
-    pytest.main([__file__, '-v'])
+    # pytest.main([__file__, '-v'])
+    test_orig_structure()
