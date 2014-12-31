@@ -1,6 +1,6 @@
-'''
+"""
 Random integer ranges, with gaps.
-'''
+"""
 data = \
 [(-50, -42, None),
  (-36, -27, None),

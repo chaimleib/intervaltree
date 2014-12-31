@@ -1,6 +1,6 @@
-'''
+"""
 Result tree data from test/issue4.py.
-'''
+"""
 data = \
 [(3899662336, 3899674624, None),
  (870727680, 870731776, None),

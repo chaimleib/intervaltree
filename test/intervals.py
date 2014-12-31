@@ -134,13 +134,15 @@ def write_ivs_data(name, ivs, docstring='', imports=None):
         Taken from http://compgroups.net/comp.lang.python/re-triple-quoted-repr/1635367
         """
         text = '\n'.join([repr(line)[1:-1] for line in s.split('\n')])
-        quotes, dquotes = "'''", '"""'
-        if quotes in text:
-            if dquotes in text:
-                text = text.replace(quotes, "\\'\\'\\'")
+        squotes, dquotes = "'''", '"""'
+        my_quotes, other_quotes = dquotes, squotes
+        if my_quotes in text:
+            if other_quotes in text:
+                escaped_quotes = 3*('\\' + other_quotes[0])
+                text = text.replace(other_quotes, escaped_quotes)
             else:
-                quotes = dquotes
-        return "%s%s%s" % (quotes, text, quotes)
+                my_quotes = other_quotes
+        return "%s%s%s" % (my_quotes, text, my_quotes)
 
     data = [tuple(iv) for iv in ivs]
     with open('test/data/{0}.py'.format(name), 'w') as f:
