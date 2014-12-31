@@ -21,36 +21,13 @@ limitations under the License.
 from __future__ import absolute_import
 from intervaltree import Interval
 from pprint import pprint
-from os import listdir
-from os.path import join
 from random import randint, choice
+from test.data_loader import from_import, ivs_names
 from test.progress_bar import ProgressBar
 try:
     xrange
 except NameError:
     xrange = range
-
-
-def from_import(module, member):
-    """
-    Like `from module import number`, but returns the imported member.
-    """
-    # print('from {0} import {1}'.format(module, member))
-    module = __import__(module, fromlist=[member])
-    return getattr(module, member)
-
-
-def ivs_names():
-    """
-    Get the names of the modules containing our interval data.
-    """
-    data_dir = join(from_import('test', 'data').__path__)[0]
-    modules = [
-        module[:-len('.py')] for module in listdir(data_dir)
-        if
-        not module.startswith('__') and module.endswith('.py')
-    ]
-    return modules
 
 
 def load_test_data_ivs():
