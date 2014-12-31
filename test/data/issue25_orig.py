@@ -27,9 +27,8 @@ data = [
     (11.42, 16.42), #5
 ]
 
-tree = IntervalTree.from_tuples(data)
-
-def reconstruct_tree():
+def tree():
+    t = IntervalTree.from_tuples(data)
     # Node<10.58, depth=3, balance=1>
     #  Interval(8.65, 13.65)
     root = Node()
@@ -79,8 +78,9 @@ Node<10.58, depth=3, balance=1>
     <:  Node<11.42, depth=1, balance=0>
          Interval(11.42, 16.42)
 """
-    tree.top_node = root
-    tree.verify()
+    t.top_node = root
+    t.verify()
+    return t
 
-reconstruct_tree()
-# tree.print_structure()
+if __name__ == "__main__":
+    tree().print_structure()

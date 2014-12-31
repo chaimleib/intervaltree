@@ -22,6 +22,7 @@ from __future__ import absolute_import
 from intervaltree import IntervalTree
 from pprint import pprint
 from test import intervals
+from test.data_loader import from_import
 from test.progress_bar import ProgressBar
 try:
     xrange
@@ -29,19 +30,26 @@ except NameError:
     xrange = range
 
 def create_trees():
+    """
+    Makes a dict of callables that create the trees named.
+    """
     pbar = ProgressBar(len(intervals.ivs))
     print('Creating trees from interval lists...')
-    trees = intervals.ivs.copy()
-    for name, ivs in trees.items():
+    trees = {}
+    for name, ivs in intervals.ivs.items():
         pbar()
-        trees[name] = IntervalTree(ivs).copy
+        module = from_import('test.data', name)
+        if hasattr(module, 'tree'):
+            trees[name] = module.tree
+        else:
+            trees[name] = IntervalTree(ivs).copy
     return trees
 
 trees = create_trees()
 
 def sdata(s):
     """
-    Makes a set of all data fields in an interable of Intervals.
+    Makes a set of all data fields in an iterable of Intervals.
     """
     return set(iv.data for iv in s)
 
@@ -63,4 +71,4 @@ def gaps_rand(size=100, labels=False):
 
 
 if __name__ == "__main__":
-    trees['ivs3']().print_structure()
+    trees['issue25_orig']().print_structure()
