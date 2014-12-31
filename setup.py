@@ -40,7 +40,8 @@ def development_version():
 
 ## CONFIG
 version = '2.0.0'
-if 'PYPI' in os.environ and os.environ['PYPI'] == 'pypitest':
+is_dev_version = 'PYPI' in os.environ and os.environ['PYPI'] == 'pypitest'
+if is_dev_version:
     dev_version = development_version() + '-%s' % version
     version = dev_version
 print('Version %s' % version)
@@ -64,7 +65,7 @@ class PyTest(TestCommand):
 
 def get_rst():
     if os.path.isdir('pyandoc/pandoc') and os.path.islink('pandoc'):
-        print("Generating README.rst from README.md")
+        print("Generating README.rst from README.md and CHANGELOG.md")
         return generate_rst()
     elif os.path.isfile('README.rst'):
         print("Reading README.rst")
@@ -72,7 +73,12 @@ def get_rst():
     else:
         warn("No README.rst found!")
         print("Reading README.md")
-        return read_file('README.md')
+        data = ''.join([
+            read_file('README.md'),
+            '\n',
+            read_file('CHANGELOG.md'),
+        ])
+        return data
 
 
 ## Convert README to rst for PyPI
@@ -86,7 +92,6 @@ def generate_rst():
 
     changes_md = pypi_sanitize_markdown(read_file("CHANGELOG.md"))
     changes_rst = markdown2rst(changes_md)
-
     rst += "\n" + changes_rst
 
     # Write it
@@ -100,7 +105,7 @@ def generate_rst():
 
 def markdown2rst(md):
     """Convert markdown to rst format using pandoc. No other processing."""
-    # import here, because outside it may arent't used
+    # import here, because outside it might not used
     try:
         import pandoc
     except ImportError as e:
