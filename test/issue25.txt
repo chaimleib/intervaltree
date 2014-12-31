@@ -83,4 +83,15 @@ Node<10.58, depth=3, balance=1>
     <:  Node<11.42, depth=1, balance=0>
          Interval(11.42, 16.42)
 
-7) 
+7) prune() checks for an empty child. None exists.
+8) prune() now calls (heir, self[0]) = self[0].pop_greatest_child(). (This is not optimal, because this is not the heavy side.) heir looks like this:
+
+Node<9.38, depth=2, balance=1>
+ Interval(3.57, 9.47)
+ Interval(5.38, 10.38)
+>:  Node<5.66, depth=1, balance=0>
+     Interval(5.66, 9.66)
+
+This is baffling, since there has been no Interval added with 9.38 as a bound. However, this is because the old code calculated the new x_center by subtracting 1 from the upper bound of the highest interval, and verifying that this is a valid x_center. 
+
+The new code chooses the max of the current x_center and all the end boundaries of the intervals in s_center, except for the highest interval. This is less likely to make overlaps, I believe.
