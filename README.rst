@@ -386,6 +386,8 @@ Version 2.0.0
       documented as expected in 1.x; it is now changed to be more
       consistent with the definition of ``Interval``\ s, which are
       half-open.
+   -  Issue #25: pruning empty Nodes with staggered descendants could
+      result in invalid trees
    -  Sorting ``Interval``\ s and numbers in the same list gathered all
       the numbers at the beginning and the ``Interval``\ s at the end
    -  ``IntervalTree.overlaps()`` and friends returned ``None`` instead
