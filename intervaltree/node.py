@@ -56,6 +56,9 @@ class Node(object):
 
     @classmethod
     def from_intervals(cls, intervals):
+        """
+        :rtype : Node
+        """
         if not intervals:
             return None
         node = Node()
@@ -317,7 +320,7 @@ class Node(object):
             return result
         else:
             # Replace the root node with the greatest predecessor.
-            (heir, self[0]) = self[0].pop_greatest_child()
+            heir, self[0] = self[0].pop_greatest_child()
             #if trace:
             #    print('Replacing {} with {}.'.format(
             #        self.x_center, heir.x_center
@@ -352,25 +355,33 @@ class Node(object):
               - balancing
               - moving overlapping nodes into greatest_child
 
+        Assumes that self.s_center is not empty.
+
         See Eternally Confuzzled's jsw_remove_r function (lines 34-54)
         in his AVL tree article for reference.
         """
         #print('Popping from {}'.format(self.x_center))
-        if not self[1]:         # This node is the greatest child.
+        if not self.right_node:         # This node is the greatest child.
             # To reduce the chances of an overlap with a parent, return
             # a child node containing the smallest possible number of
             # intervals, as close as possible to the maximum bound.
-            ivs = set(self.s_center)
+            ivs = sorted(self.s_center, key=attrgetter('end', 'begin'))
+            max_iv = ivs.pop()
+            new_x_center = self.x_center
+            while ivs:
+                next_max_iv = ivs.pop()
+                if next_max_iv.end == max_iv.end: continue
+                new_x_center = max(new_x_center, next_max_iv.end)
+            def get_new_s_center():
+                for iv in self.s_center:
+                    if iv.contains_point(new_x_center): yield iv
+
             # Create a new node with the largest x_center possible.
-            max_iv = max(self.s_center, key=attrgetter('end'))
-            max_iv_len = max_iv.end - max_iv.begin
-            child_x_center = max_iv.begin if (max_iv_len <= 1) \
-                else max_iv.end - 1
-            child = Node.from_intervals(
-                [iv for iv in ivs if iv.contains_point(child_x_center)]
-            )
-            child.x_center = child_x_center
-            self.s_center = ivs - child.s_center
+            child = Node.from_intervals(get_new_s_center())
+            #     [iv for iv in self.s_center if iv.contains_point(child_x_center)]
+            # )
+            child.x_center = new_x_center
+            self.s_center -= child.s_center
 
             #print('Pop hit! Returning child   = {}'.format(
             #    child.print_structure(tostring=True)

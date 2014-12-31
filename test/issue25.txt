@@ -1,0 +1,86 @@
+Just before the final removei(), the tree looks like this:
+
+Node<10.58, depth=3, balance=1>
+ Interval(8.65, 13.65)
+<:  Node<5.66, depth=1, balance=0>
+     Interval(3.57, 9.47)
+     Interval(5.38, 10.38)
+     Interval(5.66, 9.66)
+>:  Node<16.49, depth=2, balance=-1>
+     Interval(16.49, 20.83)
+    <:  Node<11.42, depth=1, balance=0>
+         Interval(11.42, 16.42)
+
+verify() confirms that this is valid. Then the final call is:
+
+t.removei(8.65,13.65)
+
+Which should remove the root of the tree. This would leave a root Node with an empty s_center:
+
+Node<10.58, depth=3, balance=1>
+<:  Node<5.66, depth=1, balance=0>
+     Interval(3.57, 9.47)
+     Interval(5.38, 10.38)
+     Interval(5.66, 9.66)
+>:  Node<16.49, depth=2, balance=-1>
+     Interval(16.49, 20.83)
+    <:  Node<11.42, depth=1, balance=0>
+         Interval(11.42, 16.42)
+
+To prune it, we rotate from the heavy side, but this is not possible because the heavy side has a child on the left. We must rotate it first:
+
+Node<10.58, depth=3, balance=1>
+<:  Node<5.66, depth=1, balance=0>
+     Interval(3.57, 9.47)
+     Interval(5.38, 10.38)
+     Interval(5.66, 9.66)
+>:  Node<11.42, depth=2, balance=1>
+     Interval(11.42, 16.42)     
+    >:  Node<16.49, depth=1, balance=0>
+         Interval(16.49, 20.83)
+
+Then we can prune the root:
+
+Node<11.42, depth=2, balance=0>
+ Interval(11.42, 16.42)
+<:  Node<5.66, depth=1, balance=0>
+     Interval(3.57, 9.47)
+     Interval(5.38, 10.38)
+     Interval(5.66, 9.66)
+>:  Node<16.49, depth=1, balance=0>
+     Interval(16.49, 20.83)
+     
+Manual verification shows that this is a valid tree.
+
+Instead, what happens is:
+
+1) The IntervalTree object realizes correctly that it contains Interval(8.65,13.65).
+2) It calls self.top_node.remove(Interval(8.65,13.65)).
+3) The root Node checks for a center_hit(interval). As you recall, the tree looks like this:
+
+Node<10.58, depth=3, balance=1>
+ Interval(8.65, 13.65)
+<:  Node<5.66, depth=1, balance=0>
+     Interval(3.57, 9.47)
+     Interval(5.38, 10.38)
+     Interval(5.66, 9.66)
+>:  Node<16.49, depth=2, balance=-1>
+     Interval(16.49, 20.83)
+    <:  Node<11.42, depth=1, balance=0>
+         Interval(11.42, 16.42)
+
+4) Interval(8.65,13.65) indeed does center_hit() with 10.58.
+5) The Node calls self.s_center.remove(interval).
+6) self.s_center is now empty. The Node now returns self.prune(). The tree looks like this:
+
+Node<10.58, depth=3, balance=1>
+<:  Node<5.66, depth=1, balance=0>
+     Interval(3.57, 9.47)
+     Interval(5.38, 10.38)
+     Interval(5.66, 9.66)
+>:  Node<16.49, depth=2, balance=-1>
+     Interval(16.49, 20.83)
+    <:  Node<11.42, depth=1, balance=0>
+         Interval(11.42, 16.42)
+
+7) 
