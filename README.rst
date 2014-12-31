@@ -159,6 +159,10 @@ Examples
 
 -  Query by point
 
+   | The result of a query is a ``set`` object, so if ordering is
+     important,
+   | you must sort it first.
+
    .. code:: python
 
        >>> sorted(t[6])

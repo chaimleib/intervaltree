@@ -33,6 +33,7 @@ def test_update():
     s = set([interval])
 
     t.update(s)
+    assert isinstance(t, IntervalTree)
     assert len(t) == 1
     assert set(t).pop() == interval
 
@@ -40,16 +41,19 @@ def test_update():
     assert not t
     t.extend(s)
     t.extend(s)
+    assert isinstance(t, IntervalTree)
     assert len(t) == 1
     assert set(t).pop() == interval
 
     interval = Interval(2, 3)
     t.update([interval])
+    assert isinstance(t, IntervalTree)
     assert len(t) == 2
     assert sorted(t)[1] == interval
 
     t = IntervalTree(s)
     t.extend([interval])
+    assert isinstance(t, IntervalTree)
     assert len(t) == 2
     assert sorted(t)[1] == interval
 
@@ -70,11 +74,60 @@ def test_invalid_update():
         t.extend([Interval(1, 1)])
 
 
+def test_union():
+    t = IntervalTree()
+    interval = Interval(0, 1)
+    s = set([interval])
+
+    r = t.union(s)
+    assert len(r) == 1
+    assert set(r).pop() == interval
+
+    t.extend(s)
+    t.extend(s)
+    assert len(t) == 1
+    assert set(t).pop() == interval
+
+    interval = Interval(2, 3)
+    t.update([interval])
+    assert len(t) == 2
+    assert sorted(t)[1] == interval
+
+    t = IntervalTree(s)
+    t.extend([interval])
+    assert len(t) == 2
+    assert sorted(t)[1] == interval
+
+
+def test_union_operator():
+    t = IntervalTree()
+    interval = Interval(0, 1)
+    s = set([interval])
+
+    # currently runs fine
+    # with pytest.raises(TypeError):
+    #     t | list(s)
+    r = t | IntervalTree(s)
+    assert len(r) == 1
+    assert sorted(r)[0] == interval
+
+    # also currently runs fine
+    # with pytest.raises(TypeError):
+    #     t |= s
+    t |= IntervalTree(s)
+    assert len(t) == 1
+    assert sorted(t)[0] == interval
+
+
 def test_invalid_union():
     t = IntervalTree()
 
     with pytest.raises(ValueError):
         t.union([Interval(1, 0)])
+
+
+def test_invalid_update():
+    t = IntervalTree()
 
     with pytest.raises(ValueError):
         t.update([Interval(1, 1)])

@@ -149,6 +149,9 @@ Examples
 
 * Query by point
 
+    The result of a query is a `set` object, so if ordering is important,
+    you must sort it first.
+    
     ``` python
     >>> sorted(t[6])
     [Interval(4, 7, (4, 7)), Interval(5, 9, {5: 9})]
