@@ -40,6 +40,11 @@ The `intervaltree` directory has three main files:
 
 All files ending with `_test.py` are detected and run whenever you run `make` or `make quicktest`. In those files, only functions beginning with `test_` are executed.
 
+#### `test/data`
+Some tests depend on having certain lists of `Interval`s. These are stored in the modules of `test/data`. Most of these modules only contain a `data` attribute, which is a list of tuples that is converted to a list of `Interval`s by `test/intervals.py`. You can access them by importing the dict of lists of `Interval`s `test.intervals.ivs`.
+
+Other tests (like `test/issue25_test.py`) depend on having pre-constructed `IntervalTree`s. These are constructed by `test/intervaltrees.py` and can be accessed by importing `test.intervaltrees.trees`. This is a dict of callables that return `IntervalTree`s. 
+
 ### `scripts`
 
 Contains `testall.sh`, which runs all tests on all supported versions of Python.
