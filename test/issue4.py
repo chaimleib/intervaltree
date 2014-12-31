@@ -65,7 +65,7 @@ def optimality():
 
 
 def profile():
-    cProfile.run('test_issue4()', 'restats')
+    cProfile.run('test_build_tree()', 'restats')
 
 def write_result(tree):
     write_ivs_data('issue4_result', tree, docstring='''
@@ -80,4 +80,5 @@ Source data for test/issue4. Very long!
 
 
 if __name__ == '__main__':
-    optimality()
+    # optimality()
+    profile()
