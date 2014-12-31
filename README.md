@@ -21,7 +21,7 @@ Features
 * Initializing
 
     * blank `tree = IntervalTree()`
-    * from an iterable of `Interval` objects (`tree = IntervalTree(intervals`)
+    * from an iterable of `Interval` objects (`tree = IntervalTree(intervals)`)
     * from an iterable of tuples (`tree = IntervalTree.from_tuples(interval_tuples)`)
 
 * Insertions

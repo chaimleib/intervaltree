@@ -24,7 +24,7 @@ Features
 
    -  blank ``tree = IntervalTree()``
    -  from an iterable of ``Interval`` objects
-      (``tree = IntervalTree(intervals``)
+      (``tree = IntervalTree(intervals)``)
    -  from an iterable of tuples
       (``tree = IntervalTree.from_tuples(interval_tuples)``)
 
