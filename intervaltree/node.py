@@ -162,28 +162,27 @@ class Node(object):
 
         # Some intervals may overlap both self.x_center and save.x_center
         # Promote those to the new tip of the tree
+        collision = False
         for iv in set(save[light].s_center):
             if save.center_hit(iv):
-                save[light].s_center.remove(iv)
+                collision = True
+                # may cause pruning:
+                save[light] = save[light].remove(iv)
                 # TODO: Use Node.add() here, to simplify future balancing improvements.
                 # For now, this is the same as save.s_center.add(iv), but that may
                 # change.
                 save.s_center.add(iv)
+        if collision: save.refresh_balance()
         return save
 
     def drotate(self):
-        #print("drotate:")
-        #self.print_structure()
-        self[self.balance > 0] = self[self.balance > 0].srotate()
+        # First rotation
+        my_heavy = self.balance > 0
+        self[my_heavy] = self[my_heavy].srotate()
         self.refresh_balance()
 
-        #print("First rotate:")
-        #self.print_structure()
+        # Second rotation
         result = self.srotate()
-
-        #print("Finished drotate:")
-        #self.print_structure()
-        #result.verify()
 
         return result
 

@@ -311,18 +311,12 @@ class IntervalTree(collections.MutableSet):
                 " {0}".format(interval)
             )
 
-        #self.verify()
-        
-        #if self.top_node:
-        #    assert(interval not in self.top_node.search_point(interval.begin, set()))
-        self.all_intervals.add(interval)
         if not self.top_node:
             self.top_node = Node.from_interval(interval)
         else:
             self.top_node = self.top_node.add(interval)
-        self._add_boundaries(interval)        
-        #assert(interval in self.top_node.search_point(interval.begin, set()))
-        #self.verify()
+        self.all_intervals.add(interval)
+        self._add_boundaries(interval)
     append = add
     
     def addi(self, begin, end, data=None):

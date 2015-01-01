@@ -79,6 +79,18 @@ def test_debug_sequence():
     t.removei(12.86,17.86)
 
 
+def test_minimal_sequence():
+    t = IntervalTree()
+    t.addi(-0.62, 4.38)  # becomes root
+    t.addi(9.24, 14.24)  # right child
+    t.print_structure()
+
+    t.verify()
+
+    t.addi(4.0, 9.0)  # This line breaks the invariants, leaving an empty node
+    t.print_structure()
+    t.verify()
+
 if __name__ == "__main__":
     # pytest.main([__file__, '-v'])
-    test_debug_sequence()
+    test_minimal_sequence()
