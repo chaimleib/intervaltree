@@ -39,7 +39,7 @@ def development_version():
 
 
 ## CONFIG
-version = '2.0.0'
+version = '2.0.1'
 is_dev_version = 'PYPI' in os.environ and os.environ['PYPI'] == 'pypitest'
 if is_dev_version:
     dev_version = development_version() + '-%s' % version
