@@ -3,7 +3,7 @@ Change log
 
 Version 2.0.1
 -------------
-- Fix: Issue #26: failed to prune empty Nodes after a rotation promoted Intervals
+- Fix: Issue #26: failed to prune empty `Node` after a rotation promoted contents of `s_center`
 
 Version 2.0.0
 -------------
