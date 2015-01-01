@@ -76,7 +76,7 @@ Version 0.4
 
 - Faster balancing (~80% faster)
 - Bug fixes:
-    - Double rotations were performed in place of a single rotation when presented and unbalanced Node with a balanced child.
+    - Double rotations were performed in place of a single rotation when presented an unbalanced Node with a balanced child.
     - During single rotation, kept referencing an unrotated Node instead of the new, rotated one
 
 Version 0.3.3
@@ -122,8 +122,7 @@ Version 0.2.3
 - Slight changes for inclusion in PyPI.
 - Some documentation changes
 - Added tests
-- Fixed the bug, where interval addition via [] would not work properly
-    in Python 2.7 (see http://bugs.python.org/issue21785)
+- Bug fix: interval addition via [] was broken in Python 2.7 (see http://bugs.python.org/issue21785)
 - Added intervaltree.bio subpackage, adding some utilities for use in bioinformatics
 
 Version 0.2.2b
