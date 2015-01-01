@@ -158,21 +158,18 @@ class Node(object):
         self[heavy] = save[light]   # 2
         #assert(save[light])
         save[light] = self.rotate()  # Needed to ensure the 2 and 3 are balanced under new subnode
-        save.refresh_balance()
 
         # Some intervals may overlap both self.x_center and save.x_center
         # Promote those to the new tip of the tree
-        collision = False
-        for iv in set(save[light].s_center):
-            if save.center_hit(iv):
-                collision = True
-                # may cause pruning:
-                save[light] = save[light].remove(iv)
-                # TODO: Use Node.add() here, to simplify future balancing improvements.
-                # For now, this is the same as save.s_center.add(iv), but that may
-                # change.
-                save.s_center.add(iv)
-        if collision: save.refresh_balance()
+        promotees = [iv for iv in save[light].s_center if save.center_hit(iv)]
+        if promotees:
+            for iv in promotees:
+                save[light] = save[light].remove(iv)  # may trigger pruning
+            # TODO: Use Node.add() here, to simplify future balancing improvements.
+            # For now, this is the same as augmenting save.s_center, but that may
+            # change.
+            save.s_center.update(promotees)
+        save.refresh_balance()
         return save
 
     def drotate(self):

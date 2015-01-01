@@ -92,5 +92,5 @@ def test_minimal_sequence():
     t.verify()
 
 if __name__ == "__main__":
-    # pytest.main([__file__, '-v'])
-    test_minimal_sequence()
+    pytest.main([__file__, '-v'])
+    # test_minimal_sequence()
