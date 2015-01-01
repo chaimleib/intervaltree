@@ -1,6 +1,10 @@
 Change log
 ==========
 
+Version 2.0.1
+-------------
+- Fix: Issue #26: failed to prune empty Nodes after a rotation promoted Intervals
+
 Version 2.0.0
 -------------
 - `IntervalTree` now supports the full and `MutableSet` APIs from the `collections` module

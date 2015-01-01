@@ -349,6 +349,12 @@ https://github.com/chaimleib/intervaltree
 Change log
 ==========
 
+Version 2.0.1
+-------------
+
+-  Fix: Issue #26: failed to prune empty Nodes after a rotation promoted
+   Intervals
+
 Version 2.0.0
 -------------
 
