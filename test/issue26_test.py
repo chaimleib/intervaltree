@@ -3,7 +3,8 @@ intervaltree: A mutable, self-balancing interval tree for Python 2 and 3.
 Queries may be by point, by range overlap, or by range envelopment.
 
 Test module: IntervalTree, insertion and removal of float intervals
-Submitted as issue #26 (Incorrect KeyError) by sciencectn
+Submitted as issue #26 (Pop from empty list error) by sciencectn
+Ensure that rotations that promote Intervals prune when necessary
 
 Copyright 2013-2014 Chaim-Leib Halbert
 
@@ -20,7 +21,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from __future__ import absolute_import
-from intervaltree import IntervalTree
+from intervaltree import IntervalTree, Interval
 # from test.intervaltrees import trees
 import pytest
 
@@ -56,7 +57,7 @@ def test_debug_sequence():
     t.addi(-0.62,4.38)
     t.verify()
     t.addi(9.24,14.24)
-    t.print_structure()
+    # t.print_structure()
     # Node<-0.62, depth=2, balance=1>
     #  Interval(-0.62, 4.38)
     # >:  Node<9.24, depth=1, balance=0>
@@ -64,7 +65,7 @@ def test_debug_sequence():
     t.verify()
 
     t.addi(4.0,9.0)  # This line breaks the invariants, leaving an empty node
-    t.print_structure()
+    # t.print_structure()
     t.verify()
     t.removei(-0.62,4.38)
     t.verify()
@@ -83,14 +84,26 @@ def test_minimal_sequence():
     t = IntervalTree()
     t.addi(-0.62, 4.38)  # becomes root
     t.addi(9.24, 14.24)  # right child
-    t.print_structure()
+
+    ## Check that the tree structure is like this:
+    # t.print_structure()
+    # Node<-0.62, depth=2, balance=1>
+    #  Interval(-0.62, 4.38)
+    # >:  Node<9.24, depth=1, balance=0>
+    #      Interval(9.24, 14.24)
+    root = t.top_node
+    assert root.s_center == set([Interval(-0.62, 4.38)])
+    assert root.right_node.s_center == set([Interval(9.24, 14.24)])
+    assert not root.left_node
 
     t.verify()
 
-    t.addi(4.0, 9.0)  # This line breaks the invariants, leaving an empty node
+    # This line left an empty node when drotate() failed to promote
+    # Intervals properly:
+    t.addi(4.0, 9.0)
     t.print_structure()
     t.verify()
+
 
 if __name__ == "__main__":
     pytest.main([__file__, '-v'])
-    # test_minimal_sequence()
