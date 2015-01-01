@@ -442,7 +442,7 @@ class IntervalTree(collections.MutableSet):
         """
         if not isinstance(other, set): other = set(other)
         me = set(self)
-        ivs = me  - other + (other - me)
+        ivs = me - other + (other - me)
         return IntervalTree(ivs)
 
     def symmetric_difference_update(self, other):
