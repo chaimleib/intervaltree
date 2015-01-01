@@ -13,6 +13,7 @@ from test.intervals import write_ivs_data
 from test.optimality_test_matrix import OptimalityTestMatrix
 from pprint import pprint
 import cProfile
+import pstats
 
 
 def test_build_tree():
@@ -62,15 +63,24 @@ def optimality_core():
 
 def optimality():
     cProfile.run('optimality_core()', 'restats')
+    print_restats()
 
 
 def profile():
     cProfile.run('test_build_tree()', 'restats')
+    print_restats()
+
+
+def print_restats():
+    p = pstats.Stats('restats')
+    p.sort_stats('cumulative').print_stats()
+
 
 def write_result(tree):
     write_ivs_data('issue4_result', tree, docstring='''
 Result tree data from test/issue4.py.
 ''')
+
 
 def write_items():
     items = [(begin, end, data) for data, begin, end in items]
