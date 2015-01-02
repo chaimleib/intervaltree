@@ -1,6 +1,10 @@
 Change log
 ==========
 
+Version 2.0.2
+-------------
+- Fix: Issue #20: performance enhancement for large trees. `IntervalTree.search()` made a copy of the entire `boundary_table` resulting in linear search time. The `sortedcollections` package is now the sole install dependency
+
 Version 2.0.1
 -------------
 - Fix: Issue #26: failed to prune empty `Node` after a rotation promoted contents of `s_center`

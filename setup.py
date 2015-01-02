@@ -227,7 +227,7 @@ def update_file(path, data):
 setup(
     name='intervaltree',
     version=version,
-    install_requires=[],
+    install_requires=['sortedcontainers'],
     description='Editable interval tree data structure for Python 2 and 3',
     long_description=get_rst(),
     classifiers=[  # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers

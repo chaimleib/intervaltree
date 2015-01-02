@@ -23,6 +23,7 @@ from .interval import Interval
 from .node import Node
 from numbers import Number
 import collections
+from sortedcontainers import SortedDict
 from warnings import warn
 
 try:
@@ -250,7 +251,7 @@ class IntervalTree(collections.MutableSet):
                 )
         self.all_intervals = intervals
         self.top_node = Node.from_intervals(self.all_intervals)
-        self.boundary_table = {}
+        self.boundary_table = SortedDict()
         for iv in self.all_intervals:
             self._add_boundaries(iv)
 
@@ -659,23 +660,27 @@ class IntervalTree(collections.MutableSet):
           * k = size of the search range (this is 1 for a point)
         :rtype: set of Interval
         """
-        if not self.top_node:
+        root = self.top_node
+        if not root:
             return set()
         if end is None:
             try:
                 iv = begin
                 return self.search(iv.begin, iv.end, strict=strict)
             except:
-                return self.top_node.search_point(begin, set())
+                return root.search_point(begin, set())
         elif begin >= end:
             return set()
         else:
-            result = self.top_node.search_point(begin, set())
-            
-            result.update(self.top_node.search_overlap(
-                bound for bound in self.boundary_table
-                if begin < bound < end
+            result = root.search_point(begin, set())
+
+            boundary_table = self.boundary_table
+            bound_begin = boundary_table.bisect_left(begin)
+            bound_end = boundary_table.bisect_left(end)
+            result.update(root.search_overlap(
+                boundary_table.iloc[index] for index in xrange(bound_begin, bound_end)
             ))
+
             # TODO: improve strict search to use node info instead of less-efficient filtering
             if strict:
                 result = set(

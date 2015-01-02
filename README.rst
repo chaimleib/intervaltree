@@ -349,6 +349,14 @@ https://github.com/chaimleib/intervaltree
 Change log
 ==========
 
+Version 2.0.2
+-------------
+
+-  Fix: Issue #20: performance enhancement for large trees.
+   ``IntervalTree.search()`` made a copy of the entire
+   ``boundary_table`` resulting in linear search time. The
+   ``sortedcollections`` package is now the sole install dependency
+
 Version 2.0.1
 -------------
 
@@ -470,7 +478,7 @@ Version 0.4
 -  Bug fixes:
 
    -  Double rotations were performed in place of a single rotation when
-      presented and unbalanced Node with a balanced child.
+      presented an unbalanced Node with a balanced child.
    -  During single rotation, kept referencing an unrotated Node instead
       of the new, rotated one
 
@@ -529,8 +537,8 @@ Version 0.2.3
 -  Slight changes for inclusion in PyPI.
 -  Some documentation changes
 -  Added tests
--  Fixed the bug, where interval addition via [] would not work properly
-   in Python 2.7 (see http://bugs.python.org/issue21785)
+-  Bug fix: interval addition via [] was broken in Python 2.7 (see
+   http://bugs.python.org/issue21785)
 -  Added intervaltree.bio subpackage, adding some utilities for use in
    bioinformatics
 
