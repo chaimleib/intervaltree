@@ -676,8 +676,9 @@ class IntervalTree(collections.MutableSet):
 
             boundary_table = self.boundary_table
             bound_begin = boundary_table.bisect_left(begin)
-            bound_end = boundary_table.bisect_left(end)
+            bound_end = boundary_table.bisect_left(end)  # exclude final end bound
             result.update(root.search_overlap(
+                # slice notation is slightly slower
                 boundary_table.iloc[index] for index in xrange(bound_begin, bound_end)
             ))
 
