@@ -45,13 +45,12 @@ class Node(object):
         self.balance = 0  # ditto
         self.rotate()
 
-    # noinspection PyTypeChecker
     @classmethod
     def from_interval(cls, interval):
-        if not interval:
-            return None
+        """
+        :rtype : Node
+        """
         center = interval.begin
-        #print(center)
         return Node(center, [interval])
 
     @classmethod
