@@ -336,7 +336,7 @@ Based on
 Copyright
 ---------
 
-* [Chaim-Leib Halbert][GH], 2013-2014
+* [Chaim-Leib Halbert][GH], 2013-2015
 * Modifications, [Konstantin Tretyakov][Konstantin intervaltree], 2014
 
 Licensed under the [Apache License, version 2.0][Apache].

@@ -338,7 +338,7 @@ Based on
 Copyright
 ---------
 
--  Chaim-Leib Halbert, 2013-2014
+-  Chaim-Leib Halbert, 2013-2015
 -  Modifications, Konstantin Tretyakov, 2014
 
 Licensed under the Apache License, version 2.0.
