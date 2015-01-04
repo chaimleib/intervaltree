@@ -29,6 +29,11 @@ try:
 except NameError:
     xrange = range
 
+try:
+    unicode
+except NameError:
+    unicode = str
+
 
 def load_test_data_ivs():
     """Import data from test/data to construct our intervals"""
@@ -86,6 +91,7 @@ def gaps_rand(size=100, labels=False):
         ivs.append(make_iv(cur, cur + length, labels))
         cur += length
     return ivs
+
 
 def overlaps_nogaps_rand(size=100, labels=False):
     l1 = nogaps_rand(size, labels)
