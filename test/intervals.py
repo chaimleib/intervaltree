@@ -66,12 +66,12 @@ def nogaps_rand(size=100, labels=False):
     :rtype: list of Intervals
     """
     cur = -50
-    ivs = []
+    result = []
     for i in xrange(size):
         length = randint(1, 10)
-        ivs.append(make_iv(cur, cur + length, labels))
+        result.append(make_iv(cur, cur + length, labels))
         cur += length
-    return ivs
+    return result
 
 
 def gaps_rand(size=100, labels=False):
@@ -82,22 +82,22 @@ def gaps_rand(size=100, labels=False):
     :rtype: list of Intervals
     """
     cur = -50
-    ivs = []
+    result = []
     for i in xrange(size):
         length = randint(1, 10)
         if choice([True, False]):
             cur += length
             length = randint(1, 10)
-        ivs.append(make_iv(cur, cur + length, labels))
+        result.append(make_iv(cur, cur + length, labels))
         cur += length
-    return ivs
+    return result
 
 
 def overlaps_nogaps_rand(size=100, labels=False):
     l1 = nogaps_rand(size, labels)
     l2 = nogaps_rand(size, labels)
-    ivs = set(l1) + set(l2)
-    return list(ivs)
+    result = set(l1) | set(l2)
+    return list(result)
 
 
 def write_ivs_data(name, ivs, docstring='', imports=None):
