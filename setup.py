@@ -21,13 +21,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-import sys
 import os
+import sys
 import subprocess
-import errno
 from warnings import warn
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
+import myfsutils
 
 import re
 
@@ -69,14 +69,14 @@ def get_rst():
         return generate_rst()
     elif os.path.isfile('README.rst'):
         print("Reading README.rst")
-        return read_file('README.rst')
+        return myfsutils.read_file('README.rst')
     else:
         warn("No README.rst found!")
         print("Reading README.md")
         data = ''.join([
-            read_file('README.md'),
+            myfsutils.read_file('README.md'),
             '\n',
-            read_file('CHANGELOG.md'),
+            myfsutils.read_file('CHANGELOG.md'),
         ])
         return data
 
@@ -84,21 +84,21 @@ def get_rst():
 ## Convert README to rst for PyPI
 def generate_rst():
     """Converts Markdown to RST for PyPI"""
-    md = read_file("README.md")
+    md = myfsutils.read_file("README.md")
 
     md = pypi_sanitize_markdown(md)
     rst = markdown2rst(md)
     rst = pypi_prepare_rst(rst)
 
-    changes_md = pypi_sanitize_markdown(read_file("CHANGELOG.md"))
+    changes_md = pypi_sanitize_markdown(myfsutils.read_file("CHANGELOG.md"))
     changes_rst = markdown2rst(changes_md)
     rst += "\n" + changes_rst
 
     # Write it
     if create_rst:
-        update_file('README.rst', rst)
+        myfsutils.update_file('README.rst', rst)
     else:
-        rm_f('README.rst')
+        myfsutils.rm_f('README.rst')
 
     return rst
 
@@ -174,53 +174,6 @@ def remove_markdown_links(md):
     )
 
     return md
-
-
-## Filesystem utilities
-def read_file(path):
-    """Reads file into string."""
-    with open(path, 'r') as f:
-        data = f.read()
-    return data
-
-
-def mkdir_p(path):
-    """Like `mkdir -p` in unix"""
-    if not path.strip():
-        return
-    try:
-        os.makedirs(path)
-    except OSError as e:
-        if e.errno == errno.EEXIST and os.path.isdir(path):
-            pass
-        else:
-            raise
-
-
-def rm_f(path):
-    """Like `rm -f` in unix"""
-    try:
-        os.unlink(path)
-    except OSError as e:
-        if e.errno == errno.ENOENT:
-            pass
-        else:
-            raise
-
-
-def update_file(path, data):
-    """Writes data to path, creating path if it doesn't exist"""
-    # delete file if already exists
-    rm_f(path)
-
-    # create parent dirs if needed
-    parent_dir = os.path.dirname(path)
-    if not os.path.isdir(os.path.dirname(parent_dir)):
-        mkdir_p(parent_dir)
-
-    # write file
-    with open(path, 'w') as f:
-        f.write(data)
 
 
 ## Run setuptools
