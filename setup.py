@@ -25,7 +25,7 @@ import os
 import sys
 import subprocess
 from warnings import warn
-from setuptools import setup, find_packages
+from setuptools import setup
 from setuptools.command.test import test as TestCommand
 import myfsutils
 
@@ -211,7 +211,7 @@ setup(
     url='https://github.com/chaimleib/intervaltree',
     download_url='https://github.com/chaimleib/intervaltree/tarball/' + version,
     license="Apache License, Version 2.0",
-    packages=find_packages(exclude=['test', 'pandoc', 'docutils']),
+    packages=["intervaltree"],
     include_package_data=True,
     zip_safe=True,
     tests_require=['pytest'],
