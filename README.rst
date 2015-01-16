@@ -349,6 +349,11 @@ https://github.com/chaimleib/intervaltree
 Change log
 ==========
 
+Version 2.0.3
+-------------
+
+-  Fix: README shows using + operator for setlike union instead of \|
+
 Version 2.0.2
 -------------
 
