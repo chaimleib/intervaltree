@@ -87,7 +87,7 @@ Features
       -  ``result_tree = tree.union(iterable)``
       -  ``result_tree = tree1 | tree2``
       -  ``tree.update(iterable)``
-      -  ``tree += other_tree``
+      -  ``tree |= other_tree``
 
    -  difference
 
