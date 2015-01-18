@@ -3,7 +3,7 @@ Change log
 
 Version 2.0.3
 -------------
-- Fix: README shows using + operator for setlike union instead of |
+- Fix: README showed using + operator for setlike union instead of the correct | operator
 - Removed tests from release package to speed up installation; to get the tests, download from GitHub
 
 Version 2.0.2
@@ -16,10 +16,10 @@ Version 2.0.1
 
 Version 2.0.0
 -------------
-- `IntervalTree` now supports the full and `MutableSet` APIs from the `collections` module
+- `IntervalTree` now supports the full `collections.MutableSet` API
 - Added:
     - `__delitem__` to `IntervalTree`
-    - comparison methods `lt()`, `gt()`, `le()` and `ge()` to `Interval`, as an alternative to the comparison operators, which are designed for sorting
+    - `Interval` comparison methods `lt()`, `gt()`, `le()` and `ge()` to `Interval`, as an alternative to the comparison operators, which are designed for sorting
     - `IntervalTree.from_tuples(iterable)`
     - `IntervalTree.clear()`
     - `IntervalTree.difference(iterable)`
@@ -37,7 +37,7 @@ Version 2.0.0
     - More tests for comparison and sorting behavior
     - Code in the README is included in the unit tests
 - Fixes
-    - BACKWARD INCOMPATIBLE: On ranged queries where begin >= end, the query operated on the overlaps of begin. This behavior was documented as expected in 1.x; it is now changed to be more consistent with the definition of `Interval`s, which are half-open.
+    - BACKWARD INCOMPATIBLE: On ranged queries where `begin >= end`, the query operated on the overlaps of `begin`. This behavior was documented as expected in 1.x; it is now changed to be more consistent with the definition of `Interval`s, which are half-open.
     - Issue #25: pruning empty Nodes with staggered descendants could result in invalid trees
     - Sorting `Interval`s and numbers in the same list gathered all the numbers at the beginning and the `Interval`s at the end
     - `IntervalTree.overlaps()` and friends returned `None` instead of `False`
