@@ -353,6 +353,8 @@ Version 2.0.3
 -------------
 
 -  Fix: README shows using + operator for setlike union instead of \|
+-  Removed tests from release package to speed up installation; to get
+   the tests, download from GitHub
 
 Version 2.0.2
 -------------
