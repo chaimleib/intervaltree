@@ -43,7 +43,7 @@ Features
 * Overlap queries
 
     * `tree[point]`
-    * `tree[begin, end]`
+    * `tree[begin:end]`
     * `tree.search(point)`
     * `tree.search(begin, end)`
 
