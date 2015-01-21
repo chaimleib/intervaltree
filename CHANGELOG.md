@@ -1,6 +1,10 @@
 Change log
 ==========
 
+Version 2.0.4
+-------------
+- Fix: Issue #27: README incorrectly showed using a comma instead of a colon when querying the `IntervalTree`: it showed `tree[begin, end]` instead of `tree[begin:end]`
+
 Version 2.0.3
 -------------
 - Fix: README showed using + operator for setlike union instead of the correct | operator
