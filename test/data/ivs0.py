@@ -1,0 +1,4 @@
+"""
+Empty IntervalTree data.
+"""
+data = []
