@@ -7,9 +7,8 @@ python:
     - "3.4"
 install:
     - make deps-dev
-    - pip install coveralls
+    - pip install coverage
 script:
     coverage run --source=intervaltree setup.py develop test
 after_success:
-    coveralls
-
+    coverage report
