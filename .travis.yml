@@ -5,7 +5,11 @@ python:
     - "3.2"
     - "3.3"
     - "3.4"
-before_script:
+install:
     - make deps-dev
+    - pip install coveralls
 script:
-    - python setup.py develop test
+    coverage run --source=intervaltree setup.py develop test
+after_success:
+    coveralls
+
