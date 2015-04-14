@@ -630,6 +630,32 @@ class IntervalTree(collections.MutableSet):
 
         self.__init__(new_ivs)
 
+    def merge_overlaps(self):
+        """
+        Finds all intervals with overlapping ranges and merges them into a single interval
+        Completes in worst-case O(n*logn)m best-case O(n)
+        """
+
+        if not self:
+            return
+
+        sorted_intervals = sorted(self.all_intervals)  # get sorted intervals
+        merged = list()
+
+        for higher in sorted_intervals:
+            if not merged:
+                merged.append(higher)
+            else:
+                lower = merged[-1]
+                if higher.begin <= lower.end:
+                    upper_bound = max(lower.end, higher.end)
+                    merged[-1] = Interval(lower.begin, upper_bound)
+                else:
+                    merged.append(higher)
+
+        self.__init__(merged)
+
+
     def items(self):
         """
         Constructs and returns a set of all intervals in the tree. 
@@ -830,6 +856,7 @@ class IntervalTree(collections.MutableSet):
             return report
         return cumulative
 
+
     def __getitem__(self, index):
         """
         Returns a set of all intervals overlapping the given index or 
@@ -945,3 +972,4 @@ class IntervalTree(collections.MutableSet):
         :rtype: tuple
         """
         return IntervalTree, (sorted(self.all_intervals),)
+
