@@ -630,7 +630,7 @@ class IntervalTree(collections.MutableSet):
 
         self.__init__(new_ivs)
 
-    def merge_overlaps(self):
+    def merge_overlaps(self, datafunc=None):
         """
         Finds all intervals with overlapping ranges and merges them into a single interval
         Completes in worst-case O(n*logn)m best-case O(n)
@@ -649,7 +649,10 @@ class IntervalTree(collections.MutableSet):
                 lower = merged[-1]
                 if higher.begin <= lower.end:
                     upper_bound = max(lower.end, higher.end)
-                    merged[-1] = Interval(lower.begin, upper_bound)
+                    if datafunc:
+                        merged[-1] = Interval(lower.begin, upper_bound, datafunc(lower.data,higher.data))
+                    else:
+                        merged[-1] = Interval(lower.begin, upper_bound)
                 else:
                     merged.append(higher)
 
