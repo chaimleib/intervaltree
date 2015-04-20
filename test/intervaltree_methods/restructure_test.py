@@ -189,6 +189,29 @@ def test_merge_overlap_datafunc():
     assert sorted(t)[0] == Interval(1,2,'[1,2)')
     assert sorted(t)[1] == Interval(4,15,'[4,7)')
 
+def test_merge_equals():
+    t = trees['ivs1']()
+    t.addi(4,7,'foo')
+
+    t.merge_equals()
+    t.verify()
+
+    assert len(t.search(4,7,True)) == 1
+    assert sorted(t.search(4,7,True))[0] == Interval(4,7)
+
+def test_merge_equals_datafunc():
+    t = trees['ivs1']()
+    t.addi(4,7,'foo')
+
+    def func(lower,higher):
+        return lower
+
+    t.merge_equals(func)
+    t.verify()
+
+    assert len(t.search(4,7,True)) == 1
+    assert sorted(t.search(4,7,True))[0] == Interval(4,7,'[4,7)')
+
 def test_pickle():
     t = trees['ivs1']()
 
