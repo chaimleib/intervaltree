@@ -166,6 +166,28 @@ def test_split_overlap():
             assert other.begin == iv.begin
             assert other.end == iv.end
 
+def test_merge_overlap():
+    t = trees['ivs1']()
+
+    t.merge_overlaps()
+    t.verify()
+
+    assert len(t) == 2
+    assert sorted(t)[0] == Interval(1,2,'[1,2)')
+    assert sorted(t)[1] == Interval(4,15)
+
+def test_merge_overlap_datafunc():
+    t = trees['ivs1']()
+
+    def func(lower,higher):
+        return lower
+
+    t.merge_overlaps(func)
+    t.verify()
+
+    assert len(t) == 2
+    assert sorted(t)[0] == Interval(1,2,'[1,2)')
+    assert sorted(t)[1] == Interval(4,15,'[4,7)')
 
 def test_pickle():
     t = trees['ivs1']()
