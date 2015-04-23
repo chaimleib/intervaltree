@@ -53,6 +53,18 @@ def test_remove_overlap():
     t.verify()
 
 
+def test_merge_overlaps():
+    t = trees['ivs1']()
+    origlen = len(t)
+    
+    t.merge_overlaps()
+    t.verify()
+    
+    newlen = len(t)
+    
+    assert newlen < origlen
+    assert t == IntervalTree([Interval(1, 2, '[1,2)'), Interval(4, 15)])
+
 def test_chop():
     t = IntervalTree([Interval(0, 10)])
     t.chop(3, 7)
