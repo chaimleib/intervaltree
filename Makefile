@@ -28,6 +28,10 @@ test: pytest rst
 quicktest: rst
 	PYPI=$(PYPI) python setup.py test
 
+coverage:
+	coverage run --source=intervaltree setup.py develop test
+	coverage report
+
 pytest: deps-dev
 	"$(SCRIPTS_DIR)/testall.sh"
 
