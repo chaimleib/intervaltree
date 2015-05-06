@@ -359,6 +359,13 @@ Version 2.0.5
    -  ``length()`` method, for returning the difference between
       ``end()`` and ``begin()``
 
+-  Fix: ``begin()`` and ``end()`` methods used iterative ``min()`` and
+   ``max()`` builtins instead of the more efficient ``iloc`` member
+   available to ``SortedDict``
+-  Maintainers:
+
+   -  Added coverage test (``make coverage``)
+
 Version 2.0.4
 -------------
 

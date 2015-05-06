@@ -64,6 +64,50 @@ def test_delete():
     assert not t[5]
 
 
+def test_removei():
+    # Empty tree
+    e = IntervalTree()
+    with pytest.raises(ValueError):
+        e.removei(-1000, -999, "Doesn't exist")
+    e.verify()
+    assert len(e) == 0
+
+    # Non-existent member should raise ValueError
+    t = trees['ivs1']()
+    oldlen = len(t)
+    with pytest.raises(ValueError):
+        t.removei(-1000, -999, "Doesn't exist")
+    t.verify()
+    assert len(t) == oldlen
+
+    # Should remove existing member
+    assert Interval(1, 2, '[1,2)') in t
+    t.removei(1, 2, '[1,2)')
+    assert len(t) == oldlen - 1
+    assert Interval(1, 2, '[1,2)') not in t
+
+
+def test_discardi():
+    # Empty tree
+    e = IntervalTree()
+    e.discardi(-1000, -999, "Doesn't exist")
+    e.verify()
+    assert len(e) == 0
+
+    # Non-existent member should do nothing quietly
+    t = trees['ivs1']()
+    oldlen = len(t)
+    t.discardi(-1000, -999, "Doesn't exist")
+    t.verify()
+    assert len(t) == oldlen
+
+    # Should discard existing member
+    assert Interval(1, 2, '[1,2)') in t
+    t.discardi(1, 2, '[1,2)')
+    assert len(t) == oldlen - 1
+    assert Interval(1, 2, '[1,2)') not in t
+
+
 def test_emptying_iteration():
     t = trees['ivs1']()
 
