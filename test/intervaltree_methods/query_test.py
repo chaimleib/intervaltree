@@ -43,6 +43,9 @@ def test_empty_queries():
     assert set(t) == e
     assert set(t.copy()) == e
     assert t.find_nested() == {}
+    assert t.range().is_null()
+    assert t.range().length() == 0
+    assert t.length() == 0
     t.verify()
 
 
@@ -101,6 +104,39 @@ def test_membership():
     assert not t.overlaps(-1, 0)
     assert not t.overlaps(2, 4)
 
+def test_overlaps_empty():
+    # Empty tree
+    t = IntervalTree()
+    assert not t.overlaps(-1)
+    assert not t.overlaps(0)
+
+    assert not t.overlaps(-1, 1)
+    assert not t.overlaps(-1, 0)
+    assert not t.overlaps(0, 0)
+    assert not t.overlaps(0, 1)
+    assert not t.overlaps(1, 0)
+    assert not t.overlaps(1, -1)
+    assert not t.overlaps(0, -1)
+
+    assert not t.overlaps(Interval(-1, 1))
+    assert not t.overlaps(Interval(-1, 0))
+    assert not t.overlaps(Interval(0, 0))
+    assert not t.overlaps(Interval(0, 1))
+    assert not t.overlaps(Interval(1, 0))
+    assert not t.overlaps(Interval(1, -1))
+    assert not t.overlaps(Interval(0, -1))
+
+
+def test_overlaps():
+    t = trees['ivs1']()
+    assert not t.overlaps(-3.2)
+    assert t.overlaps(1)
+    assert t.overlaps(1.5)
+    assert t.overlaps(0, 3)
+    assert not t.overlaps(0, 1)
+    assert not t.overlaps(2, 4)
+    assert not t.overlaps(4, 2)
+    assert not t.overlaps(3, 0)
 
 if __name__ == "__main__":
     pytest.main([__file__, '-v'])

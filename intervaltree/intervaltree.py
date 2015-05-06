@@ -591,7 +591,8 @@ class IntervalTree(collections.MutableSet):
     def overlaps_range(self, begin, end):
         """
         Returns whether some interval in the tree overlaps the given
-        range.
+        range. Returns False if given a null interval over which to
+        test.
         
         Completes in O(r*log n) time, where r is the range length and n
         is the table size.
@@ -599,12 +600,14 @@ class IntervalTree(collections.MutableSet):
         """
         if self.is_empty():
             return False
+        elif begin >= end:
+            return False
         elif self.overlaps_point(begin):
             return True
         return any(
             self.overlaps_point(bound) 
             for bound in self.boundary_table 
-            if begin <= bound < end
+            if begin < bound < end
         )
     
     def split_overlaps(self):
