@@ -1,15 +1,17 @@
 Change log
 ==========
 
-Version 2.0.5
+Version 2.1.0
 -------------
 - Added: 
     - `merge_intervals()` method and test
     - `range()` method
     - `length()` method, for returning the difference between `end()` and `begin()`
-- Fix: `begin()` and `end()` methods used iterative `min()` and `max()` builtins instead of the more efficient `iloc` member available to `SortedDict`
+- Fixes: 
+    - `begin()` and `end()` methods used iterative `min()` and `max()` builtins instead of the more efficient `iloc` member available to `SortedDict`
+    - `overlaps()` method used to return `True` even if provided null test interval
 - Maintainers:
-    - Added coverage test (`make coverage`)
+    - Added coverage test (`make coverage && coverage html`)
 
 Version 2.0.4
 -------------
