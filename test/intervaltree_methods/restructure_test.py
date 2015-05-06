@@ -182,6 +182,20 @@ def test_slice_datafunc():
     assert sorted(t)[0] == Interval(5, 15)
 
 
+def test_split_overlap_empty():
+    t = IntervalTree()
+    t.split_overlaps()
+    t.verify()
+    assert not t
+
+
+def test_split_overlap_single_member():
+    t = IntervalTree([Interval(0, 1)])
+    t.split_overlaps()
+    t.verify()
+    assert len(t) == 1
+
+
 def test_split_overlap():
     t = trees['ivs1']()
 
