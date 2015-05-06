@@ -349,6 +349,16 @@ https://github.com/chaimleib/intervaltree
 Change log
 ==========
 
+Version 2.0.5
+-------------
+
+-  Added:
+
+   -  ``merge_intervals()`` method and test
+   -  ``range()`` method
+   -  ``length()`` method, for returning the difference between
+      ``end()`` and ``begin()``
+
 Version 2.0.4
 -------------
 

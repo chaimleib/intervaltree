@@ -721,23 +721,40 @@ class IntervalTree(collections.MutableSet):
         Returns the lower bound of the first interval in the tree.
         
         Completes in O(n) time.
-        :rtype: Number
         """
         if not self.boundary_table:
             return 0
-        return min(self.boundary_table)
+        return self.boundary_table.iloc[0]
     
     def end(self):
         """
         Returns the upper bound of the last interval in the tree.
         
         Completes in O(n) time.
-        :rtype: Number
         """
         if not self.boundary_table:
             return 0
-        return max(self.boundary_table)
-    
+        return self.boundary_table.iloc[-1]
+
+    def range(self):
+        """
+        Returns a minimum-spanning Interval that encloses all the
+        members of this IntervalTree. If the tree is empty, returns
+        null Interval.
+        :rtype: Interval
+        """
+        return Interval(self.begin(), self.end())
+
+    def length(self):
+        """
+        Returns the length of the minimum-spanning Interval that
+        encloses all the members of this IntervalTree. If the tree
+        is empty, return 0.
+        """
+        if not self:
+            return 0
+        return self.end() - self.begin()
+
     def print_structure(self, tostring=False):
         """
         ## FOR DEBUGGING ONLY ##
