@@ -45,7 +45,6 @@ def test_empty_queries():
     assert t.find_nested() == {}
     assert t.range().is_null()
     assert t.range().length() == 0
-    assert t.span() == 0
     t.verify()
 
 
@@ -137,6 +136,16 @@ def test_overlaps():
     assert not t.overlaps(2, 4)
     assert not t.overlaps(4, 2)
     assert not t.overlaps(3, 0)
+
+
+def test_span():
+    e = IntervalTree()
+    assert e.span() == 0
+
+    t = trees['ivs1']()
+    assert t.span() == t.end() - t.begin()
+    assert t.span() == 14
+
 
 if __name__ == "__main__":
     pytest.main([__file__, '-v'])
