@@ -45,7 +45,7 @@ def test_empty_queries():
     assert t.find_nested() == {}
     assert t.range().is_null()
     assert t.range().length() == 0
-    assert t.length() == 0
+    assert t.span() == 0
     t.verify()
 
 

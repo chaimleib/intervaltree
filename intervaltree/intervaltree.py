@@ -748,7 +748,7 @@ class IntervalTree(collections.MutableSet):
         """
         return Interval(self.begin(), self.end())
 
-    def length(self):
+    def span(self):
         """
         Returns the length of the minimum-spanning Interval that
         encloses all the members of this IntervalTree. If the tree
