@@ -376,7 +376,8 @@ Version 2.1.0
 
 -  Maintainers:
 
-   -  Added coverage test (``make coverage``)
+   -  Added coverage test (``make coverage``) with html report
+      (``htmlcov/index.html``)
 
 Version 2.0.4
 -------------

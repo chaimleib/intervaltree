@@ -12,7 +12,7 @@ Version 2.1.0
     - Speed improvement: `begin()` and `end()` methods used iterative `min()` and `max()` builtins instead of the more efficient `iloc` member available to `SortedDict`
     - `overlaps()` method used to return `True` even if provided null test interval
 - Maintainers:
-    - Added coverage test (`make coverage`)
+    - Added coverage test (`make coverage`) with html report (`htmlcov/index.html`)
 
 Version 2.0.4
 -------------
