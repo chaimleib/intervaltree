@@ -71,6 +71,7 @@ def test_merge_overlaps_gapless():
     assert len(t) == 1
     assert t.pop() == rng
 
+
 def test_merge_overlaps_with_gap():
     t = trees['ivs1']()
 
@@ -81,6 +82,70 @@ def test_merge_overlaps_with_gap():
     
     assert newlen == 2
     assert t == IntervalTree([Interval(1, 2, '[1,2)'), Interval(4, 15)])
+
+
+def test_merge_overlaps_reducer_wo_initializer():
+    def reducer(old, new):
+        return "%s, %s" % (old, new)
+    # empty tree
+    e = IntervalTree()
+    e.merge_overlaps(data_reducer=reducer)
+    e.verify()
+    assert not e
+
+    # One Interval in tree
+    o = IntervalTree.from_tuples([(1, 2, 'hello')])
+    o.merge_overlaps(data_reducer=reducer)
+    o.verify()
+    assert len(o) == 1
+    assert sorted(o) == [Interval(1, 2, 'hello')]
+
+    # many Intervals in tree, with gap
+    t = trees['ivs1']()
+    t.merge_overlaps(data_reducer=reducer)
+    t.verify()
+    assert len(t) == 2
+    assert sorted(t) == [
+        Interval(1, 2,'[1,2)'),
+        Interval(4, 15, '[4,7), [5,9), [6,10), [8,10), [8,15), [10,12), [12,14), [14,15)')
+    ]
+
+
+def test_merge_overlaps_reducer_with_initializer():
+    def reducer(old, new):
+        return old + [new]
+    # empty tree
+    e = IntervalTree()
+    e.merge_overlaps(data_reducer=reducer, data_initializer=[])
+    e.verify()
+    assert not e
+
+    # One Interval in tree
+    o = IntervalTree.from_tuples([(1, 2, 'hello')])
+    o.merge_overlaps(data_reducer=reducer, data_initializer=[])
+    o.verify()
+    assert len(o) == 1
+    assert sorted(o) == [Interval(1, 2, ['hello'])]
+
+    # many Intervals in tree, with gap
+    t = trees['ivs1']()
+    t.merge_overlaps(data_reducer=reducer, data_initializer=[])
+    t.verify()
+    assert len(t) == 2
+    assert sorted(t) == [
+        Interval(1, 2, ['[1,2)']),
+        Interval(4, 15, [
+            '[4,7)',
+            '[5,9)',
+            '[6,10)',
+            '[8,10)',
+            '[8,15)',
+            '[10,12)',
+            '[12,14)',
+            '[14,15)',
+        ])
+    ]
+
 
 def test_chop():
     t = IntervalTree([Interval(0, 10)])
