@@ -28,7 +28,7 @@ from warnings import warn
 
 try:
     xrange  # Python 2?
-except NameError:
+except NameError:  # pragma: no cover
     xrange = range
 
 
