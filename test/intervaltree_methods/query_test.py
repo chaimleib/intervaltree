@@ -91,7 +91,9 @@ def test_tree_bounds():
 def test_membership():
     t = trees['ivs1']()
     assert Interval(1, 2, '[1,2)') in t
+    assert t.containsi(1, 2, '[1,2)')
     assert Interval(1, 3, '[1,3)') not in t
+    assert not t.containsi(1, 3, '[1,3)')
     assert t.overlaps(4)
     assert t.overlaps(9)
     assert not t.overlaps(15)
