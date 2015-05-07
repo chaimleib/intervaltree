@@ -356,8 +356,8 @@ Version 2.1.0
 
    -  ``merge_intervals()`` method and test
    -  ``range()`` method
-   -  ``length()`` method, for returning the difference between
-      ``end()`` and ``begin()``
+   -  ``span()`` method, for returning the difference between ``end()``
+      and ``begin()``
 
 -  Fixes:
 
@@ -369,7 +369,7 @@ Version 2.1.0
 
 -  Maintainers:
 
-   -  Added coverage test (``make coverage && coverage html``)
+   -  Added coverage test (``make coverage``)
 
 Version 2.0.4
 -------------

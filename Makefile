@@ -31,6 +31,7 @@ quicktest: rst
 coverage:
 	coverage run --source=intervaltree setup.py develop test
 	coverage report
+	coverage html
 
 pytest: deps-dev
 	"$(SCRIPTS_DIR)/testall.sh"
