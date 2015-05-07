@@ -333,7 +333,13 @@ Based on
 -  Wikipedia's Interval Tree
 -  Heavily modified from Tyler Kahn's Interval Tree implementation in
    Python (GitHub project)
--  Incorporates modifications by konstantint
+-  Incorporates contributions from:
+
+   -  konstantint/Konstantin Tretyakov of the University of Tartu
+      (Estonia)
+   -  siniG/Avi Gabay
+   -  lmcarril/Luis M. Carril of the Karlsruhe Institute for Technology
+      (Germany)
 
 Copyright
 ---------

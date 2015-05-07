@@ -331,7 +331,10 @@ Based on
 * Eternally Confuzzled's [AVL tree][Confuzzled AVL tree]
 * Wikipedia's [Interval Tree][Wiki intervaltree]
 * Heavily modified from Tyler Kahn's [Interval Tree implementation in Python][Kahn intervaltree] ([GitHub project][Kahn intervaltree GH])
-* Incorporates modifications by [konstantint][Konstantin intervaltree]
+* Incorporates contributions from:
+    * [konstantint/Konstantin Tretyakov][Konstantin intervaltree] of the University of Tartu (Estonia)
+    * [siniG/Avi Gabay][siniG intervaltree]
+    * [lmcarril/Luis M. Carril][lmcarril intervaltree] of the Karlsruhe Institute for Technology (Germany)
 
 Copyright
 ---------
@@ -349,6 +352,8 @@ The source code for this project is at https://github.com/chaimleib/intervaltree
 [GH]: https://github.com/chaimleib/intervaltree
 [issue tracker]: https://github.com/chaimleib/intervaltree/issues
 [Konstantin intervaltree]: https://github.com/konstantint/PyIntervalTree
+[siniG intervaltree]: https://github.com/siniG/intervaltree
+[lmcarril intervaltree]: https://github.com/lmcarril/intervaltree
 [Confuzzled AVL tree]: http://www.eternallyconfuzzled.com/tuts/datastructures/jsw_tut_avl.aspx
 [Wiki intervaltree]: http://en.wikipedia.org/wiki/Interval_tree
 [Kahn intervaltree]: http://zurb.com/forrst/posts/Interval_Tree_implementation_in_python-e0K
