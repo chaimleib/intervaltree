@@ -121,9 +121,15 @@ Features
 -  Restructuring
 
    -  ``chop(begin, end)`` (slice intervals and remove everything
-      between ``begin`` and ``end``)
+      between ``begin`` and ``end``, optionally modifying the data
+      fields of the chopped-up intervals)
    -  ``slice(point)`` (slice intervals at ``point``)
-   -  ``split_overlaps()`` (slice at all interval boundaries)
+   -  ``split_overlaps()`` (slice at all interval boundaries, optionally
+      modifying the data field)
+   -  ``merge_overlaps()`` (joins overlapping intervals into a single
+      interval, optionally merging the data fields)
+   -  ``merge_equals()`` (joins intervals with matching ranges into a
+      single interval, optionally merging the data fields)
 
 -  Copying and typecasting
 
@@ -354,6 +360,11 @@ https://github.com/chaimleib/intervaltree
 
 Change log
 ==========
+
+Version 2.1.1
+-------------
+
+-  Updated README with the new restructuring methods from 2.1.0
 
 Version 2.1.0
 -------------

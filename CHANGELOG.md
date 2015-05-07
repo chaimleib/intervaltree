@@ -1,6 +1,10 @@
 Change log
 ==========
 
+Version 2.1.1
+-------------
+- Updated README with the new restructuring methods from 2.1.0
+
 Version 2.1.0
 -------------
 - Added: 
