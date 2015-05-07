@@ -147,6 +147,137 @@ def test_merge_overlaps_reducer_with_initializer():
     ]
 
 
+def test_merge_equals_empty():
+    t = IntervalTree()
+    t.merge_equals()
+    t.verify()
+
+    assert len(t) == 0
+
+
+def test_merge_equals_wo_dupes():
+    t = trees['ivs1']()
+    orig = trees['ivs1']()
+    assert orig == t
+
+    t.merge_equals()
+    t.verify()
+
+    assert orig == t
+
+
+def test_merge_equals_with_dupes():
+    t = trees['ivs1']()
+    orig = trees['ivs1']()
+    assert orig == t
+
+    # one dupe
+    assert t.containsi(4, 7, '[4,7)')
+    t.addi(4, 7, 'foo')
+    assert len(t) == len(orig) + 1
+    assert orig != t
+
+    t.merge_equals()
+    t.verify()
+    assert t != orig
+    assert t.containsi(4, 7)
+    assert not t.containsi(4, 7, 'foo')
+    assert not t.containsi(4, 7, '[4,7)')
+
+    # two dupes
+    t = trees['ivs1']()
+    t.addi(4, 7, 'foo')
+    assert t.containsi(10, 12, '[10,12)')
+    t.addi(10, 12, 'bar')
+    assert len(t) == len(orig) + 2
+    assert t != orig
+
+    t.merge_equals()
+    t.verify()
+    assert t != orig
+    assert t.containsi(4, 7)
+    assert not t.containsi(4, 7, 'foo')
+    assert not t.containsi(4, 7, '[4,7)')
+    assert t.containsi(10, 12)
+    assert not t.containsi(10, 12, 'bar')
+    assert not t.containsi(10, 12, '[10,12)')
+
+
+def test_merge_equals_reducer_wo_initializer():
+    def reducer(old, new):
+        return "%s, %s" % (old, new)
+    # empty tree
+    e = IntervalTree()
+    e.merge_equals(data_reducer=reducer)
+    e.verify()
+    assert not e
+
+    # One Interval in tree, no change
+    o = IntervalTree.from_tuples([(1, 2, 'hello')])
+    o.merge_equals(data_reducer=reducer)
+    o.verify()
+    assert len(o) == 1
+    assert sorted(o) == [Interval(1, 2, 'hello')]
+
+    # many Intervals in tree, no change
+    t = trees['ivs1']()
+    orig = trees['ivs1']()
+    t.merge_equals(data_reducer=reducer)
+    t.verify()
+    assert len(t) == len(orig)
+    assert t == orig
+
+    # many Intervals in tree, with change
+    t = trees['ivs1']()
+    orig = trees['ivs1']()
+    t.addi(4, 7, 'foo')
+    t.merge_equals(data_reducer=reducer)
+    t.verify()
+    assert len(t) == len(orig)
+    assert t != orig
+    assert not t.containsi(4, 7, 'foo')
+    assert not t.containsi(4, 7, '[4,7)')
+    assert t.containsi(4, 7, '[4,7), foo')
+
+
+def test_merge_equals_reducer_with_initializer():
+    def reducer(old, new):
+        return old + [new]
+    # empty tree
+    e = IntervalTree()
+    e.merge_equals(data_reducer=reducer, data_initializer=[])
+    e.verify()
+    assert not e
+
+    # One Interval in tree, no change
+    o = IntervalTree.from_tuples([(1, 2, 'hello')])
+    o.merge_equals(data_reducer=reducer, data_initializer=[])
+    o.verify()
+    assert len(o) == 1
+    assert sorted(o) == [Interval(1, 2, ['hello'])]
+
+    # many Intervals in tree, no change
+    t = trees['ivs1']()
+    orig = trees['ivs1']()
+    t.merge_equals(data_reducer=reducer, data_initializer=[])
+    t.verify()
+    assert len(t) == len(orig)
+    assert t != orig
+    assert sorted(t) == [Interval(b, e, [d]) for b, e, d in sorted(orig)]
+
+    # many Intervals in tree, with change
+    t = trees['ivs1']()
+    orig = trees['ivs1']()
+    t.addi(4, 7, 'foo')
+    t.merge_equals(data_reducer=reducer, data_initializer=[])
+    t.verify()
+    assert len(t) == len(orig)
+    assert t != orig
+    assert not t.containsi(4, 7, 'foo')
+    assert not t.containsi(4, 7, '[4,7)')
+    assert t.containsi(4, 7, ['[4,7)', 'foo'])
+
+
 def test_chop():
     t = IntervalTree([Interval(0, 10)])
     t.chop(3, 7)
@@ -274,51 +405,6 @@ def test_split_overlap():
             assert other.begin == iv.begin
             assert other.end == iv.end
 
-def test_merge_overlap():
-    t = trees['ivs1']()
-
-    t.merge_overlaps()
-    t.verify()
-
-    assert len(t) == 2
-    assert sorted(t)[0] == Interval(1,2,'[1,2)')
-    assert sorted(t)[1] == Interval(4,15)
-
-def test_merge_overlap_datafunc():
-    t = trees['ivs1']()
-
-    def func(lower,higher):
-        return lower
-
-    t.merge_overlaps(func)
-    t.verify()
-
-    assert len(t) == 2
-    assert sorted(t)[0] == Interval(1,2,'[1,2)')
-    assert sorted(t)[1] == Interval(4,15,'[4,7)')
-
-def test_merge_equals():
-    t = trees['ivs1']()
-    t.addi(4,7,'foo')
-
-    t.merge_equals()
-    t.verify()
-
-    assert len(t.search(4,7,True)) == 1
-    assert sorted(t.search(4,7,True))[0] == Interval(4,7)
-
-def test_merge_equals_datafunc():
-    t = trees['ivs1']()
-    t.addi(4,7,'foo')
-
-    def func(lower,higher):
-        return lower
-
-    t.merge_equals(func)
-    t.verify()
-
-    assert len(t.search(4,7,True)) == 1
-    assert sorted(t.search(4,7,True))[0] == Interval(4,7,'[4,7)')
 
 def test_pickle():
     t = trees['ivs1']()

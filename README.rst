@@ -354,7 +354,8 @@ Version 2.1.0
 
 -  Added:
 
-   -  ``merge_intervals()`` method and test
+   -  ``merge_overlaps()`` method and tests
+   -  ``merge_equals()`` method and tests
    -  ``range()`` method
    -  ``span()`` method, for returning the difference between ``end()``
       and ``begin()``
