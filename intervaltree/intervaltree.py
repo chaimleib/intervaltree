@@ -694,6 +694,31 @@ class IntervalTree(collections.MutableSet):
 
         self.__init__(merged)
 
+    def merge_equals(self, datafunc=None):
+        """
+        Finds all intervals with same range and merges them into a single interval
+        Completes in worst-case O(n*logn)m best-case O(n)
+        """
+        if not self:
+            return
+
+        sorted_intervals = sorted(self.all_intervals)  # get sorted intervals
+        merged = list()
+
+        for higher in sorted_intervals:
+            if not merged:
+                merged.append(higher)
+            else:
+                lower = merged[-1]
+                if higher.begin == lower.begin and higher.end == lower.end:
+                    if datafunc:
+                        merged[-1] = Interval(lower.begin, lower.end, datafunc(lower.data,higher.data))
+                    else:
+                        merged[-1] = Interval(lower.begin, lower.end)
+                else:
+                    merged.append(higher)
+
+        self.__init__(merged)
 
     def items(self):
         """
