@@ -33,7 +33,7 @@ import re
 
 
 ## CONFIG
-target_version = '2.1.0'
+target_version = '2.1.1'
 create_rst = True
 
 
