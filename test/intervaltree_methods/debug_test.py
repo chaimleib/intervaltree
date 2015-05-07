@@ -22,6 +22,7 @@ from __future__ import absolute_import
 from intervaltree import Interval, IntervalTree
 import pytest
 from test.intervaltrees import trees, sdata
+from pprint import pprint, pformat
 try:
     import cPickle as pickle
 except ImportError:
@@ -35,6 +36,37 @@ def test_print_empty():
 
     t.verify()
 
+
+def test_mismatched_tree_and_membership_set():
+    t = trees['ivs1']()
+    members = set(t.all_intervals)
+    assert t.all_intervals == members
+    t.removei(1, 2, '[1,2)')
+    assert t.all_intervals != members
+    t.all_intervals = members  # intentionally introduce error
+    with pytest.raises(AssertionError):
+        t.verify()
+
+
+def test_small_tree_score():
+    # inefficiency score for trees of len() <= 2 should be 0.0
+    t = IntervalTree()
+    assert t.score() == 0.0
+
+    t.addi(1, 4)
+    assert t.score() == 0.0
+
+    t.addi(2, 5)
+    assert t.score() == 0.0
+
+    t.addi(1, 100)  # introduces inefficiency, b/c len(s_center) > 1
+    assert t.score() != 0.0
+
+
+def test_score_no_report():
+    t = trees['ivs1']()
+    score = t.score(False)
+    assert isinstance(score, (int, float))
 
 if __name__ == "__main__":
     pytest.main([__file__, '-v'])

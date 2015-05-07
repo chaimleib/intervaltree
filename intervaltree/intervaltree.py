@@ -789,6 +789,10 @@ class IntervalTree(collections.MutableSet):
                 )
                 tivs = set(self.top_node.all_children())
                 print('top_node.all_children() - all_intervals:')
+                try:
+                    pprint
+                except NameError:
+                    from pprint import pprint
                 pprint(tivs - self.all_intervals)
                 print('all_intervals - top_node.all_children():')
                 pprint(self.all_intervals - tivs)
