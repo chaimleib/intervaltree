@@ -32,21 +32,28 @@ from setuptools.command.test import test as TestCommand
 import re
 
 
-def development_version():
-    p = subprocess.Popen('git describe'.split(), stdout=subprocess.PIPE)
-    version = p.communicate()[0].strip()
-    return version
-
-
 ## CONFIG
-version = '2.1.0'
+target_version = '2.1.0'
+create_rst = True
+
+
+def development_version_number():
+    p = subprocess.Popen('git describe'.split(), stdout=subprocess.PIPE)
+    git_describe = p.communicate()[0].strip()
+    release, build, commitish = git_describe.split('-')
+    result = "{0}b{1}".format(release, build)
+    return result
+
 is_dev_version = 'PYPI' in os.environ and os.environ['PYPI'] == 'pypitest'
 if is_dev_version:
-    dev_version = development_version() + '-%s' % version
-    version = dev_version
-print('Version %s' % version)
+    version = development_version_number()
+else:  # This is a RELEASE version
+    version = target_version
 
-create_rst = True
+print("Version: " + version)
+if is_dev_version:
+    print("This is a DEV version.")
+    print("Target: " + target_version)
 
 
 ## Filesystem utilities

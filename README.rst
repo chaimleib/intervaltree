@@ -368,6 +368,10 @@ Version 2.1.0
 
 -  Fixes:
 
+   -  Development version numbering is changing to be compliant with
+      PEP440. Version numbering now contains major, minor and micro
+      release numbers, plus the number of builds following the stable
+      release version, e.g. 2.0.4b34
    -  Speed improvement: ``begin()`` and ``end()`` methods used
       iterative ``min()`` and ``max()`` builtins instead of the more
       efficient ``iloc`` member available to ``SortedDict``

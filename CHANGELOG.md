@@ -8,7 +8,8 @@ Version 2.1.0
     - `merge_equals()` method and tests
     - `range()` method
     - `span()` method, for returning the difference between `end()` and `begin()`
-- Fixes: 
+- Fixes:
+    - Development version numbering is changing to be compliant with PEP440. Version numbering now contains major, minor and micro release numbers, plus the number of builds following the stable release version, e.g. 2.0.4b34
     - Speed improvement: `begin()` and `end()` methods used iterative `min()` and `max()` builtins instead of the more efficient `iloc` member available to `SortedDict`
     - `overlaps()` method used to return `True` even if provided null test interval
 - Maintainers:
