@@ -636,7 +636,7 @@ class IntervalTree(collections.MutableSet):
     def merge_overlaps(self):
         """
         Finds all intervals with overlapping ranges and merges them into a single interval
-        Completes in worst-case O(n*logn)m best-case O(n)
+        Completes in O(n*logn).
         """
 
         if not self:
