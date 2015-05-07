@@ -14,6 +14,7 @@ Version 2.1.0
     - `overlaps()` method used to return `True` even if provided null test interval
 - Maintainers:
     - Added coverage test (`make coverage`) with html report (`htmlcov/index.html`)
+    - Tests run slightly faster
 
 Version 2.0.4
 -------------

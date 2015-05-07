@@ -382,6 +382,7 @@ Version 2.1.0
 
    -  Added coverage test (``make coverage``) with html report
       (``htmlcov/index.html``)
+   -  Tests run slightly faster
 
 Version 2.0.4
 -------------
