@@ -437,6 +437,17 @@ class IntervalTree(collections.MutableSet):
             if iv not in other:
                 self.remove(iv)
 
+    def overlap_intervals(self,other):
+        """
+        Returns a new IntervalTree consisting of intervals representing the
+        regions overlapped by at least one interval in both of self and other.
+        """
+        splits = (self | other)
+        splits.split_overlaps()
+        self_int_other =  IntervalTree(filter(lambda r: self.overlaps(r) and other.overlaps(r), splits))
+        self_int_other.merge_overlaps()
+        return self_int_other
+
     def symmetric_difference(self, other):
         """
         Return a tree with elements only in self or other but not
