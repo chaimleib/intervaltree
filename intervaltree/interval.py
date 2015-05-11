@@ -99,7 +99,7 @@ class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
             else:
                 return self.begin - other.end
         except:
-            if self.end < other:
+            if self.end <= other:
                 return other - self.end
             else:
                 return self.begin - other
