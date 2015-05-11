@@ -52,9 +52,10 @@ else:  # This is a RELEASE version
 
 print("Version: " + version)
 if is_dev_version:
-    print("This is a DEV version.")
-    print("Target: " + target_version)
-
+    print("This is a DEV version")
+    print("Target: %s\n" % target_version)
+else:
+    print("!!!>>> This is a RELEASE version <<<!!!\n")
 
 ## Filesystem utilities
 def read_file(path):
