@@ -80,24 +80,91 @@ def test_union():
     interval = Interval(0, 1)
     s = set([interval])
 
+    # union with empty
     r = t.union(s)
     assert len(r) == 1
     assert set(r).pop() == interval
 
+    # update with duplicates
+    t.update(s)
+    t.update(s)
+    assert len(t) == 1
+    assert set(t).pop() == interval
+
+    # extend with duplicates
     t.extend(s)
     t.extend(s)
     assert len(t) == 1
     assert set(t).pop() == interval
 
+    # update with non-dupe
     interval = Interval(2, 3)
     t.update([interval])
     assert len(t) == 2
     assert sorted(t)[1] == interval
 
-    t = IntervalTree(s)
+    # extend with non-dupe
+    t.remove(interval)
+    assert len(t) == 1
+    assert interval not in t
     t.extend([interval])
     assert len(t) == 2
     assert sorted(t)[1] == interval
+
+    # commutativity with full overlaps, then no overlaps
+    a = trees['ivs1']()
+    b = trees['ivs2']()
+    e = IntervalTree()
+
+    aa = a.union(a)
+    ae = a.union(e)
+    ea = e.union(a)
+    ee = e.union(e)
+    aa.verify()
+    ae.verify()
+    ea.verify()
+    ee.verify()
+    assert aa == a
+    assert ae == a
+    assert ea == a
+    assert ee == e
+
+    ab = a.union(b)
+    ba = b.union(a)
+    ab.verify()
+    ba.verify()
+    assert ab == ba
+    assert len(ab) == 109
+
+    # commutativity with strict subset overlap
+    aba = ab.union(a)
+    abb = ab.union(b)
+    bab = ba.union(b)
+    baa = ba.union(a)
+    aba.verify()
+    abb.verify()
+    bab.verify()
+    baa.verify()
+    assert aba == abb
+    assert abb == bab
+    assert bab == baa
+
+    assert aba == ab
+
+    # commutativity with partial overlap
+    c = trees['ivs3']()
+    bc = b.union(c)
+    cb = c.union(b)
+    bc.verify()
+    cb.verify()
+    assert bc == cb
+    assert len(bc) > len(b)
+    assert len(bc) > len(c)
+    assert len(bc) < len(b) + len(c)
+    for iv in b:
+        assert iv in bc
+    for iv in c:
+        assert iv in bc
 
 
 def test_union_operator():
