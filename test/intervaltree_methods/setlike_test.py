@@ -257,5 +257,64 @@ def test_difference_operator():
     assert difference == expected_difference
 
 
+def test_intersection():
+    a = trees['ivs1']()
+    b = trees['ivs2']()
+    e = IntervalTree()
+
+    # intersections with e
+    assert a.intersection(e) == e
+    assert b.intersection(e) == e
+    assert e.intersection(e) == e
+
+    # intersections with self
+    assert a.intersection(a) == a
+    assert b.intersection(b) == b
+
+    # commutativity resulting in empty
+    ab = a.intersection(b)
+    ba = b.intersection(a)
+    ab.verify()
+    ba.verify()
+    assert ab == ba
+    assert len(ab) == 0  # no overlaps, so empty tree
+
+    # commutativity on non-overlapping sets
+    ab = a.union(b)
+    ba = b.union(a)
+
+    aba = ab.intersection(a)  # these should yield no change
+    abb = ab.intersection(b)
+    bab = ba.intersection(b)
+    baa = ba.intersection(a)
+    aba.verify()
+    abb.verify()
+    bab.verify()
+    baa.verify()
+    assert aba == a
+    assert abb == b
+    assert bab == b
+    assert baa == a
+
+    # commutativity with overlapping sets
+    c = trees['ivs3']()
+    bc = b.intersection(c)
+    cb = c.intersection(b)
+    bc.verify()
+    cb.verify()
+    assert bc == cb
+    assert len(bc) < len(b)
+    assert len(bc) < len(c)
+    assert len(bc) > 0
+
+    assert b.containsi(13, 23)
+    assert c.containsi(13, 23)
+    assert bc.containsi(13, 23)
+
+    assert not b.containsi(819, 828)
+    assert not c.containsi(0, 1)
+    assert not bc.containsi(819, 820)
+    assert not bc.containsi(0, 1)
+
 if __name__ == "__main__":
     pytest.main([__file__, '-v'])
