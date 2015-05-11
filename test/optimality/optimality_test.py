@@ -19,10 +19,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from __future__ import absolute_import
-from test.optimality_test_matrix import OptimalityTestMatrix
-from test.intervaltrees import trees
 from pprint import pprint
 from warnings import warn
+
+from test.optimality.optimality_test_matrix import OptimalityTestMatrix
+from test.intervaltrees import trees
+
 
 matrix = OptimalityTestMatrix(verbose=1)
 matrix.run()

@@ -5,13 +5,13 @@ https://github.com/konstantint/PyIntervalTree/issues/4
 Test contributed by jacekt
 '''
 from __future__ import absolute_import
-from intervaltree import Interval, IntervalTree
+from intervaltree import IntervalTree
 from test.progress_bar import ProgressBar
 from test.data import issue4
 items, MAX = issue4.data, issue4.MAX
 from test.intervaltrees import trees
 from test.intervals import write_ivs_data
-from test.optimality_test_matrix import OptimalityTestMatrix
+from test.optimality.optimality_test_matrix import OptimalityTestMatrix
 from pprint import pprint
 import cProfile
 import pstats
