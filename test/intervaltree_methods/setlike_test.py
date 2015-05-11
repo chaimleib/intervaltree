@@ -21,6 +21,7 @@ limitations under the License.
 from __future__ import absolute_import
 from intervaltree import Interval, IntervalTree
 import pytest
+from test.intervaltrees import trees, sdata
 try:
     import cPickle as pickle
 except ImportError:
@@ -131,6 +132,62 @@ def test_invalid_update():
 
     with pytest.raises(ValueError):
         t.update([Interval(1, 1)])
+
+
+def test_difference():
+    minuend = trees['ivs1']()
+    assert isinstance(minuend, IntervalTree)
+    subtrahend = minuend.copy()
+    expected_difference = IntervalTree([subtrahend.pop()])
+    expected_difference.add(subtrahend.pop())
+
+    minuend.verify()
+    subtrahend.verify()
+    expected_difference.verify()
+
+    assert len(expected_difference) == len(minuend) - len(subtrahend)
+
+    for iv in expected_difference:
+        assert iv not in subtrahend
+        assert iv in minuend
+
+    difference = minuend.difference(subtrahend)
+    difference.verify()
+
+    for iv in difference:
+        assert iv not in subtrahend
+        assert iv in minuend
+        assert iv in expected_difference
+
+    assert difference == expected_difference
+
+
+def test_difference_operator():
+    minuend = trees['ivs1']()
+    assert isinstance(minuend, IntervalTree)
+    subtrahend = minuend.copy()
+    expected_difference = IntervalTree([subtrahend.pop()])
+    expected_difference.add(subtrahend.pop())
+
+    minuend.verify()
+    subtrahend.verify()
+    expected_difference.verify()
+
+    assert len(expected_difference) == len(minuend) - len(subtrahend)
+
+    for iv in expected_difference:
+        assert iv not in subtrahend
+        assert iv in minuend
+
+    difference = minuend - subtrahend
+    difference.verify()
+
+    for iv in difference:
+        assert iv not in subtrahend
+        assert iv in minuend
+        assert iv in expected_difference
+
+    assert difference == expected_difference
 
 
 if __name__ == "__main__":
