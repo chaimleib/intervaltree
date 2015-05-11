@@ -20,7 +20,6 @@ limitations under the License.
 """
 from __future__ import absolute_import
 from intervaltree import Interval, IntervalTree
-import pytest
 from test.intervaltrees import trees
 try:
     import cPickle as pickle
@@ -66,4 +65,5 @@ def test_copy_cast():
 
 
 if __name__ == "__main__":
+    import pytest
     pytest.main([__file__, '-v'])

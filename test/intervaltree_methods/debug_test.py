@@ -68,5 +68,6 @@ def test_score_no_report():
     score = t.score(False)
     assert isinstance(score, (int, float))
 
+
 if __name__ == "__main__":
     pytest.main([__file__, '-v'])

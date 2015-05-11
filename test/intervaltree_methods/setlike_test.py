@@ -316,5 +316,6 @@ def test_intersection():
     assert not bc.containsi(819, 820)
     assert not bc.containsi(0, 1)
 
+
 if __name__ == "__main__":
     pytest.main([__file__, '-v'])
