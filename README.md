@@ -219,6 +219,13 @@ Examples
     >>> t2 = IntervalTree(Interval(*iv) for iv in ivs)
     
     ```
+    
+    Or even:
+    
+    ``` python
+    >>> t2 = IntervalTree.from_tuples(ivs)
+    
+    ```
 
 * Removing intervals
     

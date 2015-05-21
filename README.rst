@@ -230,6 +230,12 @@ Examples
 
        >>> t2 = IntervalTree(Interval(*iv) for iv in ivs)
 
+   Or even:
+
+   .. code:: python
+
+       >>> t2 = IntervalTree.from_tuples(ivs)
+
 -  Removing intervals
 
    .. code:: python
@@ -364,7 +370,10 @@ Change log
 Version 2.1.1
 -------------
 
--  Updated README with the new restructuring methods from 2.1.0
+-  Updated README:
+
+   -  new restructuring methods from 2.1.0
+   -  example of ``from_tuples()`` added
 
 Version 2.1.0
 -------------
