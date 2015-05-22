@@ -65,8 +65,8 @@ class Node(object):
         return node
 
     def init_from_sorted(self, intervals):
-        if not intervals:
-            return None
+        # assumes that intervals is a non-empty collection.
+        # Else, next line raises IndexError
         center_iv = intervals[len(intervals) // 2]
         self.x_center = center_iv.begin
         self.s_center = set()

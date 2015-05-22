@@ -20,8 +20,6 @@ limitations under the License.
 """
 
 from intervaltree import Interval
-from pprint import pprint
-import pickle
 import pytest
 
 
