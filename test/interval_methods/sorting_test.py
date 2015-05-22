@@ -71,7 +71,7 @@ def test_interval_overlaps_range():
 
 def test_interval_int_comparison_operators():
     """
-    Test comparisons using < and >
+    Test comparisons with integers using < and >
     """
     iv = Interval(0, 10)
 
@@ -103,7 +103,7 @@ def test_interval_int_comparison_operators():
 
 def test_interval_int_comparison_methods():
     """
-    Test comparisons using gt(), ge(), lt() and le()
+    Test comparisons with integers using gt(), ge(), lt() and le()
     """
     iv = Interval(0, 10)
 
@@ -133,7 +133,71 @@ def test_interval_int_comparison_methods():
     assert iv.le(15)
 
 
-def test_interval_cmp_interval():
+def test_interval_interval_comparison_methods():
+    """
+    Test comparisons with other Intervals using gt(), ge(), lt() and
+    le()
+    """
+    iv0 = Interval(0, 10)
+    iv1 = Interval(-10, -5)
+    iv2 = Interval(-10, 0)
+    iv3 = Interval(-10, 5)
+    iv4 = Interval(-10, 10)
+    iv5 = Interval(-10, 20)
+    iv6 = Interval(0, 20)
+    iv7 = Interval(5, 20)
+    iv8 = Interval(10, 20)
+    iv9 = Interval(15, 20)
+
+    assert not iv0.gt(iv0)
+    assert iv0.gt(iv1)
+    assert iv0.gt(iv2)
+    assert not iv0.gt(iv3)
+    assert not iv0.gt(iv4)
+    assert not iv0.gt(iv5)
+    assert not iv0.gt(iv6)
+    assert not iv0.gt(iv7)
+    assert not iv0.gt(iv8)
+    assert not iv0.gt(iv9)
+
+    assert iv0.ge(iv0)
+    assert iv0.ge(iv1)
+    assert iv0.ge(iv2)
+    assert iv0.ge(iv3)
+    assert iv0.ge(iv4)
+    assert iv0.ge(iv5)
+    assert iv0.ge(iv6)
+    assert not iv0.ge(iv7)
+    assert not iv0.ge(iv8)
+    assert not iv0.ge(iv9)
+
+    assert not iv0.lt(iv0)
+    assert not iv0.lt(iv1)
+    assert not iv0.lt(iv2)
+    assert not iv0.lt(iv3)
+    assert not iv0.lt(iv4)
+    assert not iv0.lt(iv5)
+    assert not iv0.lt(iv6)
+    assert not iv0.lt(iv7)
+    assert iv0.lt(iv8)
+    assert iv0.lt(iv9)
+
+    assert iv0.le(iv0)
+    assert not iv0.le(iv1)
+    assert not iv0.le(iv2)
+    assert not iv0.le(iv3)
+    assert iv0.le(iv4)
+    assert iv0.le(iv5)
+    assert iv0.le(iv6)
+    assert iv0.le(iv7)
+    assert iv0.le(iv8)
+    assert iv0.le(iv9)
+
+
+def test_interval_interval_cmp():
+    """
+    Test comparisons with other Intervals using __cmp__()
+    """
     iv0 = Interval(0, 10)
     iv1 = Interval(-10, -5)
     iv2 = Interval(-10, 0)
@@ -157,7 +221,10 @@ def test_interval_cmp_interval():
     assert iv0.__cmp__(iv9) == -1
 
 
-def test_interval_cmp_int():
+def test_interval_int_cmp():
+    """
+    Test comparisons with ints using __cmp__()
+    """
     iv = Interval(0, 10)
 
     assert iv.__cmp__(-5) == 1
