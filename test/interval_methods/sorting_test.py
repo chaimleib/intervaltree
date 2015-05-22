@@ -22,6 +22,7 @@ limitations under the License.
 from intervaltree import Interval
 from pprint import pprint
 import pickle
+import pytest
 
 
 def test_interval_overlaps_point():
@@ -192,6 +193,39 @@ def test_interval_interval_comparison_methods():
     assert iv0.le(iv7)
     assert iv0.le(iv8)
     assert iv0.le(iv9)
+
+
+def test_interval_null_interval_comparison_methods():
+    """
+    Test comparisons with other Intervals using gt(), ge(), lt() and
+    le()
+    """
+    iv0 = Interval(0, 10)
+    ivn = Interval(0, 0)
+    
+    with pytest.raises(ValueError):
+        iv0.gt(ivn)
+    
+    with pytest.raises(ValueError):
+        ivn.gt(iv0)
+
+    with pytest.raises(ValueError):
+        iv0.ge(ivn)
+    
+    with pytest.raises(ValueError):
+        ivn.ge(iv0)
+
+    with pytest.raises(ValueError):
+        iv0.lt(ivn)
+    
+    with pytest.raises(ValueError):
+        ivn.lt(iv0)
+
+    with pytest.raises(ValueError):
+        iv0.le(ivn)
+    
+    with pytest.raises(ValueError):
+        ivn.le(iv0)
 
 
 def test_interval_interval_cmp():
