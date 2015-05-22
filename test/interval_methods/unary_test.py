@@ -94,6 +94,14 @@ def test_str():
     assert repr(iv) == s
 
 
+def test_get_fields():
+    ivn = Interval(0, 1)
+    ivo = Interval(0, 1, 'hello')
+
+    assert ivn._get_fields() == (0, 1)
+    assert ivo._get_fields() == (0, 1, 'hello')
+
+
 if __name__ == "__main__":
     import pytest
     pytest.main([__file__, '-v'])
