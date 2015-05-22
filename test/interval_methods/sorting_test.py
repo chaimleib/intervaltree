@@ -46,7 +46,7 @@ def test_interval_overlaps_range():
     iv8 = (10, 20)
     iv9 = (15, 20)
 
-    assert iv0.overlaps(iv0)
+    assert iv0.overlaps(*iv0[0:1])
     assert not iv0.overlaps(*iv1)
     assert not iv0.overlaps(*iv2)
     assert iv0.overlaps(*iv3)
@@ -57,8 +57,22 @@ def test_interval_overlaps_range():
     assert not iv0.overlaps(*iv8)
     assert not iv0.overlaps(*iv9)
 
+    assert iv0.overlaps(Interval(*iv0))
+    assert not iv0.overlaps(Interval(*iv1))
+    assert not iv0.overlaps(Interval(*iv2))
+    assert iv0.overlaps(Interval(*iv3))
+    assert iv0.overlaps(Interval(*iv4))
+    assert iv0.overlaps(Interval(*iv5))
+    assert iv0.overlaps(Interval(*iv6))
+    assert iv0.overlaps(Interval(*iv7))
+    assert not iv0.overlaps(Interval(*iv8))
+    assert not iv0.overlaps(Interval(*iv9))
+
 
 def test_interval_int_comparison_operators():
+    """
+    Test comparisons using < and >
+    """
     iv = Interval(0, 10)
 
     assert (iv > -5)
@@ -88,6 +102,9 @@ def test_interval_int_comparison_operators():
 
 
 def test_interval_int_comparison_methods():
+    """
+    Test comparisons using gt(), ge(), lt() and le()
+    """
     iv = Interval(0, 10)
 
     assert iv.gt(-5)
