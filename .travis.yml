@@ -7,7 +7,7 @@ python:
     - "3.4"
 install:
     - make deps-dev
-    - pip install coverage
+    - pip install coverage==3.7.1
 script:
     coverage run --source=intervaltree setup.py develop test
 after_success:
