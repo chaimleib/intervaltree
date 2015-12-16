@@ -3,13 +3,21 @@ Change log
 
 Version 2.1.1
 -------------
-- Updated README: 
+- Updated README:
     - new restructuring methods from 2.1.0
     - example of `from_tuples()` added
+    - more info about `chop()`, `split_overlaps()`, `merge_overlaps()` and `merge_equals()`.
+- Fixes:
+    - `Node.from_tuples()` will now raise an error if given an empty iterable. This should never happen, and it should error if it does.
+- Maintainers:
+    - added testing for Python 3.5
+    - reorganize tests
+    - more tests added to improve code coverage
+    - test for issue #4 had a broken import reference
 
 Version 2.1.0
 -------------
-- Added: 
+- Added:
     - `merge_overlaps()` method and tests
     - `merge_equals()` method and tests
     - `range()` method

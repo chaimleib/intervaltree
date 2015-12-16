@@ -9,7 +9,7 @@ TEMPS=$(shell                                                   \
 		-o \( -type d -name '__pycache__' \)                    \
 )
 
-PYTHONS:=2.6 2.7 3.2 3.3 3.4
+PYTHONS:=2.6 2.7 3.2 3.3 3.4 3.5
 PYTHON_MAJORS:=$(shell          \
 	echo "$(PYTHONS)" |         \
 	tr ' ' '\n' | cut -d. -f1 | \
