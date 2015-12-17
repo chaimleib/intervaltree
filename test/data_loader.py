@@ -35,7 +35,7 @@ def ivs_names():
     """
     Get the names of the modules containing our interval data.
     """
-    data_dir = join(from_import('test', 'data').__path__)[0]
+    data_dir = join(*from_import('test', 'data').__path__)[0]
     modules = [
         module[:-len('.py')] for module in listdir(data_dir)
         if not module.startswith('__') and module.endswith('.py')
