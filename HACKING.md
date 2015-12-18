@@ -9,7 +9,7 @@ This is a developer's guide to modifying and maintaining `intervaltree`.
 
 * On Linux, you will need `apt-get`.
 
-On all systems, Python 2.6, 2.7, 3.2, 3.3 and 3.4 are needed to run the complete test suite. 
+On all systems, Python 2.6, 2.7, 3.2, 3.3, 3.4 and 3.5 are needed to run the complete test suite. 
 
 ### Single version of Python
 
@@ -87,7 +87,7 @@ The two commands above run all the available tests on all versions of Python sup
 
 The first time you run `make`, you may be asked for your password. This is in order to install `pandoc`, a tool used for processing the README file.
 
-Running all tests requires that you have all the supported versions of Python installed. These are 2.6, 2.7, 3.2, 3.3, and 3.4. Try to use your packaga manager to install them if possible. Otherwise, go to [python.org/downloads][] and install them manually.
+Running all tests requires that you have all the supported versions of Python installed. These are 2.6, 2.7, 3.2, 3.3, 3.4 and 3.5. Try to use your package manager to install them if possible. Otherwise, go to [python.org/downloads][] and install them manually.
 
 #### Single version of Python
 
@@ -125,7 +125,7 @@ To update the README on PyPI, run
 
     make register
 
-This will test the README's syntax stricly and push it up to the PyPI test server.
+This will test the README's syntax strictly and push it up to the PyPI test server.
  
 If you are satisfied with the results, run
 

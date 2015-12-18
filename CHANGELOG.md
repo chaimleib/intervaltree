@@ -9,10 +9,11 @@ Version 2.1.1
     - more info about `chop()`, `split_overlaps()`, `merge_overlaps()` and `merge_equals()`.
 - Fixes:
     - `Node.from_tuples()` will now raise an error if given an empty iterable. This should never happen, and it should error if it does.
+    - `Interval.distance_to()` gave an incorrect distance when passed the `Interval`'s upper boundary
 - Maintainers:
     - added testing for Python 3.5
     - reorganize tests
-    - more tests added to improve code coverage
+    - more tests added to improve code coverage (We're at 95%! Woohoo!)
     - test for issue #4 had a broken import reference
 
 Version 2.1.0
