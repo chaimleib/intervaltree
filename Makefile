@@ -9,11 +9,16 @@ TEMPS=$(shell                                                   \
 		-o \( -type d -name '__pycache__' \)                    \
 )
 
-PYTHONS:=2.6 2.7 3.2 3.3 3.4 3.5
-PYTHON_MAJORS:=$(shell          \
+PYTHONS:=2.6.9 2.7.11 3.2.6 3.3.6 3.4.3 3.5.1
+PYTHON_MAJORS:=$(shell        \
 	echo "$(PYTHONS)" |         \
 	tr ' ' '\n' | cut -d. -f1 | \
 	uniq                        \
+)
+PYTHON_MINORS:=$(shell          \
+	echo "$(PYTHONS)" |           \
+	tr ' ' '\n' | cut -d. -f1,2 | \
+	uniq                          \
 )
 
 # PyPI server name, as specified in ~/.pypirc
@@ -34,7 +39,7 @@ coverage:
 	coverage html
 
 pytest: deps-dev
-	"$(SCRIPTS_DIR)/testall.sh"
+	PYTHONS="$(PYTHONS)" PYTHON_MINORS="$(PYTHON_MINORS)" "$(SCRIPTS_DIR)/testall.sh"
 
 clean: clean-build clean-eggs clean-temps
 
@@ -82,7 +87,9 @@ release:
 sdist-upload:
 	PYPI=$(PYPI) python setup.py sdist upload -r $(PYPI)
 
-deps-dev: pyandoc
+deps-ci: pyandoc
+
+deps-dev: pyandoc pyenv-install-versions
 
 pyandoc: pandoc-bin
 	[[ -d pyandoc/pandoc ]] || git clone --depth=50 git://github.com/chaimleib/pyandoc.git
@@ -103,6 +110,12 @@ pm-update:
 # Uploads to test server, unless the release target was run too
 upload: test clean sdist-upload
 
+pyenv-is-installed:
+	pyenv --version || echo "ERROR: pyenv not installed" && false
+
+pyenv-install-versions: pyenv-is-installed
+	for pyver in $(PYTHONS); do echo N | pyenv install $$pyver || true; done
+	pyenv rehash
 
 # for debugging the Makefile
 env:
@@ -110,6 +123,7 @@ env:
 	@echo TEMPS="\"$(TEMPS)\""
 	@echo PYTHONS="\"$(PYTHONS)\""
 	@echo PYTHON_MAJORS="\"$(PYTHON_MAJORS)\""
+	@echo PYTHON_MINORS="\"$(PYTHON_MINORS)\""
 	@echo PYPI="\"$(PYPI)\""
 
 
@@ -126,11 +140,14 @@ env:
 	install-testpypi \
 	install-pypi \
 	install-develop \
+	pyenv-install-versions \
+	pyenv-is-installed \
 	uninstall \
 	rst \
 	register \
 	release \
 	sdist-upload \
+	deps-ci \
 	deps-dev \
 	pyandoc \
 	pandoc-bin \
