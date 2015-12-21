@@ -111,10 +111,11 @@ pm-update:
 upload: test clean sdist-upload
 
 pyenv-is-installed:
-	pyenv --version || echo "ERROR: pyenv not installed" && false
+	pyenv --version || (echo "ERROR: pyenv not installed" && false)
 
 pyenv-install-versions: pyenv-is-installed
-	for pyver in $(PYTHONS); do echo N | pyenv install $$pyver || true; done
+	for pyver in $(PYTHONS); do (echo N | pyenv install $$pyver) || true; done
+	for pyver in $(PYTHON_MINORS); do pip$$pyver install -U pytest; done
 	pyenv rehash
 
 # for debugging the Makefile
