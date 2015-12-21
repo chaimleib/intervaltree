@@ -22,39 +22,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from __future__ import absolute_import
-import os
-import sys
-import subprocess
+from sys import exit
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
 
-from utils import fs
-from utils import doc
+from utils import fs, doc, version
 
 ## CONFIG
 target_version = '2.1.1'
 create_rst = True
 
-
-def development_version_number():
-    p = subprocess.Popen('git describe'.split(), stdout=subprocess.PIPE)
-    git_describe = p.communicate()[0].strip()
-    release, build, commitish = git_describe.split('-')
-    result = "{0}b{1}".format(release, build)
-    return result
-
-is_dev_version = 'PYPI' in os.environ and os.environ['PYPI'] == 'pypitest'
-if is_dev_version:
-    version = development_version_number()
-else:  # This is a RELEASE version
-    version = target_version
-
-print("Version: " + version)
-if is_dev_version:
+version_info = version.version_info(target_version)
+if version_info['is_dev_version']:
     print("This is a DEV version")
-    print("Target: %s\n" % target_version)
+    print("Target: {target_version}\n".format(**version_info))
 else:
     print("!!!>>> This is a RELEASE version <<<!!!\n")
+    print("Version: {version}".format(**version_info))
 
 
 ## PyTest
@@ -68,13 +52,13 @@ class PyTest(TestCommand):
 
     def run_tests(self):
         import pytest  # import here, because outside the required eggs aren't loaded yet
-        sys.exit(pytest.main(self.test_args))
+        exit(pytest.main(self.test_args))
 
 
 ## Run setuptools
 setup(
     name='intervaltree',
-    version=version,
+    version=version_info['version'],
     install_requires=['sortedcontainers'],
     description='Editable interval tree data structure for Python 2 and 3',
     long_description=doc.get_rst(),
@@ -100,11 +84,11 @@ setup(
         'Topic :: Text Processing :: Linguistic',
         'Topic :: Text Processing :: Markup',
     ],
-    keywords="interval-tree data-structure intervals tree",  # Separate with spaces
+    keywords='interval-tree data-structure intervals tree',  # Separate with spaces
     author='Chaim-Leib Halbert, Konstantin Tretyakov',
     author_email='chaim.leib.halbert@gmail.com',
     url='https://github.com/chaimleib/intervaltree',
-    download_url='https://github.com/chaimleib/intervaltree/tarball/' + version,
+    download_url='https://github.com/chaimleib/intervaltree/tarball/{version}'.format(**version_info),
     license="Apache License, Version 2.0",
     packages=["intervaltree"],
     include_package_data=True,
