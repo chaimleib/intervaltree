@@ -762,6 +762,39 @@ class IntervalTree(collections.MutableSet):
         :rtype: set of Interval
         """
         return set(self.all_intervals)
+
+    def first_after(self, value):
+        """Return an interval whose beginning is ≥ value and is minimal."""
+        node = self.top_node
+        first = None
+        key = lambda iv: iv.begin
+        if not node:
+            raise ValueError('Empty IntervalTree.')
+
+        def update_first(first, ivs):
+            try:
+                min_ = min((iv for iv in ivs if iv.begin >= value), key=key)
+            except ValueError:
+                pass
+            else:
+                if first is None or first.begin > min_:
+                    first = min_
+            return first
+
+        if node.x_center < value:
+            while node.x_center < value:
+                first = update_first(first, node.s_center)
+                node = node.right_node
+        else:
+            while node.x_center >= value:
+                first = update_first(first, node.s_center)
+                node = node.left_node
+        candidates = [iv for iv in node.all_children() if iv.begin >= value]
+        if first:
+            candidates.append(first)
+        return min(candidates, key=key)
+
+
     
     def is_empty(self):
         """
