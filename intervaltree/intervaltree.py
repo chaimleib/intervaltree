@@ -763,36 +763,51 @@ class IntervalTree(collections.MutableSet):
         """
         return set(self.all_intervals)
 
-    def first_after(self, value):
+    def _first_after_or_after(self, value, key, optimum, compare):
         """Return an interval whose beginning is ≥ value and is minimal."""
         node = self.top_node
         first = None
-        key = lambda iv: iv.begin
         if not node:
             raise ValueError('Empty IntervalTree.')
 
         def update_first(first, ivs):
             try:
-                min_ = min((iv for iv in ivs if iv.begin >= value), key=key)
+                opt = optimum((iv for iv in ivs if compare(iv.begin, value)), key=key)
             except ValueError:
                 pass
             else:
-                if first is None or first.begin > min_:
-                    first = min_
+                if first is None or compare(key(first), key(opt)):
+                    first = opt
             return first
 
         if node.x_center < value:
-            while node.x_center < value:
+            while node is not None and not compare(node.x_center, value):
                 first = update_first(first, node.s_center)
                 node = node.right_node
         else:
-            while node.x_center >= value:
+            while node is not None and compare(node.x_center, value):
                 first = update_first(first, node.s_center)
                 node = node.left_node
-        candidates = [iv for iv in node.all_children() if iv.begin >= value]
-        if first:
-            candidates.append(first)
-        return min(candidates, key=key)
+        if node is None:
+            return first
+        else:
+            candidates = [iv for iv in node.all_children() if compare(key(iv), value)]
+            if first:
+                candidates.append(first)
+            return optimum(candidates, key=key)
+
+    def first_after(self, value):
+        return self._first_after_or_after(value,
+                key=lambda iv: iv.begin,
+                optimum=min,
+                compare=lambda x, y: x >= y)
+
+    def first_before(self, value):
+        """Return an interval whose end is ≤ value and is maximal."""
+        return self._first_after_or_after(value,
+                key=lambda iv: iv.end,
+                optimum=max,
+                compare=lambda x, y: x <= y)
 
 
     
