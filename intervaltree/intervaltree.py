@@ -788,7 +788,10 @@ class IntervalTree(collections.MutableSet):
                 first = update_first(first, node.s_center)
                 node = node.left_node
         if node is None:
-            return first
+            if first:
+                return first
+            else:
+                raise ValueError('No interval after {0}.'.format(value))
         else:
             candidates = [iv for iv in node.all_children() if compare(key(iv), value)]
             if first:

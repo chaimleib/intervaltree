@@ -16,6 +16,13 @@ def test_first_after():
     assert t.first_after(13) == Interval(14, 15, '[14,15)')
     assert t.first_after(4) == Interval(4, 7, '[4,7)')
     assert t.first_after(5) == Interval(5, 9, '[5,9)')
+    assert t.first_after(-100) == Interval(1, 2, '[1,2)')
+    try:
+        iv = t.first_after(15)
+    except Exception as e:
+        assert isinstance(e, ValueError)
+    else:
+        assert False, iv
 
 def test_first_before():
     t = trees['ivs1']()
@@ -26,6 +33,13 @@ def test_first_before():
             Interval(8, 10, '[8,10)'),
             ]
     assert t.first_before(15) == Interval(14, 15, '[14,15)')
+    assert t.first_before(100) == Interval(14, 15, '[14,15)')
+    try:
+        iv = t.first_before(1)
+    except Exception as e:
+        assert isinstance(e, ValueError)
+    else:
+        assert False, iv
 
 if __name__ == "__main__":
     pytest.main([__file__, '-v'])
