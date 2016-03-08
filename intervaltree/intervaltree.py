@@ -764,7 +764,6 @@ class IntervalTree(collections.MutableSet):
         return set(self.all_intervals)
 
     def _first_after_or_after(self, value, key, optimum, compare):
-        """Return an interval whose beginning is ≥ value and is minimal."""
         node = self.top_node
         first = None
         if not node:
@@ -797,6 +796,7 @@ class IntervalTree(collections.MutableSet):
             return optimum(candidates, key=key)
 
     def first_after(self, value):
+        """Return an interval whose beginning is ≥ value and is minimal."""
         return self._first_after_or_after(value,
                 key=lambda iv: iv.begin,
                 optimum=min,
