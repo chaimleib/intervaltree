@@ -788,10 +788,10 @@ class IntervalTree(collections.MutableSet):
         if not root:
             return set()
         if end is None:
-            try:
+            if isinstance(begin, Interval):
                 iv = begin
                 return self.search(iv.begin, iv.end, strict=strict)
-            except:
+            else:
                 return root.search_point(begin, set())
         elif begin >= end:
             return set()
