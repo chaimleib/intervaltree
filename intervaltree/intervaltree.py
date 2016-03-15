@@ -818,7 +818,7 @@ class IntervalTree(collections.MutableSet):
         """
         Returns the lower bound of the first interval in the tree.
         
-        Completes in O(n) time.
+        Completes in O(1) time.
         """
         if not self.boundary_table:
             return 0
@@ -828,7 +828,7 @@ class IntervalTree(collections.MutableSet):
         """
         Returns the upper bound of the last interval in the tree.
         
-        Completes in O(n) time.
+        Completes in O(1) time.
         """
         if not self.boundary_table:
             return 0
