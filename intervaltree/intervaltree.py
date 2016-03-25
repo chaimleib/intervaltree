@@ -791,11 +791,13 @@ class IntervalTree(collections.MutableSet):
             if first:
                 return first
             else:
-                raise ValueError('No interval after {0}.'.format(value))
+                raise ValueError('No interval before/after {0}.'.format(value))
         else:
             candidates = [iv for iv in node.all_children() if compare(key(iv), value)]
             if first:
                 candidates.append(first)
+            if not candidates:
+                raise ValueError('No interval before/after {0}.'.format(value))
             return optimum(candidates, key=key)
 
     def first_after(self, value):
