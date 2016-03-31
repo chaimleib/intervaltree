@@ -634,7 +634,7 @@ class IntervalTree(collections.MutableSet):
 
         self.__init__(new_ivs)
 
-    def merge_overlaps(self, data_reducer=None, data_initializer=None):
+    def merge_overlaps(self, data_reducer=None, data_initializer=None, strict=False):
         """
         Finds all intervals with overlapping ranges and merges them
         into a single interval. If provided, uses data_reducer and
@@ -653,8 +653,11 @@ class IntervalTree(collections.MutableSet):
         Interval's data field as the first value for
         current_reduced_data. If data_initializer is not None,
         current_reduced_data is set to a shallow copy of
-        data_initiazer created with
+        data_initializer created with
             copy.copy(data_initializer).
+
+        If strict is False (default), intervals are merged even if they
+        are only end-to-end adjacent, and have no range in common.
 
         Completes in O(n*logn).
         """
@@ -680,7 +683,8 @@ class IntervalTree(collections.MutableSet):
         for higher in sorted_intervals:
             if merged:  # series already begun
                 lower = merged[-1]
-                if higher.begin <= lower.end:  # should merge
+                if (higher.begin < lower.end or
+                    not strict and higher.begin == lower.end):  # should merge
                     upper_bound = max(lower.end, higher.end)
                     if data_reducer is not None:
                         current_reduced[0] = data_reducer(current_reduced[0], higher.data)
