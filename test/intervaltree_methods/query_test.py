@@ -59,6 +59,15 @@ def test_queries():
     assert sdata(t.search(5)) == set(['[4,7)', '[5,9)'])
     assert sdata(t.search(6, 11, strict=True)) == set(['[6,10)', '[8,10)'])
 
+    t = trees['ivs4']()
+    assert t.search(8, data=[]) == set()
+    assert t.search(1, 15, data=[]) == set()
+    assert t.search(8, data=['not present']) == set()
+    assert t.search(5, data=['a']) == set([Interval(5, 9, 'a')])
+    assert t.search(1, 9, data=['b']) == set([Interval(4, 7, 'b'), Interval(6, 10, 'b')])
+    assert t.search(6, 11, strict=True, data=['a']) == set([Interval(8, 10, 'a')])
+    assert t.search(8, 11, strict=True, data=['a', 'b']) == set([Interval(8, 10, 'a')])
+
 
 def test_partial_slice_query():
     def assert_chop(t, limit):
