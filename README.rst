@@ -55,6 +55,11 @@ Features
    -  ``tree.search(point)``
    -  ``tree.search(begin, end)``
 
+-  Data filtered queries
+
+   -  ``tree.search(point, data=['iterable', 'of', 'data'])``
+   -  ``tree.search(begin, end, data=['iterable', 'of', 'data'])``
+
 -  Envelop queries
 
    -  ``tree.search(begin, end, strict=True)``
@@ -255,9 +260,9 @@ Examples
    .. code:: python
 
        >>> t = IntervalTree([
-       ...     Interval(0, 10), 
-       ...     Interval(10, 20), 
-       ...     Interval(20, 30), 
+       ...     Interval(0, 10),
+       ...     Interval(10, 20),
+       ...     Interval(20, 30),
        ...     Interval(30, 40)])
        >>> t.remove_overlap(25, 35)
        >>> sorted(t)
@@ -488,8 +493,8 @@ Version 1.0.2
 -------------
 
 | -Bug fixes:
-|  - ``Node.depth_score_helper()`` raised ``AttributeError``
-|  - README formatting
+| - ``Node.depth_score_helper()`` raised ``AttributeError``
+| - README formatting
 
 Version 1.0.1
 -------------
