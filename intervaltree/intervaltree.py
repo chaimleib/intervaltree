@@ -772,7 +772,7 @@ class IntervalTree(collections.MutableSet):
         """
         return 0 == len(self)
 
-    def search(self, begin, end=None, data=None, strict=False):
+    def search(self, begin, end=None, strict=False, data=None):
         """
         Returns a set of all intervals overlapping the given range.
         If strict is True, returns the set of all intervals fully
@@ -793,7 +793,7 @@ class IntervalTree(collections.MutableSet):
         if end is None:
             try:
                 iv = begin
-                return self.search(iv.begin, iv.end, data=data, strict=strict)
+                return self.search(iv.begin, iv.end, strict=strict, data=None)
             except:
                 result = root.search_point(begin, set())
                 if data is None or not isinstance(data, collections.Iterable):

@@ -65,8 +65,8 @@ def test_queries():
     assert t.search(8, data=['not present']) == set()
     assert t.search(5, data=['a']) == set([Interval(5, 9, 'a')])
     assert t.search(1, 9, data=['b']) == set([Interval(4, 7, 'b'), Interval(6, 10, 'b')])
-    assert t.search(6, 11, data=['a'], strict=True) == set([Interval(8, 10, 'a')])
-    assert t.search(8, 11, data=['a', 'b'], strict=True) == set([Interval(8, 10, 'a')])
+    assert t.search(6, 11, strict=True, data=['a']) == set([Interval(8, 10, 'a')])
+    assert t.search(8, 11, strict=True, data=['a', 'b']) == set([Interval(8, 10, 'a')])
 
 
 def test_partial_slice_query():
