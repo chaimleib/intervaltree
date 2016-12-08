@@ -62,7 +62,7 @@ Features
 
     * `tree.search(point, data=['iterable', 'of', 'data'])`
     * `tree.search(begin, end, data=['iterable', 'of', 'data'])`
-    * `tree.search(begin, end, data=['iterable', 'of', 'data'], strict=True)`
+    * `tree.search(begin, end, strict=True, data=['iterable', 'of', 'data'])`
 
 * Iterable
 

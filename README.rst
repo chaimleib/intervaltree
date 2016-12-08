@@ -55,11 +55,6 @@ Features
    -  ``tree.search(point)``
    -  ``tree.search(begin, end)``
 
--  Data filtered queries
-
-   -  ``tree.search(point, data=['iterable', 'of', 'data'])``
-   -  ``tree.search(begin, end, data=['iterable', 'of', 'data'])``
-
 -  Envelop queries
 
    -  ``tree.search(begin, end, strict=True)``
@@ -70,6 +65,12 @@ Features
    -  ``tree.containsi(begin, end, data)``
    -  ``tree.overlaps(point)``
    -  ``tree.overlaps(begin, end)``
+
+-  Data filtered queries
+
+   -  ``tree.search(point, data=['iterable', 'of', 'data'])``
+   -  ``tree.search(begin, end, data=['iterable', 'of', 'data'])``
+   -  ``tree.search(begin, end, strict=True, data=['iterable', 'of', 'data'])``
 
 -  Iterable
 
@@ -370,6 +371,8 @@ Version 2.1.0
    -  ``range()`` method
    -  ``span()`` method, for returning the difference between ``end()``
       and ``begin()``
+   -  ``search()`` method now has an optional ``data`` parameter, an
+      iterable of data which filters down the search result
 
 -  Fixes:
 
