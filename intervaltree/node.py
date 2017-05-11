@@ -32,6 +32,10 @@ def l2(num):
 
 
 class Node(object):
+     # Saves memory, avoiding the need to create __dict__ for each node.
+        __slots__ = ('x_center', 's_center', 'left_node', 'right_node', 'depth',
+                     'balance')
+
     def __init__(self,
                  x_center=None,
                  s_center=set(),
