@@ -341,7 +341,7 @@ Copyright
 
 * [Chaim-Leib Halbert][GH], 2013-2015
 * Modifications, [Konstantin Tretyakov][Konstantin intervaltree], 2014
-* Modifications, [depristo/Mark DePristo, Google Inc.], 2017
+* Modifications, Mark DePristo, Google Inc., 2017
 
 Licensed under the [Apache License, version 2.0][Apache].
 
