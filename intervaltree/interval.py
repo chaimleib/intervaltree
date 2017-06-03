@@ -39,12 +39,7 @@ class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
         :rtype: bool
         """
         if end is not None:
-            return (
-                (begin <= self.begin < end) or
-                (begin < self.end <= end) or
-                (self.begin <= begin < self.end) or
-                (self.begin < end <= self.end)
-            )
+            return begin < self.end and end > self.begin
         try:
             return self.overlaps(begin.begin, begin.end)
         except:
