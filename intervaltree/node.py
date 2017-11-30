@@ -393,26 +393,26 @@ class Node(object):
         else:
             #print('Pop descent to {}'.format(self[1].x_center))
             (greatest_child, self[1]) = self[1].pop_greatest_child()
-            self.refresh_balance()
-            new_self = self.rotate()
 
             # Move any overlaps into greatest_child
-            for iv in set(new_self.s_center):
+            for iv in set(self.s_center):
                 if iv.contains_point(greatest_child.x_center):
-                    new_self.s_center.remove(iv)
+                    self.s_center.remove(iv)
                     greatest_child.add(iv)
 
             #print('Pop Returning child   = {}'.format(
             #    greatest_child.print_structure(tostring=True)
             #    ))
-            if new_self.s_center:
+            if self.s_center:
                 #print('and returning newnode = {}'.format(
                 #    new_self.print_structure(tostring=True)
                 #    ))
                 #new_self.verify()
+                self.refresh_balance()
+                new_self = self.rotate()
                 return greatest_child, new_self
             else:
-                new_self = new_self.prune()
+                new_self = self.prune()
                 #print('and returning prune = {}'.format(
                 #    new_self.print_structure(tostring=True)
                 #    ))
