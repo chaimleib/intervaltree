@@ -24,7 +24,7 @@ import errno
 ## Filesystem utilities
 def read_file(path):
     """Reads file into string."""
-    with open(path, 'r') as f:
+    with open(path, 'rb') as f:
         data = f.read()
     return data
 
@@ -64,5 +64,5 @@ def update_file(path, data):
         mkdir_p(parent_dir)
 
     # write file
-    with open(path, 'w') as f:
+    with open(path, 'wb') as f:
         f.write(data)
