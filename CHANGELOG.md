@@ -3,10 +3,6 @@
 ## Version 3.0.0
 - Dropped support for Python 2.6, 3.2, and 3.3
 - Add support for Python 3.5 and 3.6
-- Maintainers:
-    - use github.com/kennethreitz/pyandoc
-
-## Version 2.1.1
 - Updated README:
     - new restructuring methods from 2.1.0
     - example of `from_tuples()` added
@@ -15,7 +11,7 @@
     - `Node.from_tuples()` will now raise an error if given an empty iterable. This should never happen, and it should error if it does.
     - `Interval.distance_to()` gave an incorrect distance when passed the `Interval`'s upper boundary
 - Maintainers:
-    - added testing for Python 3.5
+    - use github.com/kennethreitz/pyandoc
     - reorganize tests
     - more tests added to improve code coverage (We're at 95%! Woohoo!)
     - test for issue #4 had a broken import reference
