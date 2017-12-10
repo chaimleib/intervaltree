@@ -29,7 +29,7 @@ from setuptools.command.test import test as TestCommand
 from utils import fs, doc, version
 
 ## CONFIG
-target_version = '2.1.1'
+target_version = '3.0.0'
 create_rst = True
 
 version_info = version.version_info(target_version)

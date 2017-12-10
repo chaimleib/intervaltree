@@ -367,6 +367,12 @@ https://github.com/chaimleib/intervaltree
 Change log
 ==========
 
+Version 3.0.0
+-------------
+
+-  Dropped support for Python 2.6, 3.2, and 3.3
+-  Add support for Python 3.5 and 3.6
+
 Version 2.1.1
 -------------
 
