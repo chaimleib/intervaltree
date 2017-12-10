@@ -19,7 +19,8 @@ Installing
 Features
 --------
 
--  Supports Python 2.6+ and Python 3.2+
+-  Supports Python 2.7 and Python 3.4+ (Tested under 2.7, and 3.4 thru
+   3.6)
 -  Initializing
 
    -  blank ``tree = IntervalTree()``
@@ -121,9 +122,15 @@ Features
 -  Restructuring
 
    -  ``chop(begin, end)`` (slice intervals and remove everything
-      between ``begin`` and ``end``)
+      between ``begin`` and ``end``, optionally modifying the data
+      fields of the chopped-up intervals)
    -  ``slice(point)`` (slice intervals at ``point``)
-   -  ``split_overlaps()`` (slice at all interval boundaries)
+   -  ``split_overlaps()`` (slice at all interval boundaries, optionally
+      modifying the data field)
+   -  ``merge_overlaps()`` (joins overlapping intervals into a single
+      interval, optionally merging the data fields)
+   -  ``merge_equals()`` (joins intervals with matching ranges into a
+      single interval, optionally merging the data fields)
 
 -  Copying and typecasting
 
@@ -159,9 +166,8 @@ Examples
 
 -  Query by point
 
-   | The result of a query is a ``set`` object, so if ordering is
-     important,
-   | you must sort it first.
+   The result of a query is a ``set`` object, so if ordering is
+   important, you must sort it first.
 
    .. code:: python
 
@@ -224,6 +230,12 @@ Examples
 
        >>> t2 = IntervalTree(Interval(*iv) for iv in ivs)
 
+   Or even:
+
+   .. code:: python
+
+       >>> t2 = IntervalTree.from_tuples(ivs)
+
 -  Removing intervals
 
    .. code:: python
@@ -255,9 +267,9 @@ Examples
    .. code:: python
 
        >>> t = IntervalTree([
-       ...     Interval(0, 10), 
-       ...     Interval(10, 20), 
-       ...     Interval(20, 30), 
+       ...     Interval(0, 10),
+       ...     Interval(10, 20),
+       ...     Interval(20, 30),
        ...     Interval(30, 40)])
        >>> t.remove_overlap(25, 35)
        >>> sorted(t)
@@ -344,7 +356,7 @@ Based on
 Copyright
 ---------
 
--  Chaim-Leib Halbert, 2013-2015
+-  Chaim-Leib Halbert, 2013-2017
 -  Modifications, Konstantin Tretyakov, 2014
 
 Licensed under the Apache License, version 2.0.
@@ -354,6 +366,33 @@ https://github.com/chaimleib/intervaltree
 
 Change log
 ==========
+
+Version 3.0.0
+-------------
+
+-  Dropped support for Python 2.6, 3.2, and 3.3
+-  Add support for Python 3.5 and 3.6
+-  Updated README:
+
+   -  new restructuring methods from 2.1.0
+   -  example of ``from_tuples()`` added
+   -  more info about ``chop()``, ``split_overlaps()``,
+      ``merge_overlaps()`` and ``merge_equals()``.
+
+-  Fixes:
+
+   -  ``Node.from_tuples()`` will now raise an error if given an empty
+      iterable. This should never happen, and it should error if it
+      does.
+   -  ``Interval.distance_to()`` gave an incorrect distance when passed
+      the ``Interval``'s upper boundary
+
+-  Maintainers:
+
+   -  use github.com/kennethreitz/pyandoc
+   -  reorganize tests
+   -  more tests added to improve code coverage (We're at 95%! Woohoo!)
+   -  test for issue #4 had a broken import reference
 
 Version 2.1.0
 -------------
@@ -487,9 +526,8 @@ Version 1.1.0
 Version 1.0.2
 -------------
 
-| -Bug fixes:
-|  - ``Node.depth_score_helper()`` raised ``AttributeError``
-|  - README formatting
+-Bug fixes: - ``Node.depth_score_helper()`` raised ``AttributeError`` -
+README formatting
 
 Version 1.0.1
 -------------
@@ -547,9 +585,8 @@ Version 0.3.2
    https://github.com/chaimleib/PyIntervalTree
 
    -  Interval now inherits from a namedtuple. Benefits: should be
-      faster.
-      Drawbacks: slight behavioural change (Intervals not mutable
-      anymore).
+      faster. Drawbacks: slight behavioural change (Intervals not
+      mutable anymore).
    -  Added float tests
    -  Use setup.py for tests
    -  Automatic testing via travis-ci
@@ -561,8 +598,7 @@ Version 0.3.2
    -  Intervals without data are pickled more compactly
    -  Better hashing
    -  Intervals are ordered by begin, then end, then by data. If data is
-      not
-      orderable, sorts by type(data)
+      not orderable, sorts by type(data)
 
 -  Bug fixes:
 

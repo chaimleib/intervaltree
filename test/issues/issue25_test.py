@@ -5,7 +5,7 @@ Queries may be by point, by range overlap, or by range envelopment.
 Test module: IntervalTree, insertion and removal of float intervals
 Submitted as issue #25 (Incorrect KeyError) by sciencectn
 
-Copyright 2013-2015 Chaim-Leib Halbert
+Copyright 2013-2017 Chaim-Leib Halbert
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ limitations under the License.
 """
 from __future__ import absolute_import
 from intervaltree import IntervalTree
-from test.intervaltrees import trees
+from test import data
 import pytest
 
 
@@ -106,7 +106,7 @@ def test_orig_structure():
     code changes, the above sequences may not exactly reproduce the
     internal structure of the tree.
     """
-    t = trees['issue25_orig']()
+    t = IntervalTree.from_tuples(data.issue25_orig.data)
     # t.print_structure()
     t.verify()
 

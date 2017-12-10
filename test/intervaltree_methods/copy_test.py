@@ -4,7 +4,7 @@ Queries may be by point, by range overlap, or by range envelopment.
 
 Test module: IntervalTree, Copying
 
-Copyright 2013-2015 Chaim-Leib Halbert
+Copyright 2013-2017 Chaim-Leib Halbert
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,8 +20,7 @@ limitations under the License.
 """
 from __future__ import absolute_import
 from intervaltree import Interval, IntervalTree
-import pytest
-from test.intervaltrees import trees
+from test import data
 try:
     import cPickle as pickle
 except ImportError:
@@ -49,7 +48,7 @@ def test_copy():
 
 
 def test_copy_cast():
-    t = trees['ivs1']()
+    t = IntervalTree.from_tuples(data.ivs1.data)
 
     tcopy = IntervalTree(t)
     tcopy.verify()
@@ -66,4 +65,5 @@ def test_copy_cast():
 
 
 if __name__ == "__main__":
+    import pytest
     pytest.main([__file__, '-v'])

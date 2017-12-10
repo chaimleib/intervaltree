@@ -4,7 +4,7 @@ Queries may be by point, by range overlap, or by range envelopment.
 
 Test module: IntervalTree optimality
 
-Copyright 2013-2015 Chaim-Leib Halbert
+Copyright 2013-2017 Chaim-Leib Halbert
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,10 +19,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from __future__ import absolute_import
-from test.optimality_test_matrix import OptimalityTestMatrix
-from test.intervaltrees import trees
 from pprint import pprint
 from warnings import warn
+
+from test.optimality.optimality_test_matrix import OptimalityTestMatrix
+from test import data
+
 
 matrix = OptimalityTestMatrix(verbose=1)
 matrix.run()
@@ -48,7 +50,7 @@ def test_ivs1():
         assert 0.0 == report[test]['depth']
 
     if worst < prev_score:  # worst-case has improved!
-        warn(trees['ivs1']().print_structure(True))
+        warn(IntervalTree.from_tuples(data.ivs1.data).print_structure(True))
         warn("ivs1 scored {0} < {1} worst-case, better than expected!".format(
             score,
             prev_score

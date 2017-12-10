@@ -4,7 +4,7 @@ Queries may be by point, by range overlap, or by range envelopment.
 
 Test module: utilities to generate intervals
 
-Copyright 2013-2015 Chaim-Leib Halbert
+Copyright 2013-2017 Chaim-Leib Halbert
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@ from __future__ import absolute_import
 from intervaltree import Interval
 from pprint import pprint
 from random import randint, choice
-from test.data_loader import from_import, ivs_names
 from test.progress_bar import ProgressBar
+import os
 try:
     xrange
 except NameError:
@@ -33,24 +33,6 @@ try:
     unicode
 except NameError:
     unicode = str
-
-
-def load_test_data_ivs():
-    """Import data from test/data to construct our intervals"""
-    result = {}
-
-    # pprint(ivs_names())
-    names = ivs_names()
-    pbar = ProgressBar(len(names))
-    print("Importing test data...")
-    for module in names:
-        pbar()
-        iv_tuples = from_import('test.data.' + module, 'data')
-        result[module] = [Interval(*item) for item in iv_tuples]
-    return result
-
-ivs = load_test_data_ivs()
-
 
 def make_iv(begin, end, label=False):
     if label:

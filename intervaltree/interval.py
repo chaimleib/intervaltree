@@ -4,7 +4,7 @@ Queries may be by point, by range overlap, or by range envelopment.
 
 Interval class
 
-Copyright 2013-2015 Chaim-Leib Halbert
+Copyright 2013-2017 Chaim-Leib Halbert
 Modifications copyright 2014 Konstantin Tretyakov
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -99,7 +99,7 @@ class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
             else:
                 return self.begin - other.end
         except:
-            if self.end < other:
+            if self.end <= other:
                 return other - self.end
             else:
                 return self.begin - other
