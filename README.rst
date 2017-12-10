@@ -19,8 +19,8 @@ Installing
 Features
 --------
 
--  Supports Python 2.6+ and Python 3.2+ (Tested under 2.6, 2.7, and 3.2
-   thru 3.5)
+-  Supports Python 2.7 and Python 3.4+ (Tested under 2.7, and 3.4 thru
+   3.6)
 -  Initializing
 
    -  blank ``tree = IntervalTree()``
@@ -267,9 +267,9 @@ Examples
    .. code:: python
 
        >>> t = IntervalTree([
-       ...     Interval(0, 10), 
-       ...     Interval(10, 20), 
-       ...     Interval(20, 30), 
+       ...     Interval(0, 10),
+       ...     Interval(10, 20),
+       ...     Interval(20, 30),
        ...     Interval(30, 40)])
        >>> t.remove_overlap(25, 35)
        >>> sorted(t)
@@ -356,7 +356,7 @@ Based on
 Copyright
 ---------
 
--  Chaim-Leib Halbert, 2013-2015
+-  Chaim-Leib Halbert, 2013-2017
 -  Modifications, Konstantin Tretyakov, 2014
 
 Licensed under the Apache License, version 2.0.

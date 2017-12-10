@@ -17,21 +17,18 @@ pip install intervaltree
 Features
 --------
 
-* Supports Python 2.6+ and Python 3.2+ (Tested under 2.6, 2.7, and 3.2 thru 3.5)
+* Supports Python 2.7 and Python 3.4+ (Tested under 2.7, and 3.4 thru 3.6)
 * Initializing
-
     * blank `tree = IntervalTree()`
     * from an iterable of `Interval` objects (`tree = IntervalTree(intervals)`)
     * from an iterable of tuples (`tree = IntervalTree.from_tuples(interval_tuples)`)
 
 * Insertions
-
     * `tree[begin:end] = data`
     * `tree.add(interval)`
     * `tree.addi(begin, end, data)`
 
 * Deletions
-
     * `tree.remove(interval)`             (raises `ValueError` if not present)
     * `tree.discard(interval)`            (quiet if not present)
     * `tree.removei(begin, end, data)`    (short for `tree.remove(Interval(begin, end, data))`)
@@ -41,30 +38,25 @@ Features
     * `tree.remove_envelop(begin, end)`   (removes all enveloped in the range)
 
 * Overlap queries
-
     * `tree[point]`
     * `tree[begin:end]`
     * `tree.search(point)`
     * `tree.search(begin, end)`
 
 * Envelop queries
-
     * `tree.search(begin, end, strict=True)`
 
 * Membership queries
-
     * `interval_obj in tree`              (this is fastest, O(1))
     * `tree.containsi(begin, end, data)`
     * `tree.overlaps(point)`
     * `tree.overlaps(begin, end)`
 
 * Iterable
-
     * `for interval_obj in tree:`
     * `tree.items()`
 
 * Sizing
-
     * `len(tree)`
     * `tree.is_empty()`
     * `not tree`
@@ -72,45 +64,38 @@ Features
     * `tree.end()`            (the `end` coordinate of the rightmost interval)
 
 * Set-like operations
-    
     * union
-    
         * `result_tree = tree.union(iterable)`
-        * `result_tree = tree1 | tree2`        
+        * `result_tree = tree1 | tree2`
         * `tree.update(iterable)`
         * `tree |= other_tree`
-    
+
     * difference
-    
         * `result_tree = tree.difference(iterable)`
         * `result_tree = tree1 - tree2`
         * `tree.difference_update(iterable)`
         * `tree -= other_tree`
-    
+
     * intersection
-    
         * `result_tree = tree.intersection(iterable)`
-        * `result_tree = tree1 & tree2`    
+        * `result_tree = tree1 & tree2`
         * `tree.intersection_update(iterable)`
         * `tree &= other_tree`
-    
+
     * symmetric difference
-    
         * `result_tree = tree.symmetric_difference(iterable)`
         * `result_tree = tree1 ^ tree2`
         * `tree.symmetric_difference_update(iterable)`
         * `tree ^= other_tree`
-    
+
     * comparison
-    
         * `tree1.issubset(tree2)` or `tree1 <= tree2`
         * `tree1 <= tree2`
         * `tree1.issuperset(tree2)` or `tree1 > tree2`
         * `tree1 >= tree2`
         * `tree1 == tree2`
-        
-* Restructuring
 
+* Restructuring
     * `chop(begin, end)`      (slice intervals and remove everything between `begin` and `end`, optionally modifying the data fields of the chopped-up intervals)
     * `slice(point)`          (slice intervals at `point`)
     * `split_overlaps()`      (slice at all interval boundaries, optionally modifying the data field)
@@ -118,7 +103,6 @@ Features
     * `merge_equals()` (joins intervals with matching ranges into a single interval, optionally merging the data fields)
 
 * Copying and typecasting
-
     * `IntervalTree(tree)`    (`Interval` objects are same as those in tree)
     * `tree.copy()`           (`Interval` objects are shallow copies of those in tree)
     * `set(tree)`             (can later be fed into `IntervalTree()`)
@@ -259,9 +243,9 @@ Examples
     
     ``` python
     >>> t = IntervalTree([
-    ...     Interval(0, 10), 
-    ...     Interval(10, 20), 
-    ...     Interval(20, 30), 
+    ...     Interval(0, 10),
+    ...     Interval(10, 20),
+    ...     Interval(20, 30),
     ...     Interval(30, 40)])
     >>> t.remove_overlap(25, 35)
     >>> sorted(t)
@@ -328,7 +312,7 @@ Examples
     Interval(10, 15, 'oldlimit: 5, islower: False')
     
     ```
-    
+
 Future improvements
 -------------------
 
@@ -348,7 +332,7 @@ Based on
 Copyright
 ---------
 
-* [Chaim-Leib Halbert][GH], 2013-2015
+* [Chaim-Leib Halbert][GH], 2013-2017
 * Modifications, [Konstantin Tretyakov][Konstantin intervaltree], 2014
 
 Licensed under the [Apache License, version 2.0][Apache].
