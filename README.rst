@@ -386,6 +386,8 @@ Version 3.0.0
       does.
    -  ``Interval.distance_to()`` gave an incorrect distance when passed
       the ``Interval``'s upper boundary
+   -  ``IntervalTree.begin()`` and ``end()`` are O(1), not O(n).
+      (@ProgVal)
 
 -  Maintainers:
 

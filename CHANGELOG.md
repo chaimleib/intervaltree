@@ -10,6 +10,7 @@
 - Fixes:
     - `Node.from_tuples()` will now raise an error if given an empty iterable. This should never happen, and it should error if it does.
     - `Interval.distance_to()` gave an incorrect distance when passed the `Interval`'s upper boundary
+    - `IntervalTree.begin()` and `end()` are O(1), not O(n). (@ProgVal)
 - Maintainers:
     - use github.com/kennethreitz/pyandoc
     - reorganize tests
