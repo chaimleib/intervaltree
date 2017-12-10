@@ -372,10 +372,7 @@ class Node(object):
                     if iv.contains_point(new_x_center): yield iv
 
             # Create a new node with the largest x_center possible.
-            child = Node.from_intervals(get_new_s_center())
-            #     [iv for iv in self.s_center if iv.contains_point(child_x_center)]
-            # )
-            child.x_center = new_x_center
+            child = Node(new_x_center, get_new_s_center())
             self.s_center -= child.s_center
 
             #print('Pop hit! Returning child   = {}'.format(
