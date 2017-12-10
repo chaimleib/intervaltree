@@ -25,33 +25,7 @@ from test import data
 import pytest
 
 
-def test_original_sequence():
-    t = IntervalTree()
-    t.addi(6.37,11.37)
-    t.addi(12.09,17.09)
-    t.addi(5.68,11.58)
-    t.removei(6.37,11.37)
-    t.addi(13.23,18.23)
-    t.removei(12.09,17.09)
-    t.addi(4.29,8.29)
-    t.removei(13.23,18.23)
-    t.addi(12.04,17.04)
-    t.addi(9.39,13.39)
-    t.removei(5.68,11.58)
-    t.removei(4.29,8.29)
-    t.removei(12.04,17.04)
-    t.addi(5.66,9.66)     # Value inserted here
-    t.addi(8.65,13.65)
-    t.removei(9.39,13.39)
-    t.addi(16.49,20.83)
-    t.addi(11.42,16.42)
-    t.addi(5.38,10.38)
-    t.addi(3.57,9.47)
-    t.removei(8.65,13.65)
-    t.removei(5.66,9.66)    # Deleted here
-
-
-def test_debug_sequence():
+def test_sequence():
     t = IntervalTree()
     t.addi(6.37,11.37)
     t.verify()
@@ -99,7 +73,7 @@ def test_debug_sequence():
     t.verify()
 
 
-def test_orig_structure():
+def test_structure():
     """
     Reconstruct the original tree just before the final removals,
     then perform the removals. This is needed because with future
@@ -125,4 +99,4 @@ def test_orig_structure():
 
 if __name__ == "__main__":
     # pytest.main([__file__, '-v'])
-    test_orig_structure()
+    test_structure()

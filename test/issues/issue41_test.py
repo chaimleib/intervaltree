@@ -5,7 +5,7 @@ Queries may be by point, by range overlap, or by range envelopment.
 Test module: IntervalTree, removal of intervals
 Submitted as issue #41 (Interval removal breaks this tree) by escalonn
 
-Copyright 2013-2015 Chaim-Leib Halbert
+Copyright 2013-2017 Chaim-Leib Halbert
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,27 +21,11 @@ limitations under the License.
 """
 from __future__ import absolute_import
 from intervaltree import IntervalTree
-from test.intervaltrees import trees
+from test import data
 import pytest
 
 
-def test_original_sequence():
-    t = IntervalTree()
-    t.addi(860, 917, 1)
-    t.addi(860, 917, 2)
-    t.addi(860, 917, 3)
-    t.addi(860, 917, 4)
-    t.addi(871, 917, 1)
-    t.addi(871, 917, 2)
-    t.addi(871, 917, 3)     # Value inserted here
-    t.addi(961, 986, 1)
-    t.addi(1047, 1064, 1)
-    t.addi(1047, 1064, 2)
-    t.removei(961, 986, 1)
-    t.removei(871, 917, 3)  # Deleted here
-
-
-def test_debug_sequence():
+def test_sequence():
     t = IntervalTree()
     t.addi(860, 917, 1)
     t.verify()
@@ -69,24 +53,21 @@ def test_debug_sequence():
     t.verify()
 
 
-def test_orig_structure():
+def test_structure():
     """
     Reconstruct the original tree just before the removals, then
     perform the removals.
     """
-    t = trees['issue41_orig']()
-    # t.print_structure()
+    t = data.issue41_orig.tree()
     t.verify()
 
     t.removei(961, 986, 1)
-    # t.print_structure()
     t.verify()
 
     t.removei(871, 917, 3)
-    # t.print_structure()
     t.verify()
 
 
 if __name__ == "__main__":
     # pytest.main([__file__, '-v'])
-    test_orig_structure()
+    test_structure()
