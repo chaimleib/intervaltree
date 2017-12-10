@@ -21,7 +21,7 @@ limitations under the License.
 from __future__ import absolute_import
 from intervaltree import Interval, IntervalTree
 import pytest
-from test.intervaltrees import trees, sdata
+from test import data
 try:
     import cPickle as pickle
 except ImportError:
@@ -112,8 +112,8 @@ def test_union():
     assert sorted(t)[1] == interval
 
     # commutativity with full overlaps, then no overlaps
-    a = trees['ivs1']()
-    b = trees['ivs2']()
+    a = IntervalTree.from_tuples(data.ivs1.data)
+    b = IntervalTree.from_tuples(data.ivs2.data)
     e = IntervalTree()
 
     aa = a.union(a)
@@ -152,7 +152,7 @@ def test_union():
     assert aba == ab
 
     # commutativity with partial overlap
-    c = trees['ivs3']()
+    c = IntervalTree.from_tuples(data.ivs3.data)
     bc = b.union(c)
     cb = c.union(b)
     bc.verify()
@@ -202,7 +202,7 @@ def test_invalid_update():
 
 
 def test_difference():
-    minuend = trees['ivs1']()
+    minuend = IntervalTree.from_tuples(data.ivs1.data)
     assert isinstance(minuend, IntervalTree)
     subtrahend = minuend.copy()
     expected_difference = IntervalTree([subtrahend.pop()])
@@ -230,7 +230,7 @@ def test_difference():
 
 
 def test_difference_operator():
-    minuend = trees['ivs1']()
+    minuend = IntervalTree.from_tuples(data.ivs1.data)
     assert isinstance(minuend, IntervalTree)
     subtrahend = minuend.copy()
     expected_difference = IntervalTree([subtrahend.pop()])
@@ -258,8 +258,8 @@ def test_difference_operator():
 
 
 def test_intersection():
-    a = trees['ivs1']()
-    b = trees['ivs2']()
+    a = IntervalTree.from_tuples(data.ivs1.data)
+    b = IntervalTree.from_tuples(data.ivs2.data)
     e = IntervalTree()
 
     # intersections with e
@@ -297,7 +297,7 @@ def test_intersection():
     assert baa == a
 
     # commutativity with overlapping sets
-    c = trees['ivs3']()
+    c = IntervalTree.from_tuples(data.ivs3.data)
     bc = b.intersection(c)
     cb = c.intersection(b)
     bc.verify()

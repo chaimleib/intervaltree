@@ -7,9 +7,9 @@ Test contributed by jacekt
 from __future__ import absolute_import
 from intervaltree import IntervalTree
 from test.progress_bar import ProgressBar
-from test.data import issue4
-items, MAX = issue4.data, issue4.MAX
-from test.intervaltrees import trees
+from test import data
+items = data.issue4.data
+MAX = data.issue4.MAX
 from test.intervals import write_ivs_data
 from test.optimality.optimality_test_matrix import OptimalityTestMatrix
 from pprint import pprint
@@ -58,7 +58,9 @@ def optimality_core():
     #tree = test_build_tree()
     #write_result(tree)
     #print(len(tree))
-    matrix = OptimalityTestMatrix({'issue4result': trees['issue4_result']()})
+    matrix = OptimalityTestMatrix({
+        'issue4result': IntervalTree.from_tuples(data.issue4_result.data),
+    })
     pprint(matrix.summary_matrix)
 
 

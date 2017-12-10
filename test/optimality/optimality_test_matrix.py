@@ -19,8 +19,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from __future__ import absolute_import
-from intervaltree import IntervalTree
-from test import intervals
+from intervaltree import IntervalTree, Interval
+from test import data
 from copy import deepcopy
 from pprint import pprint
 from test.progress_bar import ProgressBar
@@ -36,8 +36,7 @@ class OptimalityTestMatrix(object):
         """
         Initilize a test matrix. To run it, see run().
         :param ivs: A dictionary mapping each test name to its
-        iterable of Intervals. If not set, uses intervals.ivs_data,
-        which loads test data from test/data/ivs*.py
+        iterable of Intervals.
         :type ivs: None or dict of [str, list of Interval]
         :param verbose: Whether to print the structure of the trees
         :type verbose: bool
@@ -46,26 +45,25 @@ class OptimalityTestMatrix(object):
 
         # set test_tupes
         self.test_types = {}
-        tests = [
+        # all methods beginning with "test_"
+        test_names = [
             name for name in self.__class__.__dict__
             if
             callable(getattr(self, name)) and
             name.startswith('test_')
         ]
-        for test in tests:
-            name = test[len('test_'):]
-            name = ' '.join(name.split('_'))
-            test_function = getattr(self, test)
-            self.test_types[name] = test_function
+        for test_name in test_names:
+            key = test_name[len('test_'):]
+            key = ' '.join(key.split('_'))
+            test_function = getattr(self, test_name)
+            self.test_types[key] = test_function
 
         # set ivs
-        if ivs:
-            self.ivs = ivs
-        else:
-            self.ivs = intervals.ivs.copy()
-            for name in list(self.ivs):
-                if 'copy_structure' in name:
-                    del self.ivs[name]
+        self.ivs = {
+            key: [Interval(*tup) for tup in value.data]
+            for key, value in data.__dict__.items()
+            if 'copy_structure' not in key and hasattr(value, 'data')
+        }
 
         # initialize result matrix
         self.result_matrix = {
@@ -105,10 +103,6 @@ class OptimalityTestMatrix(object):
             return tree
         return None  # N/A
 
-    def register_score(self, ivs_name, test_type, score):
-        self.result_matrix['ivs name'][ivs_name][test_type] = score
-        self.result_matrix['test type'][test_type][ivs_name] = score
-
     def summarize(self):
         def stats(report):
             assert isinstance(report, dict)
@@ -141,7 +135,8 @@ class OptimalityTestMatrix(object):
                 if self.verbose > 1:
                     tree.print_structure()
 
-                self.register_score(ivs_name, test_name, score)
+                self.result_matrix['ivs name'][ivs_name][test_name] = score
+                self.result_matrix['test type'][test_name][ivs_name] = score
 
     def run(self):
         self.tabulate()

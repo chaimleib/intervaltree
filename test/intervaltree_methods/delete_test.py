@@ -21,7 +21,7 @@ limitations under the License.
 from __future__ import absolute_import
 from intervaltree import Interval, IntervalTree
 import pytest
-from test.intervaltrees import trees, sdata
+from test import data, match
 try:
     import cPickle as pickle
 except ImportError:
@@ -29,7 +29,7 @@ except ImportError:
 
 
 def test_delete():
-    t = trees['ivs1']()
+    t = IntervalTree.from_tuples(data.ivs1.data)
     try:
         t.remove(Interval(1, 3, "Doesn't exist"))
     except ValueError:
@@ -49,13 +49,13 @@ def test_delete():
     t.discard(Interval(500, 1000, "Doesn't exist"))
     assert orig == t.print_structure(True)
 
-    assert sdata(t[14]) == set(['[8,15)', '[14,15)'])
+    assert match.set_data(t[14]) == set(['[8,15)', '[14,15)'])
     t.remove(Interval(14, 15, '[14,15)'))
-    assert sdata(t[14]) == set(['[8,15)'])
+    assert match.set_data(t[14]) == set(['[8,15)'])
     t.verify()
 
     t.discard(Interval(8, 15, '[8,15)'))
-    assert sdata(t[14]) == set()
+    assert match.set_data(t[14]) == set()
     t.verify()
 
     assert t[5]
@@ -73,7 +73,7 @@ def test_removei():
     assert len(e) == 0
 
     # Non-existent member should raise ValueError
-    t = trees['ivs1']()
+    t = IntervalTree.from_tuples(data.ivs1.data)
     oldlen = len(t)
     with pytest.raises(ValueError):
         t.removei(-1000, -999, "Doesn't exist")
@@ -95,7 +95,7 @@ def test_discardi():
     assert len(e) == 0
 
     # Non-existent member should do nothing quietly
-    t = trees['ivs1']()
+    t = IntervalTree.from_tuples(data.ivs1.data)
     oldlen = len(t)
     t.discardi(-1000, -999, "Doesn't exist")
     t.verify()
@@ -109,7 +109,7 @@ def test_discardi():
 
 
 def test_emptying_iteration():
-    t = trees['ivs1']()
+    t = IntervalTree.from_tuples(data.ivs1.data)
 
     for iv in sorted(iter(t)):
         t.remove(iv)
@@ -120,7 +120,7 @@ def test_emptying_iteration():
 
 
 def test_emptying_clear():
-    t = trees['ivs1']()
+    t = IntervalTree.from_tuples(data.ivs1.data)
     assert t
     t.clear()
     assert len(t) == 0

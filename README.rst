@@ -166,9 +166,8 @@ Examples
 
 -  Query by point
 
-   | The result of a query is a ``set`` object, so if ordering is
-     important,
-   | you must sort it first.
+   The result of a query is a ``set`` object, so if ordering is
+   important, you must sort it first.
 
    .. code:: python
 
@@ -525,9 +524,8 @@ Version 1.1.0
 Version 1.0.2
 -------------
 
-| -Bug fixes:
-|  - ``Node.depth_score_helper()`` raised ``AttributeError``
-|  - README formatting
+-Bug fixes: - ``Node.depth_score_helper()`` raised ``AttributeError`` -
+README formatting
 
 Version 1.0.1
 -------------
@@ -585,9 +583,8 @@ Version 0.3.2
    https://github.com/chaimleib/PyIntervalTree
 
    -  Interval now inherits from a namedtuple. Benefits: should be
-      faster.
-      Drawbacks: slight behavioural change (Intervals not mutable
-      anymore).
+      faster. Drawbacks: slight behavioural change (Intervals not
+      mutable anymore).
    -  Added float tests
    -  Use setup.py for tests
    -  Automatic testing via travis-ci
@@ -599,8 +596,7 @@ Version 0.3.2
    -  Intervals without data are pickled more compactly
    -  Better hashing
    -  Intervals are ordered by begin, then end, then by data. If data is
-      not
-      orderable, sorts by type(data)
+      not orderable, sorts by type(data)
 
 -  Bug fixes:
 

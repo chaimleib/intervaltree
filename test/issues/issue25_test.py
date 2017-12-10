@@ -21,7 +21,7 @@ limitations under the License.
 """
 from __future__ import absolute_import
 from intervaltree import IntervalTree
-from test.intervaltrees import trees
+from test import data
 import pytest
 
 
@@ -106,7 +106,7 @@ def test_orig_structure():
     code changes, the above sequences may not exactly reproduce the
     internal structure of the tree.
     """
-    t = trees['issue25_orig']()
+    t = IntervalTree.from_tuples(data.issue25_orig.data)
     # t.print_structure()
     t.verify()
 

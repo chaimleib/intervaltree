@@ -23,7 +23,7 @@ from pprint import pprint
 from warnings import warn
 
 from test.optimality.optimality_test_matrix import OptimalityTestMatrix
-from test.intervaltrees import trees
+from test import data
 
 
 matrix = OptimalityTestMatrix(verbose=1)
@@ -50,7 +50,7 @@ def test_ivs1():
         assert 0.0 == report[test]['depth']
 
     if worst < prev_score:  # worst-case has improved!
-        warn(trees['ivs1']().print_structure(True))
+        warn(IntervalTree.from_tuples(data.ivs1.data).print_structure(True))
         warn("ivs1 scored {0} < {1} worst-case, better than expected!".format(
             score,
             prev_score

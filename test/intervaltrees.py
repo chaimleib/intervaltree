@@ -21,38 +21,12 @@ limitations under the License.
 from __future__ import absolute_import
 from intervaltree import IntervalTree
 from pprint import pprint
-from test import intervals
-from test.data_loader import from_import
+from test import intervals, data
 from test.progress_bar import ProgressBar
 try:
     xrange
 except NameError:
     xrange = range
-
-def create_trees():
-    """
-    Makes a dict of callables that create the trees named.
-    """
-    pbar = ProgressBar(len(intervals.ivs))
-    print('Creating trees from interval lists...')
-    trees = {}
-    for name, ivs in intervals.ivs.items():
-        pbar()
-        module = from_import('test.data', name)
-        if hasattr(module, 'tree'):
-            trees[name] = module.tree
-        else:
-            trees[name] = IntervalTree(ivs).copy
-    return trees
-
-trees = create_trees()
-
-def sdata(s):
-    """
-    Makes a set of all data fields in an iterable of Intervals.
-    """
-    return set(iv.data for iv in s)
-
 
 def nogaps_rand(size=100, labels=False):
     """
@@ -68,7 +42,3 @@ def gaps_rand(size=100, labels=False):
     between the intervals.
     """
     return IntervalTree(intervals.gaps_rand(size, labels))
-
-
-if __name__ == "__main__":
-    trees['issue25_orig']().print_structure()

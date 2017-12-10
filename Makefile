@@ -4,12 +4,12 @@ SCRIPTS_DIR:=$(PWD)/scripts
 
 # any files ending in .py?, and any folders named __pycache__
 TEMPS=$(shell                                                   \
-	find intervaltree/ test/                                    \
+	find intervaltree test                                    \
 		\( -type f -name '*.py?' ! -path '*/__pycache__/*' \)   \
 		-o \( -type d -name '__pycache__' \)                    \
 )
 
-PYTHONS:=2.6.9 2.7.11 3.2.6 3.3.6 3.4.3 3.5.1
+PYTHONS:=2.7.14 3.4.3 3.5.4 3.6.3
 PYTHON_MAJORS:=$(shell        \
 	echo "$(PYTHONS)" |         \
 	tr ' ' '\n' | cut -d. -f1 | \
@@ -92,7 +92,7 @@ deps-ci: pyandoc
 deps-dev: pyandoc pyenv-install-versions
 
 pyandoc: pandoc-bin
-	[[ -d pyandoc/pandoc ]] || git clone --depth=50 git://github.com/chaimleib/pyandoc.git
+	[[ -d pyandoc/pandoc ]] || git clone --depth=50 git://github.com/kennethreitz/pyandoc.git
 	[[ "`readlink pandoc`" == "pyandoc/pandoc" ]] || ln -s pyandoc/pandoc pandoc
 
 pandoc-bin: pm-update
@@ -115,7 +115,7 @@ pyenv-is-installed:
 
 pyenv-install-versions: pyenv-is-installed
 	for pyver in $(PYTHONS); do (echo N | pyenv install $$pyver) || true; done
-	for pyver in $(PYTHON_MINORS); do pip$$pyver install -U pytest; done
+	for pyver in $(PYTHONS); do export PYENV_VERSION=$$pyver; pip install -U pip; pip install -U pytest; done
 	pyenv rehash
 
 # for debugging the Makefile

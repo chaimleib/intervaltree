@@ -20,7 +20,7 @@ limitations under the License.
 """
 from __future__ import absolute_import
 from intervaltree import Interval, IntervalTree
-from test.intervaltrees import trees
+from test import data
 try:
     import cPickle as pickle
 except ImportError:
@@ -48,7 +48,7 @@ def test_copy():
 
 
 def test_copy_cast():
-    t = trees['ivs1']()
+    t = IntervalTree.from_tuples(data.ivs1.data)
 
     tcopy = IntervalTree(t)
     tcopy.verify()
