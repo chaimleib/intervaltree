@@ -4,9 +4,9 @@
 this_dir="$(dirname "$0")"
 base_dir="$(dirname "$this_dir")"
 
-for major in $PYTHONS; do
-    echo "$major"
-    export PYENV_VERSION="$major"
+for ver in $PYTHONS; do
+    echo "$ver"
+    export PYENV_VERSION="$ver"
     python --version
     python "$base_dir/setup.py" test || exit 1
 done
