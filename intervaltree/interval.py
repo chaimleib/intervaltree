@@ -39,12 +39,12 @@ class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
         :rtype: bool
         """
         if end is not None:
-            return (
-                (begin <= self.begin < end) or
-                (begin < self.end <= end) or
-                (self.begin <= begin < self.end) or
-                (self.begin < end <= self.end)
-            )
+            # An overlap means that some C exists that is inside both ranges:
+            #   begin <= C < end
+            # and 
+            #   self.begin <= C < self.end
+            # See https://stackoverflow.com/questions/3269434/whats-the-most-efficient-way-to-test-two-integer-ranges-for-overlap/3269471#3269471
+            return begin < self.end and end > self.begin
         try:
             return self.overlaps(begin.begin, begin.end)
         except:

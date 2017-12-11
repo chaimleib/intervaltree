@@ -3,6 +3,7 @@
 ## Version 3.0.0
 - Dropped support for Python 2.6, 3.2, and 3.3
 - Add support for Python 3.5 and 3.6
+- Faster `Interval` overlap checking (@tuxzz, #56)
 - Updated README:
     - new restructuring methods from 2.1.0
     - example of `from_tuples()` added
