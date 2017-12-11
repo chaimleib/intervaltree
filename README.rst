@@ -386,8 +386,10 @@ Version 3.0.0
       does.
    -  ``Interval.distance_to()`` gave an incorrect distance when passed
       the ``Interval``'s upper boundary
+   -  ``Node.pop_greatest_child()`` sometimes forgot to ``rotate()``
+      when creating new child nodes. (@escalonn, #41, #42)
    -  ``IntervalTree.begin()`` and ``end()`` are O(1), not O(n).
-      (@ProgVal)
+      (@ProgVal, #40)
 
 -  Maintainers:
 
