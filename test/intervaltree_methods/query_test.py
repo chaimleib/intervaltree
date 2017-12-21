@@ -4,7 +4,7 @@ Queries may be by point, by range overlap, or by range envelopment.
 
 Test module: IntervalTree, Basic query methods (read-only)
 
-Copyright 2013-2015 Chaim-Leib Halbert
+Copyright 2013-2017 Chaim-Leib Halbert
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ limitations under the License.
 from __future__ import absolute_import
 from intervaltree import Interval, IntervalTree
 import pytest
-from test.intervaltrees import trees, sdata
+from test import data, match
 try:
     import cPickle as pickle
 except ImportError:
@@ -49,15 +49,15 @@ def test_empty_queries():
 
 
 def test_queries():
-    t = trees['ivs1']()
+    t = IntervalTree.from_tuples(data.ivs1.data)
 
-    assert sdata(t[4]) == set(['[4,7)'])
-    assert sdata(t[4:5]) == set(['[4,7)'])
-    assert sdata(t[4:6]) == set(['[4,7)', '[5,9)'])
-    assert sdata(t[9]) == set(['[6,10)', '[8,10)', '[8,15)'])
-    assert sdata(t[15]) == set()
-    assert sdata(t.search(5)) == set(['[4,7)', '[5,9)'])
-    assert sdata(t.search(6, 11, strict=True)) == set(['[6,10)', '[8,10)'])
+    assert match.set_data(t[4]) == set(['[4,7)'])
+    assert match.set_data(t[4:5]) == set(['[4,7)'])
+    assert match.set_data(t[4:6]) == set(['[4,7)', '[5,9)'])
+    assert match.set_data(t[9]) == set(['[6,10)', '[8,10)', '[8,15)'])
+    assert match.set_data(t[15]) == set()
+    assert match.set_data(t.search(5)) == set(['[4,7)', '[5,9)'])
+    assert match.set_data(t.search(6, 11, strict=True)) == set(['[6,10)', '[8,10)'])
 
 
 def test_partial_slice_query():
@@ -71,8 +71,8 @@ def test_partial_slice_query():
         s = set(iv for iv in t if iv.end > limit)
         assert t[limit:] == s
 
-    assert_chop(trees['ivs1'](), 7)
-    assert_chop(trees['ivs2'](), -3)
+    assert_chop(IntervalTree.from_tuples(data.ivs1.data), 7)
+    assert_chop(IntervalTree.from_tuples(data.ivs2.data), -3)
 
 
 def test_tree_bounds():
@@ -84,12 +84,12 @@ def test_tree_bounds():
         assert t.begin() == begin
         assert t.end() == end
 
-    assert_tree_bounds(trees['ivs1']())
-    assert_tree_bounds(trees['ivs2']())
+    assert_tree_bounds(IntervalTree.from_tuples(data.ivs1.data))
+    assert_tree_bounds(IntervalTree.from_tuples(data.ivs2.data))
 
 
 def test_membership():
-    t = trees['ivs1']()
+    t = IntervalTree.from_tuples(data.ivs1.data)
     assert Interval(1, 2, '[1,2)') in t
     assert t.containsi(1, 2, '[1,2)')
     assert Interval(1, 3, '[1,3)') not in t
@@ -129,7 +129,7 @@ def test_overlaps_empty():
 
 
 def test_overlaps():
-    t = trees['ivs1']()
+    t = IntervalTree.from_tuples(data.ivs1.data)
     assert not t.overlaps(-3.2)
     assert t.overlaps(1)
     assert t.overlaps(1.5)
@@ -144,7 +144,7 @@ def test_span():
     e = IntervalTree()
     assert e.span() == 0
 
-    t = trees['ivs1']()
+    t = IntervalTree.from_tuples(data.ivs1.data)
     assert t.span() == t.end() - t.begin()
     assert t.span() == 14
 

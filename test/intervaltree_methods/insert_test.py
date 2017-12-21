@@ -4,7 +4,7 @@ Queries may be by point, by range overlap, or by range envelopment.
 
 Test module: IntervalTree, Basic insertion methods
 
-Copyright 2013-2015 Chaim-Leib Halbert
+Copyright 2013-2017 Chaim-Leib Halbert
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ limitations under the License.
 from __future__ import absolute_import
 from intervaltree import Interval, IntervalTree
 import pytest
-from test.intervaltrees import trees, sdata
+from test import data, match
 try:
     import cPickle as pickle
 except ImportError:
@@ -104,10 +104,10 @@ def test_duplicate_insert():
 
 
 def test_same_range_insert():
-    t = trees['ivs1']()
+    t = IntervalTree.from_tuples(data.ivs1.data)
 
     t.add(Interval(14, 15, '[14,15)####'))
-    assert sdata(t[14]) == set(['[8,15)', '[14,15)', '[14,15)####'])
+    assert match.set_data(t[14]) == set(['[8,15)', '[14,15)', '[14,15)####'])
     t.verify()
 
 
@@ -136,25 +136,25 @@ def test_add_invalid_interval():
 
 
 def test_insert_to_filled_tree():
-    t = trees['ivs1']()
+    t = IntervalTree.from_tuples(data.ivs1.data)
     orig = t.print_structure(True)  # original structure record
 
-    assert sdata(t[1]) == set(['[1,2)'])
+    assert match.set_data(t[1]) == set(['[1,2)'])
     t.add(Interval(1, 2, '[1,2)'))  # adding duplicate should do nothing
-    assert sdata(t[1]) == set(['[1,2)'])
+    assert match.set_data(t[1]) == set(['[1,2)'])
     assert orig == t.print_structure(True)
 
     t[1:2] = '[1,2)'                # adding duplicate should do nothing
-    assert sdata(t[1]) == set(['[1,2)'])
+    assert match.set_data(t[1]) == set(['[1,2)'])
     assert orig == t.print_structure(True)
 
     assert Interval(2, 4, '[2,4)') not in t
     t.add(Interval(2, 4, '[2,4)'))
-    assert sdata(t[2]) == set(['[2,4)'])
+    assert match.set_data(t[2]) == set(['[2,4)'])
     t.verify()
 
     t[13:15] = '[13,15)'
-    assert sdata(t[14]) == set(['[8,15)', '[13,15)', '[14,15)'])
+    assert match.set_data(t[14]) == set(['[8,15)', '[13,15)', '[14,15)'])
     t.verify()
 
 

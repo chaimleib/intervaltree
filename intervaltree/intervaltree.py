@@ -4,7 +4,7 @@ Queries may be by point, by range overlap, or by range envelopment.
 
 Core logic.
 
-Copyright 2013-2015 Chaim-Leib Halbert
+Copyright 2013-2017 Chaim-Leib Halbert
 Modifications Copyright 2014 Konstantin Tretyakov
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -822,7 +822,7 @@ class IntervalTree(collections.MutableSet):
         """
         Returns the lower bound of the first interval in the tree.
         
-        Completes in O(n) time.
+        Completes in O(1) time.
         """
         if not self.boundary_table:
             return 0
@@ -832,7 +832,7 @@ class IntervalTree(collections.MutableSet):
         """
         Returns the upper bound of the last interval in the tree.
         
-        Completes in O(n) time.
+        Completes in O(1) time.
         """
         if not self.boundary_table:
             return 0

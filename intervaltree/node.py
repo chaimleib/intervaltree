@@ -4,7 +4,7 @@ Queries may be by point, by range overlap, or by range envelopment.
 
 Core logic: internal tree nodes.
 
-Copyright 2013-2015 Chaim-Leib Halbert
+Copyright 2013-2017 Chaim-Leib Halbert
 Modifications Copyright 2014 Konstantin Tretyakov
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -65,8 +65,8 @@ class Node(object):
         return node
 
     def init_from_sorted(self, intervals):
-        if not intervals:
-            return None
+        # assumes that intervals is a non-empty collection.
+        # Else, next line raises IndexError
         center_iv = intervals[len(intervals) // 2]
         self.x_center = center_iv.begin
         self.s_center = set()
@@ -372,10 +372,7 @@ class Node(object):
                     if iv.contains_point(new_x_center): yield iv
 
             # Create a new node with the largest x_center possible.
-            child = Node.from_intervals(get_new_s_center())
-            #     [iv for iv in self.s_center if iv.contains_point(child_x_center)]
-            # )
-            child.x_center = new_x_center
+            child = Node(new_x_center, get_new_s_center())
             self.s_center -= child.s_center
 
             #print('Pop hit! Returning child   = {}'.format(

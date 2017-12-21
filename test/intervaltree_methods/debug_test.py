@@ -4,7 +4,7 @@ Queries may be by point, by range overlap, or by range envelopment.
 
 Test module: IntervalTree, Basic query methods (read-only)
 
-Copyright 2013-2015 Chaim-Leib Halbert
+Copyright 2013-2017 Chaim-Leib Halbert
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ limitations under the License.
 from __future__ import absolute_import
 from intervaltree import Interval, IntervalTree
 import pytest
-from test.intervaltrees import trees, sdata
+from test import data
 from pprint import pprint, pformat
 try:
     import cPickle as pickle
@@ -38,7 +38,7 @@ def test_print_empty():
 
 
 def test_mismatched_tree_and_membership_set():
-    t = trees['ivs1']()
+    t = IntervalTree.from_tuples(data.ivs1.data)
     members = set(t.all_intervals)
     assert t.all_intervals == members
     t.removei(1, 2, '[1,2)')
@@ -64,9 +64,10 @@ def test_small_tree_score():
 
 
 def test_score_no_report():
-    t = trees['ivs1']()
+    t = IntervalTree.from_tuples(data.ivs1.data)
     score = t.score(False)
     assert isinstance(score, (int, float))
+
 
 if __name__ == "__main__":
     pytest.main([__file__, '-v'])
