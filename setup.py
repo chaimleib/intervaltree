@@ -59,7 +59,7 @@ class PyTest(TestCommand):
 setup(
     name='intervaltree',
     version=version_info['version'],
-    install_requires=['sortedcontainers'],
+    install_requires=['sortedcontainers >= 2.0, < 3.0'],
     description='Editable interval tree data structure for Python 2 and 3',
     long_description=doc.get_rst(),
     classifiers=[  # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
