@@ -803,7 +803,7 @@ class IntervalTree(collections.MutableSet):
             bound_end = boundary_table.bisect_left(end)  # exclude final end bound
             result.update(root.search_overlap(
                 # slice notation is slightly slower
-                boundary_table.iloc[index] for index in xrange(bound_begin, bound_end)
+                boundary_table.keys()[index] for index in xrange(bound_begin, bound_end)
             ))
 
             # TODO: improve strict search to use node info instead of less-efficient filtering
@@ -822,7 +822,7 @@ class IntervalTree(collections.MutableSet):
         """
         if not self.boundary_table:
             return 0
-        return self.boundary_table.iloc[0]
+        return self.boundary_table.keys()[0]
     
     def end(self):
         """
@@ -832,7 +832,7 @@ class IntervalTree(collections.MutableSet):
         """
         if not self.boundary_table:
             return 0
-        return self.boundary_table.iloc[-1]
+        return self.boundary_table.keys()[-1]
 
     def range(self):
         """
