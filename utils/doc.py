@@ -76,7 +76,7 @@ def markdown2rst(md):
         pandoc.PANDOC_PATH = 'pandoc'  # until pyandoc gets updated
 
     converter = pandoc.Document()
-    converter.markdown_github = md
+    converter.gfm = md
     rst = converter.rst
 
     return rst
