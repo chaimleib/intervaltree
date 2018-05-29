@@ -26,11 +26,10 @@ from sys import exit
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
 
-from utils import fs, doc, version
+from utils import version
 
 ## CONFIG
 target_version = '3.0.0'
-create_rst = True
 
 version_info = version.version_info(target_version)
 if version_info['is_dev_version']:
@@ -40,6 +39,8 @@ else:
     print("!!!>>> This is a RELEASE version <<<!!!\n")
     print("Version: {version}".format(**version_info))
 
+with open('README.md', 'r') as fh:
+    long_description = fh.read()
 
 ## PyTest
 # This is a plug-in for setuptools that will invoke py.test
@@ -61,7 +62,7 @@ setup(
     version=version_info['version'],
     install_requires=['sortedcontainers >= 2.0, < 3.0'],
     description='Editable interval tree data structure for Python 2 and 3',
-    long_description=doc.get_rst(),
+    long_description=long_description,
     classifiers=[  # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
