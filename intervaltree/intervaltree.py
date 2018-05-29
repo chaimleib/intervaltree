@@ -762,6 +762,59 @@ class IntervalTree(collections.MutableSet):
         :rtype: set of Interval
         """
         return set(self.all_intervals)
+
+    def _first_after_or_after(self, value, key, optimum, compare):
+        node = self.top_node
+        first = None
+        if not node:
+            raise ValueError('Empty IntervalTree.')
+
+        def update_first(first, ivs):
+            try:
+                opt = optimum((iv for iv in ivs if compare(iv.begin, value)), key=key)
+            except ValueError:
+                pass
+            else:
+                if first is None or compare(key(first), key(opt)):
+                    first = opt
+            return first
+
+        if node.x_center < value:
+            while node is not None and not compare(node.x_center, value):
+                first = update_first(first, node.s_center)
+                node = node.right_node
+        else:
+            while node is not None and compare(node.x_center, value):
+                first = update_first(first, node.s_center)
+                node = node.left_node
+        if node is None:
+            if first:
+                return first
+            else:
+                raise ValueError('No interval before/after {0}.'.format(value))
+        else:
+            candidates = [iv for iv in node.all_children() if compare(key(iv), value)]
+            if first:
+                candidates.append(first)
+            if not candidates:
+                raise ValueError('No interval before/after {0}.'.format(value))
+            return optimum(candidates, key=key)
+
+    def first_after(self, value):
+        """Return an interval whose beginning is ≥ value and is minimal."""
+        return self._first_after_or_after(value,
+                key=lambda iv: iv.begin,
+                optimum=min,
+                compare=lambda x, y: x >= y)
+
+    def first_before(self, value):
+        """Return an interval whose end is ≤ value and is maximal."""
+        return self._first_after_or_after(value,
+                key=lambda iv: iv.end,
+                optimum=max,
+                compare=lambda x, y: x <= y)
+
+
     
     def is_empty(self):
         """
