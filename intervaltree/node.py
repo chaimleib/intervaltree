@@ -399,8 +399,8 @@ class Node(object):
             # Move any overlaps into greatest_child
             # This include overlapping child intervals or overlap intervals
             for iv in set(new_self.s_center
-                        | (new_self[0].s_center if new_self[0] else set())
-                        | (new_self[1].s_center if new_self[1] else set()):
+                    | (new_self[0].s_center if new_self[0] else set())
+                    | (new_self[1].s_center if new_self[1] else set())):
                 if iv.contains_point(greatest_child.x_center):
                     # use discard instead of remove so no error is thrown
                     # if it' not an from the center
