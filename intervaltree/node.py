@@ -376,7 +376,8 @@ class Node(object):
             self.s_center -= child.s_center
 
             # Move any overlaps into child
-            for iv in set(self.s_center):
+            for iv in set(self.s_center
+                    | (self[0].s_center if self[0] else set())):
                 if iv.contains_point(child.x_center):
                     self.s_center.discard(iv)
                     child.add(iv)
