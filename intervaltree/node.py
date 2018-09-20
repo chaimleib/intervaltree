@@ -375,6 +375,12 @@ class Node(object):
             child = Node(new_x_center, get_new_s_center())
             self.s_center -= child.s_center
 
+            # Move any overlaps into child
+            for iv in set(self.s_center):
+                if iv.contains_point(child.x_center):
+                    self.s_center.discard(iv)
+                    child.add(iv)
+
             #print('Pop hit! Returning child   = {}'.format(
             #    child.print_structure(tostring=True)
             #    ))
