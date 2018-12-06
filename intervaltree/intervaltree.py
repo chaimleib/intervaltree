@@ -22,7 +22,10 @@ limitations under the License.
 from .interval import Interval
 from .node import Node
 from numbers import Number
-import collections.abc
+try:
+    import collections.abc as _collections
+except ImportError:
+    import collections as _collections
 from sortedcontainers import SortedDict
 from copy import copy
 from warnings import warn
@@ -34,7 +37,7 @@ except NameError:  # pragma: no cover
 
 
 # noinspection PyBroadException
-class IntervalTree(collections.abc.MutableSet):
+class IntervalTree(_collections.MutableSet):
     """
     A binary lookup tree of intervals.
     The intervals contained in the tree are represented using ``Interval(a, b, data)`` objects.
