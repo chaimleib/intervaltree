@@ -1,6 +1,7 @@
 # IDE dirs
 .idea/
 *.komodoproject
+.vscode/
 
 # Auto-generated
 *.pyc
