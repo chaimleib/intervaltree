@@ -17,7 +17,7 @@ pip install intervaltree
 Features
 --------
 
-* Supports Python 2.7 and Python 3.4+ (Tested under 2.7, and 3.4 thru 3.6)
+* Supports Python 2.7 and Python 3.4+ (Tested under 2.7, and 3.4 thru 3.7)
 * Initializing
     * blank `tree = IntervalTree()`
     * from an iterable of `Interval` objects (`tree = IntervalTree(intervals)`)
