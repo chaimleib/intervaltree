@@ -34,20 +34,20 @@ def original_print():
         print(it[iobj.begin, iobj.end])  # set(), should be using :
 
     for iobj in it:
-        print(it.search(iobj.begin, iobj.end))
+        print(it.envelop(iobj.begin, iobj.end))
 
     # set([Interval(6, 9, 'rad')])
     # set([Interval(1, 3, 'dude'), Interval(2, 4, 'sweet')])
     # set([Interval(1, 3, 'dude'), Interval(2, 4, 'sweet')])
 
 
-def test_brackets_vs_search():
+def test_brackets_vs_overlap():
     it = IntervalTree()
     it.addi(1, 3, "dude")
     it.addi(2, 4, "sweet")
     it.addi(6, 9, "rad")
     for iobj in it:
-        assert it[iobj.begin:iobj.end] == it.search(iobj.begin, iobj.end)
+        assert it[iobj.begin:iobj.end] == it.overlap(iobj.begin, iobj.end)
 
     # set([Interval(6, 9, 'rad')])
     # set([Interval(1, 3, 'dude'), Interval(2, 4, 'sweet')])

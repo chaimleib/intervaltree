@@ -88,7 +88,7 @@ pyenv-is-installed:
 
 pyenv-install-versions: pyenv-is-installed
 	for pyver in $(PYTHONS); do (echo N | pyenv install $$pyver) || true; done
-	for pyver in $(PYTHONS); do export PYENV_VERSION=$$pyver; pip install -U pip; pip install -U pytest; done
+	for pyver in $(PYTHONS); do export PYENV_VERSION=$$pyver; pip install -U pip; pip install -U pytest; done | grep -v 'Requirement already satisfied, skipping upgrade'
 	pyenv rehash
 
 # for debugging the Makefile

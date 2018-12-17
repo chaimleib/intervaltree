@@ -47,7 +47,7 @@ def test_insert():
         Interval(10, 20),
     ])
 
-    tree.extend([Interval(19.9, 20.1), Interval(20.1, 30)])
+    tree.update([Interval(19.9, 20.1), Interval(20.1, 30)])
     assert len(tree) == 5
     assert tree.items() == set([
         Interval(0, 1, "data"),
@@ -76,7 +76,7 @@ def test_duplicate_insert():
     assert len(tree) == 1
     assert tree.items() == contents
 
-    tree.extend([Interval(-10, 20, "arbitrary data")])
+    tree.update([Interval(-10, 20, "arbitrary data")])
     assert len(tree) == 1
     assert tree.items() == contents
 
@@ -98,7 +98,7 @@ def test_duplicate_insert():
     assert len(tree) == 2
     assert tree.items() == contents
 
-    tree.extend([Interval(-10, 20), Interval(-10, 20, "arbitrary data")])
+    tree.update([Interval(-10, 20), Interval(-10, 20, "arbitrary data")])
     assert len(tree) == 2
     assert tree.items() == contents
 

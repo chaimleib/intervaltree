@@ -7,6 +7,15 @@ A mutable, self-balancing interval tree for Python 2 and 3. Queries may be by po
 
 This library was designed to allow tagging text and time intervals, where the intervals include the lower bound but not the upper bound.
 
+**Version 3 changes!**
+
+* The `search(begin, end, strict)` method no longer exists. Instead, use one of these:
+    * `at(point)`
+    * `overlap(begin, end)`
+    * `envelop(begin, end)`
+* The `extend(items)` method no longer exists. Instead, use `update(items)`.
+* Methods like `merge_overlaps()` which took a `strict` argument consistently default to `strict=True`. Before, some methods defaulted to `True` and others to `False`.
+
 Installing
 ----------
 
@@ -37,14 +46,16 @@ Features
     * `tree.remove_overlap(begin, end)`   (removes all overlapping the range)
     * `tree.remove_envelop(begin, end)`   (removes all enveloped in the range)
 
-* Overlap queries
+* Point queries
     * `tree[point]`
+    * `tree.at(point)`                    (same as previous)
+
+* Overlap queries
     * `tree[begin:end]`
-    * `tree.search(point)`
-    * `tree.search(begin, end)`
+    * `tree.overlap(begin, end)`          (same as previous)
 
 * Envelop queries
-    * `tree.search(begin, end, strict=True)`
+    * `tree.envelop(begin, end)`
 
 * Membership queries
     * `interval_obj in tree`              (this is fastest, O(1))
@@ -121,7 +132,7 @@ Examples
     >>> t = IntervalTree()
     >>> t
     IntervalTree()
-    
+
     ```
 
 * Adding intervals - any object works!
@@ -130,20 +141,20 @@ Examples
     >>> t[1:2] = "1-2"
     >>> t[4:7] = (4, 7)
     >>> t[5:9] = {5: 9}
-    
+
     ```
 
 * Query by point
 
     The result of a query is a `set` object, so if ordering is important,
     you must sort it first.
-    
+
     ``` python
     >>> sorted(t[6])
     [Interval(4, 7, (4, 7)), Interval(5, 9, {5: 9})]
     >>> sorted(t[6])[0]
     Interval(4, 7, (4, 7))
-    
+
     ```
 
 * Query by range
@@ -153,15 +164,26 @@ Examples
     ``` python
     >>> sorted(t[2:4])
     []
-    
+
     ```
 
-    But:
+    Since our search was over `2 ≤ x < 4`, neither `Interval(1, 2)` nor `Interval(4, 7)`
+    was included. The first interval, `1 ≤ x < 2` does not include `x = 2`. The second
+    interval, `4 ≤ x < 7`, does include `x = 4`, but our search interval excludes it. So,
+    there were no overlapping intervals. However:
 
     ``` python
     >>> sorted(t[1:5])
     [Interval(1, 2, '1-2'), Interval(4, 7, (4, 7))]
-    
+
+    ```
+
+    To only return intervals that are completely enveloped by the search range:
+
+    ``` python
+    >>> sorted(t.envelop(1, 5))
+    [Interval(1, 2, '1-2')]
+
     ```
 
 * Accessing an `Interval` object
@@ -174,7 +196,7 @@ Examples
     7
     >>> iv.data
     (4, 7)
-    
+
     >>> begin, end, data = iv
     >>> begin
     4
@@ -182,7 +204,7 @@ Examples
     7
     >>> data
     (4, 7)
-    
+
     ```
 
 * Constructing from lists of intervals
@@ -194,40 +216,40 @@ Examples
     >>> t = IntervalTree(
     ...    Interval(begin, end, "%d-%d" % (begin, end)) for begin, end in ivs
     ... )
-    
+
     ```
 
     Or, if we don't need the data fields:
 
     ``` python
     >>> t2 = IntervalTree(Interval(*iv) for iv in ivs)
-    
+
     ```
-    
+
     Or even:
-    
+
     ``` python
     >>> t2 = IntervalTree.from_tuples(ivs)
-    
+
     ```
 
 * Removing intervals
-    
+
     ``` python
-    >>> t.remove( Interval(1, 2, "1-2") )
+    >>> t.remove(Interval(1, 2, "1-2"))
     >>> sorted(t)
     [Interval(4, 7, '4-7'), Interval(5, 9, '5-9')]
 
-    >>> t.remove( Interval(500, 1000, "Doesn't exist"))  # raises ValueError
+    >>> t.remove(Interval(500, 1000, "Doesn't exist"))  # raises ValueError
     Traceback (most recent call last):
     ValueError
-    
+
     >>> t.discard(Interval(500, 1000, "Doesn't exist"))  # quietly does nothing
 
     >>> del t[5]  # same as t.remove_overlap(5)
     >>> t
     IntervalTree()
-    
+
     ```
 
     We could also empty a tree entirely:
@@ -236,11 +258,11 @@ Examples
     >>> t2.clear()
     >>> t2
     IntervalTree()
-    
+
     ```
-    
+
     Or remove intervals that overlap a range:
-    
+
     ``` python
     >>> t = IntervalTree([
     ...     Interval(0, 10),
@@ -252,30 +274,30 @@ Examples
     [Interval(0, 10), Interval(10, 20)]
 
     ```
-    
+
     We can also remove only those intervals completely enveloped in a range:
-    
+
     ``` python
     >>> t.remove_envelop(5, 20)
     >>> sorted(t)
     [Interval(0, 10)]
-    
+
     ```
-    
+
 * Chopping
 
     We could also chop out parts of the tree:
-    
+
     ``` python
     >>> t = IntervalTree([Interval(0, 10)])
     >>> t.chop(3, 7)
     >>> sorted(t)
     [Interval(0, 3), Interval(7, 10)]
-    
+
     ```
-    
+
     To modify the new intervals' data fields based on which side of the interval is being chopped:
-    
+
     ``` python
     >>> def datafunc(iv, islower):
     ...     oldlimit = iv[islower]
@@ -286,23 +308,23 @@ Examples
     Interval(0, 3, 'oldlimit: 10, islower: True')
     >>> sorted(t)[1]
     Interval(7, 10, 'oldlimit: 0, islower: False')
-    
+
     ```
 
 * Slicing
 
     You can also slice intervals in the tree without removing them:
-    
+
     ``` python
     >>> t = IntervalTree([Interval(0, 10), Interval(5, 15)])
     >>> t.slice(3)
     >>> sorted(t)
     [Interval(0, 3), Interval(3, 10), Interval(5, 15)]
-    
+
     ```
-    
+
     You can also set the data fields, for example, re-using `datafunc()` from above:
-    
+
     ``` python
     >>> t = IntervalTree([Interval(5, 15)])
     >>> t.slice(10, datafunc)
@@ -310,7 +332,7 @@ Examples
     Interval(5, 10, 'oldlimit: 15, islower: True')
     >>> sorted(t)[1]
     Interval(10, 15, 'oldlimit: 5, islower: False')
-    
+
     ```
 
 Future improvements
@@ -332,7 +354,7 @@ Based on
 Copyright
 ---------
 
-* [Chaim-Leib Halbert][GH], 2013-2017
+* [Chaim Leib Halbert][GH], 2013-2018
 * Modifications, [Konstantin Tretyakov][Konstantin intervaltree], 2014
 
 Licensed under the [Apache License, version 2.0][Apache].

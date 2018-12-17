@@ -38,22 +38,8 @@ def test_update():
     assert len(t) == 1
     assert set(t).pop() == interval
 
-    t.clear()
-    assert not t
-    t.extend(s)
-    t.extend(s)
-    assert isinstance(t, IntervalTree)
-    assert len(t) == 1
-    assert set(t).pop() == interval
-
     interval = Interval(2, 3)
     t.update([interval])
-    assert isinstance(t, IntervalTree)
-    assert len(t) == 2
-    assert sorted(t)[1] == interval
-
-    t = IntervalTree(s)
-    t.extend([interval])
     assert isinstance(t, IntervalTree)
     assert len(t) == 2
     assert sorted(t)[1] == interval
@@ -67,12 +53,6 @@ def test_invalid_update():
 
     with pytest.raises(ValueError):
         t.update([Interval(1, 1)])
-
-    with pytest.raises(ValueError):
-        t.extend([Interval(1, 0)])
-
-    with pytest.raises(ValueError):
-        t.extend([Interval(1, 1)])
 
 
 def test_union():
@@ -91,23 +71,9 @@ def test_union():
     assert len(t) == 1
     assert set(t).pop() == interval
 
-    # extend with duplicates
-    t.extend(s)
-    t.extend(s)
-    assert len(t) == 1
-    assert set(t).pop() == interval
-
     # update with non-dupe
     interval = Interval(2, 3)
     t.update([interval])
-    assert len(t) == 2
-    assert sorted(t)[1] == interval
-
-    # extend with non-dupe
-    t.remove(interval)
-    assert len(t) == 1
-    assert interval not in t
-    t.extend([interval])
     assert len(t) == 2
     assert sorted(t)[1] == interval
 
@@ -194,13 +160,6 @@ def test_invalid_union():
         t.union([Interval(1, 0)])
 
 
-def test_invalid_update():
-    t = IntervalTree()
-
-    with pytest.raises(ValueError):
-        t.update([Interval(1, 1)])
-
-
 def test_difference():
     minuend = IntervalTree.from_tuples(data.ivs1.data)
     assert isinstance(minuend, IntervalTree)
@@ -264,12 +223,30 @@ def test_intersection():
 
     # intersections with e
     assert a.intersection(e) == e
+    ae = a.copy()
+    ae.intersection_update(e)
+    assert ae == e
+
     assert b.intersection(e) == e
+    be = b.copy()
+    be.intersection_update(e)
+    assert be == e
+
     assert e.intersection(e) == e
+    ee = e.copy()
+    ee.intersection_update(e)
+    assert ee == e
 
     # intersections with self
     assert a.intersection(a) == a
+    aa = a.copy()
+    aa.intersection_update(a)
+    assert aa == a
+
     assert b.intersection(b) == b
+    bb = b.copy()
+    bb.intersection(b) == b
+    assert bb == b
 
     # commutativity resulting in empty
     ab = a.intersection(b)
@@ -279,14 +256,41 @@ def test_intersection():
     assert ab == ba
     assert len(ab) == 0  # no overlaps, so empty tree
 
+    ab = a.copy()
+    ab.intersection_update(b)
+    ba = b.copy()
+    ba.intersection_update(a)
+    ab.verify()
+    ba.verify()
+    assert ab == ba
+    assert len(ab) == 0  # no overlaps, so empty tree
+
     # commutativity on non-overlapping sets
     ab = a.union(b)
     ba = b.union(a)
-
     aba = ab.intersection(a)  # these should yield no change
     abb = ab.intersection(b)
     bab = ba.intersection(b)
     baa = ba.intersection(a)
+    aba.verify()
+    abb.verify()
+    bab.verify()
+    baa.verify()
+    assert aba == a
+    assert abb == b
+    assert bab == b
+    assert baa == a
+
+    ab = a.union(b)
+    ba = b.union(a)
+    aba = ab.copy()
+    aba.intersection_update(a)  # these should yield no change
+    abb = ab.copy()
+    abb.intersection_update(b)
+    bab = ba.copy()
+    bab.intersection_update(b)
+    baa = ba.copy()
+    baa.intersection_update(a)
     aba.verify()
     abb.verify()
     bab.verify()
@@ -306,16 +310,154 @@ def test_intersection():
     assert len(bc) < len(b)
     assert len(bc) < len(c)
     assert len(bc) > 0
-
     assert b.containsi(13, 23)
     assert c.containsi(13, 23)
     assert bc.containsi(13, 23)
-
     assert not b.containsi(819, 828)
     assert not c.containsi(0, 1)
-    assert not bc.containsi(819, 820)
+    assert not bc.containsi(819, 828)
     assert not bc.containsi(0, 1)
 
+    bc = b.copy()
+    bc.intersection_update(c)
+    cb = c.copy()
+    cb.intersection_update(b)
+    bc.verify()
+    cb.verify()
+    assert bc == cb
+    assert len(bc) < len(b)
+    assert len(bc) < len(c)
+    assert len(bc) > 0
+    assert b.containsi(13, 23)
+    assert c.containsi(13, 23)
+    assert bc.containsi(13, 23)
+    assert not b.containsi(819, 828)
+    assert not c.containsi(0, 1)
+    assert not bc.containsi(819, 828)
+    assert not bc.containsi(0, 1)
+
+
+def test_symmetric_difference():
+    a = IntervalTree.from_tuples(data.ivs1.data)
+    b = IntervalTree.from_tuples(data.ivs2.data)
+    e = IntervalTree()
+
+    # symdiffs with e
+    assert a.symmetric_difference(e) == a
+    ae = a.copy()
+    ae.symmetric_difference_update(e)
+    assert ae == a
+
+    assert b.symmetric_difference(e) == b
+    be = b.copy()
+    be.symmetric_difference_update(e)
+    assert be == b
+
+    assert e.symmetric_difference(e) == e
+    ee = e.copy()
+    ee.symmetric_difference_update(e)
+    assert ee == e
+
+    # symdiff with self
+    assert a.symmetric_difference(a) == e
+    aa = a.copy()
+    aa.symmetric_difference_update(a)
+    assert aa == e
+
+    assert b.symmetric_difference(b) == e
+    bb = b.copy()
+    bb.symmetric_difference_update(b) == e
+    assert bb == e
+
+    # commutativity resulting in empty
+    ab = a.symmetric_difference(b)
+    ba = b.symmetric_difference(a)
+    ab.verify()
+    ba.verify()
+    assert ab == ba
+    assert len(ab) == len(a) + len(b)  # no overlaps, so sum
+
+    ab = a.copy()
+    ab.symmetric_difference_update(b)
+    ba = b.copy()
+    ba.symmetric_difference_update(a)
+    ab.verify()
+    ba.verify()
+    assert ab == ba
+    assert len(ab) == len(a) + len(b)  # no overlaps, so sum
+
+    # commutativity on non-overlapping sets
+    ab = a.union(b)
+    ba = b.union(a)
+    aba = ab.symmetric_difference(a)
+    abb = ab.symmetric_difference(b)
+    bab = ba.symmetric_difference(b)
+    baa = ba.symmetric_difference(a)
+    aba.verify()
+    abb.verify()
+    bab.verify()
+    baa.verify()
+    assert aba == b
+    assert abb == a
+    assert bab == a
+    assert baa == b
+
+    ab = a.union(b)
+    ba = b.union(a)
+    aba = ab.copy()
+    aba.symmetric_difference_update(a)
+    abb = ab.copy()
+    abb.symmetric_difference_update(b)
+    bab = ba.copy()
+    bab.symmetric_difference_update(b)
+    baa = ba.copy()
+    baa.symmetric_difference_update(a)
+    aba.verify()
+    abb.verify()
+    bab.verify()
+    baa.verify()
+    assert aba == b
+    assert abb == a
+    assert bab == a
+    assert baa == b
+
+    # commutativity with overlapping sets
+    c = IntervalTree.from_tuples(data.ivs3.data)
+    bc = b.symmetric_difference(c)
+    cb = c.symmetric_difference(b)
+    bc.verify()
+    cb.verify()
+    assert bc == cb
+    assert len(bc) > 0
+    assert len(bc) < len(b) + len(c)
+    assert b.containsi(13, 23)
+    assert c.containsi(13, 23)
+    assert not bc.containsi(13, 23)
+    assert c.containsi(819, 828)
+    assert not b.containsi(819, 828)
+    assert b.containsi(0, 1)
+    assert not c.containsi(0, 1)
+    assert bc.containsi(819, 828)
+    assert bc.containsi(0, 1)
+
+    bc = b.copy()
+    bc.symmetric_difference_update(c)
+    cb = c.copy()
+    cb.symmetric_difference_update(b)
+    bc.verify()
+    cb.verify()
+    assert bc == cb
+    assert len(bc) > 0
+    assert len(bc) < len(b) + len(c)
+    assert b.containsi(13, 23)
+    assert c.containsi(13, 23)
+    assert not bc.containsi(13, 23)
+    assert c.containsi(819, 828)
+    assert not b.containsi(819, 828)
+    assert b.containsi(0, 1)
+    assert not c.containsi(0, 1)
+    assert bc.containsi(819, 828)
+    assert bc.containsi(0, 1)
 
 if __name__ == "__main__":
     pytest.main([__file__, '-v'])
