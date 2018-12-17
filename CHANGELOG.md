@@ -6,6 +6,7 @@
 - Fixed:
     - PyPI wasn't rendering markdown because I didn't tell it what format to use.
     - TestPyPI version strings count from the latest tagged commit, which should be the last release
+    - PyPI manifest includes the new utils package
 
 ## Version 3.0.0
 - Breaking:
