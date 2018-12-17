@@ -65,7 +65,10 @@ clean-temps:
 	rm -rf $(TEMPS)
 
 install-testpypi:
-	pip install --index-url https://test.pypi.org/simple/ intervaltree
+	pip install \
+		--index-url https://test.pypi.org/simple/ \
+		--extra-index-url https://pypi.org/simple \
+		intervaltree
 
 install-pypi:
 	pip install intervaltree

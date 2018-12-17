@@ -5,8 +5,10 @@
     - Travis testing for 3.7 (needed OpenSSL, sudo and Xenial)
 - Fixed:
     - PyPI wasn't rendering markdown because I didn't tell it what format to use.
+    - Python 2 wasn't installing via pip because of a new utils package. It has been zapped.
+- Maintainers:
     - TestPyPI version strings count from the latest tagged commit, which should be the last release
-    - Fix for Python 2 by removing utils package
+    - Install from TestPyPI works via `make install-testpypi`
 
 ## Version 3.0.0
 - Breaking:
