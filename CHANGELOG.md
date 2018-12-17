@@ -2,12 +2,12 @@
 
 ## Version 3.0.1
 - Added:
-    - Travis testing for 3.7 (needed OpenSSL, sudo and Xenial)
+    - Travis testing for 3.7 and 3.8-dev. These needed OpenSSL, sudo and Xenial. 3.8-dev is allowed to fail.
 - Fixed:
     - PyPI wasn't rendering markdown because I didn't tell it what format to use.
     - Python 2 wasn't installing via pip because of a new utils package. It has been zapped.
 - Maintainers:
-    - TestPyPI version strings count from the latest tagged commit, which should be the last release
+    - TestPyPI version strings use `.postN` as the suffix instead of `bN`, and `N` counts from the latest tagged commit, which should be the last release
     - Install from TestPyPI works via `make install-testpypi`
 
 ## Version 3.0.0
