@@ -5,6 +5,7 @@
     - Travis testing for 3.7 (needed OpenSSL, sudo and Xenial)
 - Fixed:
     - PyPI wasn't rendering markdown because I didn't tell it what format to use.
+    - TestPyPI version strings count from the latest tagged commit, which should be the last release
 
 ## Version 3.0.0
 - Breaking:

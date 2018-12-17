@@ -22,7 +22,7 @@ import os
 import subprocess
 
 def development_version_number():
-    p = subprocess.Popen('git describe'.split(), stdout=subprocess.PIPE)
+    p = subprocess.Popen('git describe --tag'.split(), stdout=subprocess.PIPE)
     git_describe = p.communicate()[0].strip()
     release, build, commitish = git_describe.split('-')
     result = "{0}b{1}".format(release, build)
