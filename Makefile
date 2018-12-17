@@ -88,7 +88,7 @@ release:
 	$(eval PYPI=pypi)
 
 # Build source distribution
-sdist-upload: deps-dev
+sdist-upload: distclean deps-dev
 	PYPI=$(PYPI) python setup.py sdist
 	if [[ "$(PYPI)" == pypitest ]]; then \
 		$(TWINE) upload --repository-url https://test.pypi.org/legacy/ dist/*; \
