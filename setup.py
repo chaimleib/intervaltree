@@ -7,7 +7,7 @@ Distribution logic
 Note that "python setup.py test" invokes pytest on the package. With appropriately
 configured setup.cfg, this will check both xxx_test modules and docstrings.
 
-Copyright 2013-2017 Chaim-Leib Halbert
+Copyright 2013-2018 Chaim Leib Halbert
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -87,7 +87,7 @@ setup(
         'Topic :: Text Processing :: Markup',
     ],
     keywords='interval-tree data-structure intervals tree',  # Separate with spaces
-    author='Chaim-Leib Halbert, Konstantin Tretyakov',
+    author='Chaim Leib Halbert, Konstantin Tretyakov',
     author_email='chaim.leib.halbert@gmail.com',
     url='https://github.com/chaimleib/intervaltree',
     download_url='https://github.com/chaimleib/intervaltree/tarball/{version}'.format(**version_info),
@@ -96,6 +96,5 @@ setup(
     include_package_data=True,
     zip_safe=True,
     tests_require=['pytest'],
-    cmdclass={'test': PyTest},
-    entry_points={}
+    cmdclass={'test': PyTest}
 )

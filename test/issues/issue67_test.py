@@ -7,7 +7,7 @@ invariant violation
 Submitted as issue #67 (Inserting intervals in specific sequence results in
 invalid tree) by suola
 
-Copyright 2013-2018 Chaim-Leib Halbert
+Copyright 2013-2018 Chaim Leib Halbert
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
