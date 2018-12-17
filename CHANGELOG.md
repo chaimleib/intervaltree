@@ -3,6 +3,8 @@
 ## Version 3.0.1
 - Added:
     - Travis testing for 3.7 (needed OpenSSL, sudo and Xenial)
+- Fixed:
+    - PyPI wasn't rendering markdown because I didn't tell it what format to use.
 
 ## Version 3.0.0
 - Breaking:

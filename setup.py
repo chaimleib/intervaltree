@@ -63,6 +63,7 @@ setup(
     install_requires=['sortedcontainers >= 2.0, < 3.0'],
     description='Editable interval tree data structure for Python 2 and 3',
     long_description=long_description,
+    long_description_content_type='text/markdown',
     classifiers=[  # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
         'Development Status :: 4 - Beta',
         'Programming Language :: Python :: Implementation :: PyPy',
