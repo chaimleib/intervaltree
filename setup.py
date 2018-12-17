@@ -22,22 +22,39 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from __future__ import absolute_import
+import os
 from sys import exit
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
-
-from utils import version
+import subprocess
 
 ## CONFIG
 target_version = '3.0.1'
 
-version_info = version.version_info(target_version)
-if version_info['is_dev_version']:
+
+def version_info(target_version):
+    is_dev_version = 'PYPI' in os.environ and os.environ['PYPI'] == 'pypitest'
+    if is_dev_version:
+        p = subprocess.Popen('git describe --tag'.split(), stdout=subprocess.PIPE)
+        git_describe = p.communicate()[0].strip()
+        release, build, commitish = git_describe.split('-')
+        version = "{0}.post{1}".format(release, build, commitish)
+    else:  # This is a RELEASE version
+        version = target_version
+    return {
+        'is_dev_version': is_dev_version,
+        'version': version,
+        'target_version': target_version
+    }
+
+
+vinfo = version_info(target_version)
+if vinfo['is_dev_version']:
     print("This is a DEV version")
-    print("Target: {target_version}\n".format(**version_info))
+    print("Target: {target_version}\n".format(**vinfo))
 else:
     print("!!!>>> This is a RELEASE version <<<!!!\n")
-    print("Version: {version}".format(**version_info))
+    print("Version: {version}".format(**vinfo))
 
 with open('README.md', 'r') as fh:
     long_description = fh.read()
@@ -59,7 +76,7 @@ class PyTest(TestCommand):
 ## Run setuptools
 setup(
     name='intervaltree',
-    version=version_info['version'],
+    version=vinfo['version'],
     install_requires=['sortedcontainers >= 2.0, < 3.0'],
     description='Editable interval tree data structure for Python 2 and 3',
     long_description=long_description,
@@ -91,7 +108,7 @@ setup(
     author='Chaim Leib Halbert, Konstantin Tretyakov',
     author_email='chaim.leib.halbert@gmail.com',
     url='https://github.com/chaimleib/intervaltree',
-    download_url='https://github.com/chaimleib/intervaltree/tarball/{version}'.format(**version_info),
+    download_url='https://github.com/chaimleib/intervaltree/tarball/{version}'.format(**vinfo),
     license="Apache License, Version 2.0",
     packages=["intervaltree"],
     include_package_data=True,
