@@ -1,5 +1,9 @@
 # Change log
 
+## Version 3.0.1
+- Added:
+    - Travis testing for 3.7 (needed OpenSSL, sudo and Xenial)
+
 ## Version 3.0.0
 - Breaking:
     - `search(begin, end, strict)` has been replaced with `at(point)`, `overlap(begin, end)`, and `envelop(begin, end)`

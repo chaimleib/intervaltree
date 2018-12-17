@@ -29,7 +29,7 @@ from setuptools.command.test import test as TestCommand
 from utils import version
 
 ## CONFIG
-target_version = '3.0.0'
+target_version = '3.0.1'
 
 version_info = version.version_info(target_version)
 if version_info['is_dev_version']:
