@@ -4,7 +4,7 @@ Queries may be by point, by range overlap, or by range envelopment.
 
 Test module: IntervalTree, Basic query methods (read-only)
 
-Copyright 2013-2017 Chaim-Leib Halbert
+Copyright 2013-2018 Chaim Leib Halbert
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -39,6 +39,8 @@ def test_empty_queries():
     assert t.begin() == 0
     assert t.end() == 0
     assert t[t.begin():t.end()] == e
+    assert t.overlap(t.begin(), t.end()) == e
+    assert t.envelop(t.begin(), t.end()) == e
     assert t.items() == e
     assert set(t) == e
     assert set(t.copy()) == e
@@ -48,20 +50,35 @@ def test_empty_queries():
     t.verify()
 
 
-def test_queries():
+def test_point_queries():
     t = IntervalTree.from_tuples(data.ivs1.data)
-
     assert match.set_data(t[4]) == set(['[4,7)'])
-    assert match.set_data(t[4:5]) == set(['[4,7)'])
-    assert match.set_data(t[4:6]) == set(['[4,7)', '[5,9)'])
+    assert match.set_data(t.at(4)) == set(['[4,7)'])
     assert match.set_data(t[9]) == set(['[6,10)', '[8,10)', '[8,15)'])
+    assert match.set_data(t.at(9)) == set(['[6,10)', '[8,10)', '[8,15)'])
     assert match.set_data(t[15]) == set()
-    assert match.set_data(t.search(5)) == set(['[4,7)', '[5,9)'])
-    assert match.set_data(t.search(6, 11, strict=True)) == set(['[6,10)', '[8,10)'])
+    assert match.set_data(t.at(15)) == set()
+    assert match.set_data(t[5]) == set(['[4,7)', '[5,9)'])
+    assert match.set_data(t.at(5)) == set(['[4,7)', '[5,9)'])
+    assert match.set_data(t[4:5]) == set(['[4,7)'])
 
 
-def test_partial_slice_query():
-    def assert_chop(t, limit):
+def test_envelop_vs_overlap_queries():
+    t = IntervalTree.from_tuples(data.ivs1.data)
+    assert match.set_data(t.envelop(4, 5)) == set()
+    assert match.set_data(t.overlap(4, 5)) == set(['[4,7)'])
+    assert match.set_data(t.envelop(4, 6)) == set()
+    assert match.set_data(t.overlap(4, 6)) == set(['[4,7)', '[5,9)'])
+    assert match.set_data(t.envelop(6, 10)) == set(['[6,10)', '[8,10)'])
+    assert match.set_data(t.overlap(6, 10)) == set([
+        '[4,7)', '[5,9)', '[6,10)', '[8,10)', '[8,15)'])
+    assert match.set_data(t.envelop(6, 11)) == set(['[6,10)', '[8,10)'])
+    assert match.set_data(t.overlap(6, 11)) == set([
+        '[4,7)', '[5,9)', '[6,10)', '[8,10)', '[8,15)', '[10,12)'])
+
+
+def test_partial_get_query():
+    def assert_get(t, limit):
         s = set(t)
         assert t[:] == s
 
@@ -71,8 +88,8 @@ def test_partial_slice_query():
         s = set(iv for iv in t if iv.end > limit)
         assert t[limit:] == s
 
-    assert_chop(IntervalTree.from_tuples(data.ivs1.data), 7)
-    assert_chop(IntervalTree.from_tuples(data.ivs2.data), -3)
+    assert_get(IntervalTree.from_tuples(data.ivs1.data), 7)
+    assert_get(IntervalTree.from_tuples(data.ivs2.data), -3)
 
 
 def test_tree_bounds():

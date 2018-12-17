@@ -4,7 +4,7 @@ Queries may be by point, by range overlap, or by range envelopment.
 
 Test module: IntervalTree, Special methods
 
-Copyright 2013-2017 Chaim-Leib Halbert
+Copyright 2013-2018 Chaim Leib Halbert
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -62,15 +62,19 @@ def test_merge_overlaps_empty():
 
 
 def test_merge_overlaps_gapless():
+    # default strict=True
     t = IntervalTree.from_tuples(data.ivs2.data)
-    rng = t.range()
-
     t.merge_overlaps()
     t.verify()
+    assert [(iv.begin, iv.end, iv.data) for iv in sorted(t)] == data.ivs2.data
 
+    # strict=False
+    t = IntervalTree.from_tuples(data.ivs2.data)
+    rng = t.range()
+    t.merge_overlaps(strict=False)
+    t.verify()
     assert len(t) == 1
     assert t.pop() == rng
-
 
 def test_merge_overlaps_with_gap():
     t = IntervalTree.from_tuples(data.ivs1.data)
@@ -398,7 +402,7 @@ def test_split_overlap():
     while t:
         iv = set(t).pop()
         t.remove(iv)
-        for other in t.search(iv):
+        for other in t.overlap(iv):
             assert other.begin == iv.begin
             assert other.end == iv.end
 

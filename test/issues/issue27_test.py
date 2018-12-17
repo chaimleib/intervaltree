@@ -6,7 +6,7 @@ Test module: IntervalTree, insertion and removal of float intervals
 Submitted as issue #26 (Pop from empty list error) by sciencectn
 Ensure that rotations that promote Intervals prune when necessary
 
-Copyright 2013-2017 Chaim-Leib Halbert
+Copyright 2013-2018 Chaim Leib Halbert
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -34,20 +34,20 @@ def original_print():
         print(it[iobj.begin, iobj.end])  # set(), should be using :
 
     for iobj in it:
-        print(it.search(iobj.begin, iobj.end))
+        print(it.envelop(iobj.begin, iobj.end))
 
     # set([Interval(6, 9, 'rad')])
     # set([Interval(1, 3, 'dude'), Interval(2, 4, 'sweet')])
     # set([Interval(1, 3, 'dude'), Interval(2, 4, 'sweet')])
 
 
-def test_brackets_vs_search():
+def test_brackets_vs_overlap():
     it = IntervalTree()
     it.addi(1, 3, "dude")
     it.addi(2, 4, "sweet")
     it.addi(6, 9, "rad")
     for iobj in it:
-        assert it[iobj.begin:iobj.end] == it.search(iobj.begin, iobj.end)
+        assert it[iobj.begin:iobj.end] == it.overlap(iobj.begin, iobj.end)
 
     # set([Interval(6, 9, 'rad')])
     # set([Interval(1, 3, 'dude'), Interval(2, 4, 'sweet')])

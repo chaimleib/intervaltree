@@ -1,8 +1,12 @@
 # Change log
 
 ## Version 3.0.0
-- Dropped support for Python 2.6, 3.2, and 3.3
-- Add support for Python 3.5 and 3.6
+- Breaking:
+    - `search(begin, end, strict)` has been replaced with `at(point)`, `overlap(begin, end)`, and `envelop(begin, end)`
+    - `extend(items)` has been deleted, use `update(items)` instead
+    - Methods that take a `strict=True/False` argument now consistently default to `strict=True`
+    - Dropped support for Python 2.6, 3.2, and 3.3
+    - Add support for Python 3.5, 3.6, and 3.7
 - Faster `Interval` overlap checking (@tuxzz, #56)
 - Updated README:
     - new restructuring methods from 2.1.0
@@ -13,10 +17,12 @@
     - `Interval.distance_to()` gave an incorrect distance when passed the `Interval`'s upper boundary
     - `Node.pop_greatest_child()` sometimes forgot to `rotate()` when creating new child nodes. (@escalonn, #41, #42)
     - `IntervalTree.begin()` and `end()` are O(1), not O(n). (@ProgVal, #40)
+    - `intersection_update()` and `symmetric_difference()` and `symmetric_difference_update()` didn't actually work. Now they do.
+    - `collections.abc` deprecation warning no longer happens
 - Maintainers:
-    - use github.com/kennethreitz/pyandoc
+    - PyPi accepts Markdown! Woohoo!
     - reorganize tests
-    - more tests added to improve code coverage (We're at 95%! Woohoo!)
+    - more tests added to improve code coverage (We're at 96%! Yay!)
     - test for issue #4 had a broken import reference
 
 ## Version 2.1.0
