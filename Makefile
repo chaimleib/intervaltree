@@ -25,6 +25,16 @@ PYTHON_MINORS:=$(shell          \
 # See http://peterdowns.com/posts/first-time-with-pypi.html
 PYPI=pypitest
 
+TWINE=$(shell                                         \
+	if twine --version &>/dev/null; then                \
+		echo twine                                       ;\
+	elif [[ -x ~/Library/Python/3.7/bin/twine ]]; then  \
+		echo '~/Library/Python/3.7/bin/twine'            ;\
+	else                                                \
+		echo twine                                       ;\
+	fi                                                  \
+)
+
 # default target
 all: test
 
@@ -55,7 +65,11 @@ clean-temps:
 	rm -rf $(TEMPS)
 
 install-testpypi:
-	pip install --pre -i https://testpypi.python.org/pypi intervaltree
+	pip install \
+		--no-cache-dir \
+		--index-url https://test.pypi.org/simple/ \
+		--extra-index-url https://pypi.org/simple \
+		intervaltree
 
 install-pypi:
 	pip install intervaltree
@@ -75,8 +89,13 @@ release:
 	$(eval PYPI=pypi)
 
 # Build source distribution
-sdist-upload:
-	PYPI=$(PYPI) python setup.py sdist upload -r $(PYPI)
+sdist-upload: distclean deps-dev
+	PYPI=$(PYPI) python setup.py sdist
+	if [[ "$(PYPI)" == pypitest ]]; then \
+		$(TWINE) upload --repository-url https://test.pypi.org/legacy/ dist/*; \
+	else \
+		$(TWINE) upload dist/*; \
+	fi
 
 deps-dev: pyenv-install-versions
 
@@ -88,7 +107,12 @@ pyenv-is-installed:
 
 pyenv-install-versions: pyenv-is-installed
 	for pyver in $(PYTHONS); do (echo N | pyenv install $$pyver) || true; done
-	for pyver in $(PYTHONS); do export PYENV_VERSION=$$pyver; pip install -U pip; pip install -U pytest; done | grep -v 'Requirement already satisfied, skipping upgrade'
+	for pyver in $(PYTHONS); do \
+		export PYENV_VERSION=$$pyver; \
+		pip install -U pip; \
+		pip install -U pytest; \
+		pip install -U twine; \
+	done | grep -v 'Requirement already satisfied, skipping upgrade'
 	pyenv rehash
 
 # for debugging the Makefile

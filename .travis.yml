@@ -1,13 +1,23 @@
 language: python
-python:
-    - "2.7"
-    - "3.4"
-    - "3.5"
-    - "3.6"
+matrix:
+  include:
+    - python: 2.7
+    - python: 3.4
+    - python: 3.5
+    - python: 3.6
+    - python: 3.7
+      dist: xenial
+      sudo: true
+    - python: 3.8-dev
+      env: FAILOK=y
+      dist: xenial
+      sudo: true
+  allow_failures:
+    - env: FAILOK=y
 install:
-    - make deps-dev
-    - pip install coverage
+  - make deps-dev
+  - pip install coverage
 script:
-    coverage run --source=intervaltree setup.py develop test
+  coverage run --source=intervaltree setup.py develop test
 after_success:
-    coverage report
+  coverage report
