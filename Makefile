@@ -66,6 +66,7 @@ clean-temps:
 
 install-testpypi:
 	pip install \
+		--no-cache-dir \
 		--index-url https://test.pypi.org/simple/ \
 		--extra-index-url https://pypi.org/simple \
 		intervaltree
