@@ -1,5 +1,9 @@
 # Change log
 
+## Version 3.0.2
+- Fixed:
+    - On some systems, setup.py opened README.md with a non-unicode encoding. My fault for leaving the encoding flapping in the breeze. It's been fixed.
+
 ## Version 3.0.1
 - Added:
     - Travis testing for 3.7 and 3.8-dev. These needed OpenSSL, sudo and Xenial. 3.8-dev is allowed to fail.
