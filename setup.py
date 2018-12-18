@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 """
 intervaltree: A mutable, self-balancing interval tree for Python 2 and 3.
 Queries may be by point, by range overlap, or by range envelopment.
@@ -22,6 +25,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from __future__ import absolute_import
+import io
 import os
 from sys import exit
 from setuptools import setup
@@ -29,7 +33,7 @@ from setuptools.command.test import test as TestCommand
 import subprocess
 
 ## CONFIG
-target_version = '3.0.1'
+target_version = '3.0.2'
 
 
 def version_info(target_version):
@@ -56,7 +60,7 @@ else:
     print("!!!>>> This is a RELEASE version <<<!!!\n")
     print("Version: {version}".format(**vinfo))
 
-with open('README.md', 'r') as fh:
+with io.open('README.md', 'r', encoding='utf-8') as fh:
     long_description = fh.read()
 
 ## PyTest
