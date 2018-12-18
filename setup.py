@@ -33,7 +33,7 @@ from setuptools.command.test import test as TestCommand
 import subprocess
 
 ## CONFIG
-target_version = '3.0.2'
+target_version = '3.0.3'
 
 
 def version_info(target_version):
