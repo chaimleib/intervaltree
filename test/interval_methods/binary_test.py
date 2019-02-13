@@ -36,7 +36,20 @@ iv9 = Interval(15, 20)
 iv10 = Interval(-5, 0)
 
 
-def test_interval_overlaps_interval():
+def test_interval_overlaps_size_interval():
+    assert iv0.overlap_size(iv0) == 10
+    assert not iv0.overlap_size(iv1)
+    assert not iv0.overlap_size(iv2)
+    assert iv0.overlap_size(iv3) == 5
+    assert iv0.overlap_size(iv4) == 10
+    assert iv0.overlap_size(iv5) == 10
+    assert iv0.overlap_size(iv6) == 10
+    assert iv0.overlap_size(iv7) == 5
+    assert not iv0.overlap_size(iv8)
+    assert not iv0.overlap_size(iv9)
+
+
+def test_interval_overlap_interval():
     assert iv0.overlaps(iv0)
     assert not iv0.overlaps(iv1)
     assert not iv0.overlaps(iv2)
@@ -47,6 +60,12 @@ def test_interval_overlaps_interval():
     assert iv0.overlaps(iv7)
     assert not iv0.overlaps(iv8)
     assert not iv0.overlaps(iv9)
+
+
+def test_interval_overlaps_size_point():
+    assert iv0.overlap_size(4) == 1
+    assert not iv0.overlap_size(19)
+    assert not iv0.overlap_size(-19)
 
 
 def test_contains_interval():
