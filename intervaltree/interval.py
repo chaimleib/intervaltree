@@ -58,7 +58,7 @@ class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
         Return the overlap size between two intervals or a point
         :param begin: beginning point of the range, or the point, or an Interval
         :param end: end point of the range. Optional if not testing ranges.
-        :return: Return the overlap size, None if not overlapped
+        :return: Return the overlap size, None if not overlap is found
         :rtype: int
         """
         overlaps = self.overlaps(begin, end)
