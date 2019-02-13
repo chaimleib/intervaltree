@@ -53,6 +53,31 @@ class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
         except:
             return self.contains_point(begin)
 
+    def overlap_size(self, begin, end=None):
+        """
+        Return the overlap size between two intervals or a point
+        :param begin: beginning point of the range, or the point, or an Interval
+        :param end: end point of the range. Optional if not testing ranges.
+        :return: Return the overlap size, None if not overlapped
+        :rtype: int
+        """
+        overlaps = self.overlaps(begin, end)
+        if not overlaps:
+            return None
+
+        if end is not None:
+            # case end is given
+            i0 = max(self.begin, begin)
+            i1 = min(self.end, end)
+            return i1 - i0
+        try:
+            # assume this is
+            i0 = max(self.begin, begin.begin)
+            i1 = min(self.end, begin.end)
+            return i1 - i0
+        except:
+            return 1  # case the begin is point
+
     def contains_point(self, p):
         """
         Whether the Interval contains p.
