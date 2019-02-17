@@ -62,12 +62,6 @@ def test_interval_overlap_interval():
     assert not iv0.overlaps(iv9)
 
 
-def test_interval_overlaps_size_point():
-    assert iv0.overlap_size(4) == 1
-    assert not iv0.overlap_size(19)
-    assert not iv0.overlap_size(-19)
-
-
 def test_contains_interval():
     assert iv0.contains_interval(iv0)
     assert not iv0.contains_interval(iv1)
