@@ -63,8 +63,17 @@ class Node(object):
         """
         if not intervals:
             return None
+        return Node.from_sorted_intervals(sorted(intervals))
+
+    @classmethod
+    def from_sorted_intervals(cls, intervals):
+        """
+        :rtype : Node
+        """
+        if not intervals:
+            return None
         node = Node()
-        node = node.init_from_sorted(sorted(intervals))
+        node = node.init_from_sorted(intervals)
         return node
 
     def init_from_sorted(self, intervals):
@@ -82,8 +91,8 @@ class Node(object):
                 s_right.append(k)
             else:
                 self.s_center.add(k)
-        self.left_node = Node.from_intervals(s_left)
-        self.right_node = Node.from_intervals(s_right)
+        self.left_node = Node.from_sorted_intervals(s_left)
+        self.right_node = Node.from_sorted_intervals(s_right)
         return self.rotate()
 
     def center_hit(self, interval):
