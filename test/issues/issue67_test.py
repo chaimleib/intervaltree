@@ -25,7 +25,7 @@ from __future__ import absolute_import
 from intervaltree import IntervalTree
 import pytest
 
-def test_interval_insersion_67():
+def test_interval_insertion_67():
     intervals = (
         (3657433088, 3665821696),
         (2415132672, 2415394816),
