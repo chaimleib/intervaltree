@@ -110,6 +110,58 @@ def test_distance_to_point():
     assert iv0.distance_to(15) == 5
 
 
+def test_interval_intersection():
+    assert iv0.intersection(iv0) == Interval(0, 10)
+    assert not iv0.intersection(iv1)
+    assert not iv0.intersection(iv2)
+
+    assert iv0.intersection(iv3) == Interval(0, 5)
+    assert iv0.intersection(iv4) == Interval(0, 10)
+    assert iv0.intersection(iv5) == Interval(0, 10)
+    assert iv0.intersection(iv6) == Interval(0, 10)
+    assert iv0.intersection(iv7) == Interval(5, 10)
+    assert not iv0.intersection(iv8)
+    assert not iv0.intersection(iv9)
+
+
+def test_interval_union():
+    assert iv0.union(iv0) == Interval(0, 10)
+    assert not iv0.union(iv1)
+    assert not iv0.union(iv2)
+
+    assert iv0.union(iv3) == Interval(-10, 10)
+    assert iv0.union(iv4) == Interval(-10, 10)
+    assert iv0.union(iv5) == Interval(-10, 20)
+    assert iv0.union(iv6) == Interval(0, 20)
+    assert iv0.union(iv7) == Interval(0, 20)
+    assert not iv0.union(iv8)
+    assert not iv0.union(iv9)
+
+
+def test_interval_difference():
+    assert not iv0.difference(iv0)
+    assert not iv0.difference(iv1)
+    assert not iv0.difference(iv2)
+    assert iv0.difference(iv3) == [Interval(5, 10)]
+    assert not iv0.difference(iv4)
+    assert not iv0.difference(iv5)
+    assert not iv0.difference(iv6)
+    assert iv0.difference(iv7) == [Interval(0, 5)]
+    assert not iv0.difference(iv8)
+    assert not iv0.difference(iv9)
+
+    assert iv5.difference(iv0) == [Interval(-10, 0), Interval(10, 20)]
+    assert iv5.difference(iv1) == [Interval(-5, 20)]
+    assert iv5.difference(iv2) == [Interval(0, 20)]
+    assert iv5.difference(iv3) == [Interval(5, 20)]
+    assert iv5.difference(iv4) == [Interval(10, 20)]
+    assert not iv5.difference(iv5)
+    assert iv5.difference(iv6) == [Interval(-10, 0)]
+    assert iv5.difference(iv7) == [Interval(-10, 5)]
+    assert iv5.difference(iv8) == [Interval(-10, 10)]
+    assert iv5.difference(iv9) == [Interval(-10, 15)]
+
+
 if __name__ == "__main__":
     import pytest
     pytest.main([__file__, '-v'])

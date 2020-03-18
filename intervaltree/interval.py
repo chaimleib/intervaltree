@@ -84,6 +84,66 @@ class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
         :rtype: bool
         """
         return self.begin <= p < self.end
+
+    def intersection(self, other):
+        """
+        The intersection/overlap between this interval and another interval.
+        Returns None if not overlapping.
+        :param other: an interval
+        :return: An interval representing the overlap between both intervals
+        :rtype: Optional[Interval]
+        """
+        if self.is_null() or other.is_null():
+            raise ValueError('Cannot intersect null intervals')
+        if not self.overlaps(other):
+            return None
+        return Interval(max(self.begin, other.begin), min(self.end, other.end), self.data)
+
+    def union(self, other):
+        """
+        The union/combination between this interval and another interval
+        Returns None if not overlapping.
+        :param other: an interval
+        :return: An interval representing the combination between both intervals
+        :rtype: Optional[Interval]
+        """
+        if self.is_null() or other.is_null():
+            raise ValueError('Cannot unionize null intervals')
+        if not self.overlaps(other):
+            return None
+        return Interval(min(self.begin, other.begin), max(self.end, other.end), self.data)
+
+    def difference(self, other):
+        """
+        Returns 0 to 2 intervals that do not have any area in common with the other interval.
+        Returns an empty array if not overlapping or if other envelops this interval.
+        :param other: an interval
+        :return: An interval representing the negative space between both intervals
+        :rtype: List[Interval]
+        """
+        set().difference()
+        if self.is_null() or other.is_null():
+            raise ValueError('Cannot subtract null itervals from each other')
+        if not self.overlaps(other):
+            return []
+        diff = []
+        if other.begin > self.begin:
+            diff.append(Interval(self.begin, other.begin, self.data))
+        if self.end > other.end:
+            diff.append(Interval(other.end, self.end, self.data))
+        return diff
+
+    def __and__(self, other):
+        """return self.intersection"""
+        return self.intersection(other)
+
+    def __or__(self, other):
+        """return self.union()"""
+        return self.union(other)
+
+    def __sub__(self, other):
+        """return self.difference()"""
+        return self.difference(other)
     
     def range_matches(self, other):
         """
