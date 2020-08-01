@@ -40,7 +40,7 @@ def version_info(target_version):
     is_dev_version = 'PYPI' in os.environ and os.environ['PYPI'] == 'pypitest'
     if is_dev_version:
         p = subprocess.Popen('git describe --tag'.split(), stdout=subprocess.PIPE)
-        git_describe = p.communicate()[0].strip()
+        git_describe = str(p.communicate()[0]).strip()
         release, build, commitish = git_describe.split('-')
         version = "{0}.post{1}".format(release, build)
     else:  # This is a RELEASE version
