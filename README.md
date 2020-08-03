@@ -350,11 +350,12 @@ Based on
     * [konstantint/Konstantin Tretyakov][Konstantin intervaltree] of the University of Tartu (Estonia)
     * [siniG/Avi Gabay][siniG intervaltree]
     * [lmcarril/Luis M. Carril][lmcarril intervaltree] of the Karlsruhe Institute for Technology (Germany)
+    * [depristo/MarkDePristo][depristo intervaltree]
 
 Copyright
 ---------
 
-* [Chaim Leib Halbert][GH], 2013-2018
+* [Chaim Leib Halbert][GH], 2013-2020
 * Modifications, [Konstantin Tretyakov][Konstantin intervaltree], 2014
 
 Licensed under the [Apache License, version 2.0][Apache].
@@ -369,6 +370,7 @@ The source code for this project is at https://github.com/chaimleib/intervaltree
 [Konstantin intervaltree]: https://github.com/konstantint/PyIntervalTree
 [siniG intervaltree]: https://github.com/siniG/intervaltree
 [lmcarril intervaltree]: https://github.com/lmcarril/intervaltree
+[depristo intervaltree]: https://github.com/depristo/intervaltree
 [Confuzzled AVL tree]: http://www.eternallyconfuzzled.com/tuts/datastructures/jsw_tut_avl.aspx
 [Wiki intervaltree]: http://en.wikipedia.org/wiki/Interval_tree
 [Kahn intervaltree]: http://zurb.com/forrst/posts/Interval_Tree_implementation_in_python-e0K

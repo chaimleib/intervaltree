@@ -35,6 +35,14 @@ def l2(num):
 
 
 class Node(object):
+    __slots__ = (
+        'x_center',
+        's_center',
+        'left_node',
+        'right_node',
+        'depth',
+        'balance'
+    )
     def __init__(self,
                  x_center=None,
                  s_center=set(),
