@@ -2,6 +2,10 @@
 
 ## Version 3.1.0
 - Dropped support for Python 3.4, added Python 3.8
+- Add `__slots__` optimization in Node class, should give performance improvement
+- Fixed:
+  - Restore universal wheels
+  - Fix bytes/str type incompatibility in setup.py
 
 ## Version 3.0.2
 - Fixed:
