@@ -26,6 +26,7 @@ PYTHON_MINORS:=$(shell          \
 PYPI=pypitest
 
 TWINE=$(shell                                         \
+	pyenv shell $(shell echo "$(PYTHONS)" | tr ' ' '\n' | tail -n1) ;\
 	if twine --version &>/dev/null; then                \
 		echo twine                                       ;\
 	elif [[ -x ~/Library/Python/3.7/bin/twine ]]; then  \
