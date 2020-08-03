@@ -113,6 +113,7 @@ pyenv-install-versions: pyenv-is-installed
 		pip install -U pip; \
 		pip install -U pytest; \
 		pip install -U twine; \
+		pip install -U wheel; \
 	done | grep -v 'Requirement already satisfied, skipping upgrade'
 	pyenv rehash
 
