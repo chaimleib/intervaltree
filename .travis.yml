@@ -2,13 +2,13 @@ language: python
 matrix:
   include:
     - python: 2.7
-    - python: 3.4
     - python: 3.5
     - python: 3.6
     - python: 3.7
+    - python: 3.8
       dist: xenial
       sudo: true
-    - python: 3.8-dev
+    - python: 3.9-dev
       env: FAILOK=y
       dist: xenial
       sudo: true

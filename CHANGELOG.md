@@ -1,5 +1,13 @@
 # Change log
 
+## Version 3.1.0
+- Dropped support for Python 3.4, added Python 3.8
+- Add `__slots__` optimization in Node class, should give performance improvement
+- Fixed:
+  - Restore universal wheels
+  - Bytes/str type incompatibility in setup.py
+  - New version of distutils rejects version suffixes of `.postNN`, use `aNN` instead
+
 ## Version 3.0.2
 - Fixed:
     - On some systems, setup.py opened README.md with a non-unicode encoding. My fault for leaving the encoding flapping in the breeze. It's been fixed.
@@ -171,6 +179,3 @@
 - Added tests
 - Bug fix: interval addition via [] was broken in Python 2.7 (see http://bugs.python.org/issue21785)
 - Added intervaltree.bio subpackage, adding some utilities for use in bioinformatics
-
-## Version 0.2.2b
-- Forked from https://github.com/MusashiAharon/PyIntervalTree

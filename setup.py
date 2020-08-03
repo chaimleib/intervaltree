@@ -33,16 +33,16 @@ from setuptools.command.test import test as TestCommand
 import subprocess
 
 ## CONFIG
-target_version = '3.0.3'
+target_version = '3.1.0'
 
 
 def version_info(target_version):
     is_dev_version = 'PYPI' in os.environ and os.environ['PYPI'] == 'pypitest'
     if is_dev_version:
         p = subprocess.Popen('git describe --tag'.split(), stdout=subprocess.PIPE)
-        git_describe = p.communicate()[0].strip()
+        git_describe = str(p.communicate()[0]).strip()
         release, build, commitish = git_describe.split('-')
-        version = "{0}.post{1}".format(release, build)
+        version = "{0}a{1}".format(target_version, build)
     else:  # This is a RELEASE version
         version = target_version
     return {
@@ -86,7 +86,7 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     classifiers=[  # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Intended Audience :: Developers',
         'Intended Audience :: Information Technology',
@@ -95,10 +95,10 @@ setup(
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'License :: OSI Approved :: Apache Software License',
         'Topic :: Scientific/Engineering :: Artificial Intelligence',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
