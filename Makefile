@@ -24,17 +24,7 @@ PYTHON_MINORS:=$(shell          \
 # PyPI server name, as specified in ~/.pypirc
 # See http://peterdowns.com/posts/first-time-with-pypi.html
 PYPI=pypitest
-
-TWINE=$(shell                                         \
-	pyenv shell $(shell echo "$(PYTHONS)" | tr ' ' '\n' | tail -n1) ;\
-	if twine --version &>/dev/null; then                \
-		echo twine                                       ;\
-	elif [[ -x ~/Library/Python/3.7/bin/twine ]]; then  \
-		echo '~/Library/Python/3.7/bin/twine'            ;\
-	else                                                \
-		echo twine                                       ;\
-	fi                                                  \
-)
+TWINE=twine
 
 # default target
 all: test
@@ -112,9 +102,15 @@ pyenv-install-versions: pyenv-is-installed
 		export PYENV_VERSION=$$pyver; \
 		pip install -U pip; \
 		pip install -U pytest; \
-		pip install -U twine; \
-		pip install -U wheel; \
 	done | grep -v 'Requirement already satisfied, skipping upgrade'
+	# twine and wheel needed only under latest PYTHONS version for uploading to PYPI
+	export PYENV_VERSION=$(shell \
+		echo $(PYTHONS) | \
+		tr ' ' '\n' | \
+		tail -n1 \
+	)
+	pip install -U twine
+	pip install -U wheel
 	pyenv rehash
 
 # for debugging the Makefile
