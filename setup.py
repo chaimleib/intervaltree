@@ -42,7 +42,7 @@ def version_info(target_version):
         p = subprocess.Popen('git describe --tag'.split(), stdout=subprocess.PIPE)
         git_describe = str(p.communicate()[0]).strip()
         release, build, commitish = git_describe.split('-')
-        version = "{0}.post{1}".format(release, build)
+        version = "{0}a{1}".format(target_version, build)
     else:  # This is a RELEASE version
         version = target_version
     return {

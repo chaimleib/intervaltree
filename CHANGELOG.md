@@ -5,7 +5,8 @@
 - Add `__slots__` optimization in Node class, should give performance improvement
 - Fixed:
   - Restore universal wheels
-  - Fix bytes/str type incompatibility in setup.py
+  - Bytes/str type incompatibility in setup.py
+  - New version of distutils rejects version suffixes of `.postNN`, use `aNN` instead
 
 ## Version 3.0.2
 - Fixed:
