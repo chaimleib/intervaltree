@@ -767,12 +767,18 @@ class IntervalTree(MutableSet):
 
         self.__init__(merged)
 
-    def merge_neighbors(self, data_reducer=None, data_initializer=None, distance=1):
+    def merge_neighbors(
+        self,
+        data_reducer=None,
+        data_initializer=None,
+        distance=1,
+        strict=True,
+    ):
         """
-        Finds all adjacent intervals with ranges less than or equal to the given
-        distance and merges them into a single interval. If provided, uses 
-        data_reducer and data_initializer with similar semantics to Python's 
-        built-in reduce(reducer_func[, initializer]), as follows:
+        Finds all adjacent intervals with range terminals less than or equal to
+        the given distance and merges them into a single interval. If provided,
+        uses data_reducer and data_initializer with similar semantics to
+        Python's built-in reduce(reducer_func[, initializer]), as follows:
 
         If data_reducer is set to a function, combines the data
         fields of the Intervals with
@@ -788,6 +794,11 @@ class IntervalTree(MutableSet):
         current_reduced_data is set to a shallow copy of
         data_initiazer created with
             copy.copy(data_initializer).
+
+        If strict is True (default), only discrete intervals are merged if
+        their ranges are within the given distance; overlapping intervals
+        will not be merged. If strict is False, both neighbors and overlapping
+        intervals are merged.
 
         Completes in O(n*logn) time.
         """
@@ -813,13 +824,18 @@ class IntervalTree(MutableSet):
         for higher in sorted_intervals:
             if merged:  # series already begun
                 lower = merged[-1]
-                if (higher.begin - lower.end <= distance):  # should merge
-                    upper_bound = max(lower.end, higher.end)
-                    if data_reducer is not None:
-                        current_reduced[0] = data_reducer(current_reduced[0], higher.data)
-                    else:  # annihilate the data, since we don't know how to merge it
-                        current_reduced[0] = None
-                    merged[-1] = Interval(lower.begin, upper_bound, current_reduced[0])
+                margin = higher.begin - lower.end
+                if margin <= distance:  # should merge
+                    if strict and margin < 0:
+                        new_series()
+                        continue
+                    else:
+                        upper_bound = max(lower.end, higher.end)
+                        if data_reducer is not None:
+                            current_reduced[0] = data_reducer(current_reduced[0], higher.data)
+                        else:  # annihilate the data, since we don't know how to merge it
+                            current_reduced[0] = None
+                        merged[-1] = Interval(lower.begin, upper_bound, current_reduced[0])
                 else:
                     new_series()
             else:  # not merged; is first of Intervals to merge
