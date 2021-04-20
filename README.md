@@ -112,6 +112,7 @@ Features
     * `split_overlaps()`      (slice at all interval boundaries, optionally modifying the data field)
     * `merge_overlaps()` (joins overlapping intervals into a single interval, optionally merging the data fields)
     * `merge_equals()` (joins intervals with matching ranges into a single interval, optionally merging the data fields)
+    * `merge_neighbors()` (joins adjacent intervals into a single interval if the distance between their range terminals is less than or equal to a given distance. Optionally merges overlapping intervals. Can also merge the data fields.)
 
 * Copying and typecasting
     * `IntervalTree(tree)`    (`Interval` objects are same as those in tree)
