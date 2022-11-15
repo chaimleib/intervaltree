@@ -469,9 +469,9 @@ class IntervalTree(MutableSet):
 
     def remove_data(self, data, points=None):
         """
-        Removes all intervals containing the given data. Providing a set of points contained by the
-        intervals will speed up the operation considerably, but will only succeed if all the
-        intervals with the given data also contain the points.
+        Removes all intervals containing the given data. If a set of points is provided,
+        only intervals containing the points AND containing the given data will be removed.
+        Providing a set of points speeds up the operation considerably.
         """
         if data is None:
             raise ValueError("IntervalTree: No data submitted.")
