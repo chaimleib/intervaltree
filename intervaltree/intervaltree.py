@@ -149,6 +149,15 @@ class IntervalTree(MutableSet):
         >>> tree
         IntervalTree()
 
+    Delete intervals, containing certain data:
+    >>> tree = IntervalTree([Interval(-10, 0, "x"), Interval(0, 10, "y"), Interval(-10, 0, "y")])
+    >>> tree
+    IntervalTree([Interval(-10, 0, "x"), Interval(0, 10, "y"), Interval(-10, 0, "y")])
+    >>> tree.remove_data("y", set(1))
+    IntervalTree([Interval(-10, 0, "x"), Interval(-10, 0, "y")])
+    >>> tree.remove_data("y")
+    IntervalTree([Interval(-10, 0, "x")])
+
     Point queries::
 
         >>> tree = IntervalTree([Interval(-1.1, 1.1), Interval(-0.5, 1.5), Interval(0.5, 1.7)])

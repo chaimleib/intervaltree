@@ -45,6 +45,8 @@ Features
     * `tree.remove_overlap(point)`
     * `tree.remove_overlap(begin, end)`   (removes all overlapping the range)
     * `tree.remove_envelop(begin, end)`   (removes all enveloped in the range)
+    * `tree.remove_data(data)`   (removes all intervals containing this data)
+    * `tree.remove_data(data, point)`   (removes all intervals containing this data and overlapping the point)
 
 * Point queries
     * `tree[point]`
