@@ -467,6 +467,28 @@ class IntervalTree(MutableSet):
                 other.remove(iv)
         self.update(other)
 
+    def remove_data(self, data, points=None):
+        """
+        Removes all intervals containing the given data. Providing a set of points contained by the
+        intervals will speed up the operation considerably, but will only succeed if all the
+        intervals with the given data also contain the points.
+        """
+        if data is None:
+            raise ValueError("IntervalTree: No data submitted.")
+
+        if points is not None:
+            root = self.top_node
+            ivs = set()
+            for point in points:
+                ivs |= root.search_point(point, set())
+            ivs_with_data = [iv for iv in ivs if iv.data == data]
+            for iv in ivs_with_data:
+                self.discard(iv)
+        else:
+            ivs_without_data = [iv for iv in self.items() if iv.data != data]
+            self.clear()
+            self.__init__(ivs_without_data)
+
     def remove_overlap(self, begin, end=None):
         """
         Removes all intervals overlapping the given point or range.
