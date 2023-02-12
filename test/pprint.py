@@ -51,18 +51,8 @@ import warnings
 ENABLE_PICKLE_DEFAULT = True
 from numbers import Number
 
-try:
-    from cStringIO import StringIO as _StringIO
-except ImportError:
-    try:
-        from StringIO import StringIO as _StringIO
-    except ImportError:
-        from io import StringIO as _StringIO
+from io import StringIO as _StringIO
 
-try:
-    basestring
-except NameError:
-    basestring = str
 
 __all__ = ["pprint","pformat","isreadable","isrecursive","saferepr",
            "PrettyPrinter"]
@@ -440,7 +430,7 @@ def _pickleable(typ, obj):
     Whether we can use __reduce__ to pprint.
     """
     if (issubclass(typ, Number) or
-        issubclass(typ, basestring)
+        issubclass(typ, str)
     ):  return False
     try:
         reduce_data = obj.__reduce__()

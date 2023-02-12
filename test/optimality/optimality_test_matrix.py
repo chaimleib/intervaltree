@@ -18,17 +18,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from __future__ import absolute_import
 from intervaltree import IntervalTree, Interval
 from test import data
 from copy import deepcopy
 from pprint import pprint
 from test.progress_bar import ProgressBar
-
-try:
-    xrange
-except NameError:
-    xrange = range
 
 
 class OptimalityTestMatrix(object):
