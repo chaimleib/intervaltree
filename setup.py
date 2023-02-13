@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-intervaltree: A mutable, self-balancing interval tree for Python 2 and 3.
+intervaltree: A mutable, self-balancing interval tree for Python.
 Queries may be by point, by range overlap, or by range envelopment.
 
 Distribution logic
@@ -81,7 +81,7 @@ setup(
     name='intervaltree',
     version=vinfo['version'],
     install_requires=['sortedcontainers >= 2.0, < 3.0'],
-    description='Editable interval tree data structure for Python 2 and 3',
+    description='Editable interval tree data structure for Python',
     long_description=long_description,
     long_description_content_type='text/markdown',
     classifiers=[  # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -91,13 +91,12 @@ setup(
         'Intended Audience :: Information Technology',
         'Intended Audience :: Science/Research',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
         'License :: OSI Approved :: Apache Software License',
         'Topic :: Scientific/Engineering :: Artificial Intelligence',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
