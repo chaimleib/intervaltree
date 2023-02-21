@@ -80,8 +80,14 @@ release:
 	$(eval PYPI=pypi)
 
 # Build source distribution
-sdist-upload: distclean deps-dev
+sdist-build: distclean deps-dev
 	PYPI=$(PYPI) python setup.py sdist
+
+# Build dist distribution
+bdist-build: distclean deps-dev
+	PYPI=$(PYPI) python setup.py bdist_wheel
+
+dist-upload: sdist-build bdist-build
 	if [[ "$(PYPI)" == pypitest ]]; then \
 		$(TWINE) upload --repository-url https://test.pypi.org/legacy/ dist/*; \
 	else \
@@ -91,7 +97,7 @@ sdist-upload: distclean deps-dev
 deps-dev: pyenv-install-versions
 
 # Uploads to test server, unless the release target was run too
-upload: test clean sdist-upload
+upload: test clean dist-upload
 
 pyenv-is-installed:
 	pyenv --version &>/dev/null || (echo "ERROR: pyenv not installed" && false)
