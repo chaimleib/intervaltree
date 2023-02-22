@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-intervaltree: A mutable, self-balancing interval tree for Python 2 and 3.
+intervaltree: A mutable, self-balancing interval tree for Python.
 Queries may be by point, by range overlap, or by range envelopment.
 
 Core logic.
@@ -26,18 +26,9 @@ from .interval import Interval
 from .node import Node
 from numbers import Number
 from sortedcontainers import SortedDict
+from collections.abc import MutableSet
 from copy import copy
 from warnings import warn
-
-try:
-    from collections.abc import MutableSet  # Python 3?
-except ImportError:
-    from collections import MutableSet
-
-try:
-    xrange  # Python 2?
-except NameError:  # pragma: no cover
-    xrange = range
 
 
 # noinspection PyBroadException
@@ -900,7 +891,7 @@ class IntervalTree(MutableSet):
         bound_end = boundary_table.bisect_left(end)  # up to, but not including end
         result.update(root.search_overlap(
             # slice notation is slightly slower
-            boundary_table.keys()[index] for index in xrange(bound_begin, bound_end)
+            boundary_table.keys()[index] for index in range(bound_begin, bound_end)
         ))
 
         # TODO: improve envelop() to use node info instead of less-efficient filtering
@@ -934,7 +925,7 @@ class IntervalTree(MutableSet):
         bound_end = boundary_table.bisect_left(end)  # up to, but not including end
         result.update(root.search_overlap(
             # slice notation is slightly slower
-            boundary_table.keys()[index] for index in xrange(bound_begin, bound_end)
+            boundary_table.keys()[index] for index in range(bound_begin, bound_end)
         ))
         return result
 

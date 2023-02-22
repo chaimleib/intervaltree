@@ -9,7 +9,9 @@ TEMPS=$(shell                                                   \
 		-o \( -type d -name '__pycache__' \)                    \
 )
 
-PYTHONS:=2.7.18 3.5.9 3.6.11 3.7.8 3.8.5
+# See https://devguide.python.org/versions
+# Use every version that is not end-of-life.
+PYTHONS:=3.7.16 3.8.16 3.9.16 3.10.9 3.11.1 3.12.0a4
 PYTHON_MAJORS:=$(shell        \
 	echo "$(PYTHONS)" |         \
 	tr ' ' '\n' | cut -d. -f1 | \

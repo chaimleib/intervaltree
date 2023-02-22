@@ -3,7 +3,7 @@
 intervaltree
 ============
 
-A mutable, self-balancing interval tree for Python 2 and 3. Queries may be by point, by range overlap, or by range envelopment.
+A mutable, self-balancing interval tree for Python. Queries may be by point, by range overlap, or by range envelopment.
 
 This library was designed to allow tagging text and time intervals, where the intervals include the lower bound but not the upper bound.
 
@@ -26,7 +26,7 @@ pip install intervaltree
 Features
 --------
 
-* Supports Python 2.7 and Python 3.5+ (Tested under 2.7, and 3.5 thru 3.8)
+* Supports Python 3.7+ (Tested under 3.7 thru 3.12)
 * Initializing
     * blank `tree = IntervalTree()`
     * from an iterable of `Interval` objects (`tree = IntervalTree(intervals)`)

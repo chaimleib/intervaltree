@@ -1,5 +1,5 @@
 """
-intervaltree: A mutable, self-balancing interval tree for Python 2 and 3.
+intervaltree: A mutable, self-balancing interval tree for Python.
 Queries may be by point, by range overlap, or by range envelopment.
 
 Test module: IntervalTree, insertion and removal of float intervals
@@ -20,7 +20,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from __future__ import absolute_import
 from intervaltree import IntervalTree, Interval
 import pytest
 
