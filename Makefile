@@ -9,7 +9,7 @@ TEMPS=$(shell                                                   \
 		-o \( -type d -name '__pycache__' \)                    \
 )
 
-PYTHONS:=2.7.18 3.5.9 3.6.11 3.7.8 3.8.5
+PYTHONS:=2.7.18 3.6.15 3.7.16 3.8.16 3.9.16 3.10.10 3.11.2
 PYTHON_MAJORS:=$(shell        \
 	echo "$(PYTHONS)" |         \
 	tr ' ' '\n' | cut -d. -f1 | \
@@ -30,7 +30,7 @@ TWINE=twine
 all: test
 
 test: pytest
-	
+
 quicktest:
 	PYPI=$(PYPI) python setup.py test
 
@@ -67,7 +67,7 @@ install-pypi:
 
 install-develop:
 	PYPI=$(PYPI) python setup.py develop
-	
+
 uninstall:
 	pip uninstall intervaltree
 

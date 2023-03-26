@@ -4,12 +4,12 @@
 this_dir="$(dirname "$0")"
 export base_dir="$(dirname "$this_dir")"
 
-function testWithPython() {
-    ver="$1"
-    export PYENV_VERSION="$ver"
-    python --version
-    python "$base_dir/setup.py" test || exit 1
-}
-export -f testWithPython
-parallel testWithPython ::: $PYTHONS
-    
+set -x
+code=0
+for ver in $(pyenv versions --bare | sort -V); do
+  pyenv global "$ver"
+  python --version
+  python "$base_dir/setup.py" test || code=1
+done
+set +x
+exit "$code"

@@ -10,7 +10,7 @@ Distribution logic
 Note that "python setup.py test" invokes pytest on the package. With appropriately
 configured setup.cfg, this will check both xxx_test modules and docstrings.
 
-Copyright 2013-2018 Chaim Leib Halbert
+Copyright 2013-2023 Chaim Leib Halbert
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -27,13 +27,14 @@ limitations under the License.
 from __future__ import absolute_import
 import io
 import os
+import sys
 from sys import exit
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
 import subprocess
 
 ## CONFIG
-target_version = '3.1.0'
+target_version = '3.2.0'
 
 
 def version_info(target_version):
@@ -77,11 +78,19 @@ class PyTest(TestCommand):
         exit(pytest.main(self.test_args))
 
 
+version = sys.version_info
+isPy2 = version.major == 2
+isPy3 = version.major == 3
+isPy36 = isPy3 and version.minor == 6
+
 ## Run setuptools
 setup(
     name='intervaltree',
     version=vinfo['version'],
-    install_requires=['sortedcontainers >= 2.0, < 3.0'],
+    install_requires=[
+        'sortedcontainers{}'.format(
+            ' < 3' if isPy2 else ''),
+    ],
     description='Editable interval tree data structure for Python 2 and 3',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -95,10 +104,12 @@ setup(
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
         'License :: OSI Approved :: Apache Software License',
         'Topic :: Scientific/Engineering :: Artificial Intelligence',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
@@ -117,6 +128,32 @@ setup(
     packages=["intervaltree"],
     include_package_data=True,
     zip_safe=True,
-    tests_require=['pytest'],
+    tests_require=[
+        'iniconfig{}'.format(
+            ' < 2' if isPy2 or isPy36
+            else ''),
+        'setuptools{}'.format(
+            ' < 45' if isPy2 else ''),
+        'contextlib2{}'.format(
+            ' < 21' if isPy2 else ''),
+        'configparser{}'.format(
+            ' < 5' if isPy2 else ''),
+        'zipp{}'.format(
+            ' < 2' if isPy2 else ''),
+        'pyparsing{}'.format(
+            ' <= 2.4.5' if isPy2 else ''),
+        'attrs{}'.format(
+            ' < 22' if isPy2 else ''),
+        'importlib_metadata{}'.format(
+            ' < 3' if isPy2
+            else ' < 3.2' if isPy36
+            else  ''),
+        'packaging{}'.format(
+            ' < 21' if isPy2 else ''),
+        'pytest{}'.format(
+            ' < 5' if isPy2
+            else ' < 7.1' if isPy36
+            else ''),
+    ],
     cmdclass={'test': PyTest}
 )
