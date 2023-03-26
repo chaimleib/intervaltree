@@ -5,6 +5,10 @@ on:
     branches:
       - "master"
 
+env:
+  TEST_TAG: ${{ secrets.DOCKERHUB_USERNAME }}/intervaltree:test
+  LATEST_TAG: ${{ secrets.DOCKERHUB_USERNAME }}/intervaltree:latest
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -27,5 +31,17 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
+          load: true
+          tags: ${{ env.TEST_TAG }}
+      -
+        name: Test
+        run: docker run --rm ${{ env.TEST_TAG }}
+      -
+        name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/intervaltree:latest
+          tags: ${{ env.LATEST_TAG }}
+
