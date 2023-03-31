@@ -1,3 +1,4 @@
+#syntax=docker/dockerfile:1.5
 # Modified by chaimleib March 2023 from
 #   https://github.com/vicamo/docker-pyenv/blob/main/alpine/Dockerfile
 #
@@ -133,5 +134,8 @@ RUN set -eux; \
 
 WORKDIR /intervaltree
 COPY . .
+ARG PSEUDO_VERSION=1
+RUN SETUPTOOLS_SCM_PRETEND_VERSION=${PSEUDO_VERSION} pip install -e .[test]
+RUN --mount=source=.git,target=.git,type=bind pip install -e .
 CMD [ "scripts/testall.sh" ]
 

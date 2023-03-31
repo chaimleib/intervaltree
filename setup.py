@@ -86,7 +86,8 @@ isPy36 = isPy3 and version.minor == 6
 ## Run setuptools
 setup(
     name='intervaltree',
-    version=vinfo['version'],
+    use_scm_version=True,
+    setup_requires=['setuptools_scm'],
     install_requires=['sortedcontainers < 3'],
     description='Editable interval tree data structure for Python 2 and 3',
     long_description=long_description,
@@ -120,7 +121,6 @@ setup(
     author='Chaim Leib Halbert, Konstantin Tretyakov',
     author_email='chaim.leib.halbert@gmail.com',
     url='https://github.com/chaimleib/intervaltree',
-    download_url='https://github.com/chaimleib/intervaltree/tarball/{version}'.format(**vinfo),
     license="Apache License, Version 2.0",
     packages=["intervaltree"],
     include_package_data=True,

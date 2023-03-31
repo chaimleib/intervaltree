@@ -1,0 +1,56 @@
+[project]
+name = "intervaltree"
+dependencies = [
+    "sortedcontainers<3",
+]
+dynamic = ["version"]
+description = "Editable interval tree data structure for Python 2 and 3"
+readme = "README.md"
+license = {text = "Apache License, Version 2.0"}
+authors = [
+  {name = "Chaim Leib halbert", email = "chaim.leib.halbert@gmail.com"},
+  {name = "Konstantin Tretyakov"},
+]
+maintainers = [
+  {name = "Chaim Leib halbert", email = "chaim.leib.halbert@gmail.com"},
+]
+keywords = ["interval-tree", "data-structure", "intervals", "tree"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 2",
+    "Programming Language :: Python :: 2.7",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "License :: OSI Approved :: Apache Software License",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Text Processing :: General",
+    "Topic :: Text Processing :: Linguistic",
+    "Topic :: Text Processing :: Markup",
+]
+
+[project.urls]
+homepage = "https://github.com/chaimleib/intervaltree"
+repository = "https://github.com/chaimleib/intervaltree"
+changelog = "https://github.com/chaimleib/intervaltree/blob/master/CHANGELOG.md"
+
+[build-system]
+requires = [
+    "setuptools>=45",
+    "setuptools_scm[toml]>=6.2",
+]
+
+[tool.setuptools_scm]
+write_to = "intervaltree/_version.py"

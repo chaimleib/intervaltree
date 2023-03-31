@@ -94,13 +94,10 @@ dist-upload: sdist-build bdist-build
 		$(TWINE) upload dist/*; \
 	fi
 
-deps-dev: pyenv-install-versions
-
 # Uploads to test server, unless the release target was run too
 upload: test clean dist-upload
 
-pyenv-is-installed:
-	pyenv --version &>/dev/null || (echo "ERROR: pyenv not installed" && false)
+deps-dev: pyenv-install-versions
 
 pyenv-install-versions: pyenv-is-installed
 	for pyver in $(PYTHONS); do (echo N | pyenv install $$pyver) || true; done
@@ -118,6 +115,9 @@ pyenv-install-versions: pyenv-is-installed
 	pip install -U twine
 	pip install -U wheel
 	pyenv rehash
+
+pyenv-is-installed:
+	pyenv --version &>/dev/null || (echo "ERROR: pyenv not installed" && false)
 
 # for debugging the Makefile
 env:
