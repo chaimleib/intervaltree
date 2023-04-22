@@ -94,10 +94,14 @@ dist-upload: sdist-build bdist-build
 		$(TWINE) upload dist/*; \
 	fi
 
-deps-dev: pyenv-install-versions
+deps-dev: pyenv-install-versions parallel-is-installed
 
 # Uploads to test server, unless the release target was run too
 upload: test clean dist-upload
+
+# The testall.sh script uses parallel
+parallel-is-installed:
+	parallel --version &>/dev/null || (echo "ERROR: parallel not installed" && false)
 
 pyenv-is-installed:
 	pyenv --version &>/dev/null || (echo "ERROR: pyenv not installed" && false)
@@ -143,6 +147,7 @@ env:
 	install-develop \
 	pyenv-install-versions \
 	pyenv-is-installed \
+	parallel-is-installed \
 	uninstall \
 	register \
 	release \
