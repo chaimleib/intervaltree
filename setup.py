@@ -28,9 +28,7 @@ from __future__ import absolute_import
 import io
 import os
 import sys
-from sys import exit
-from setuptools import setup
-from setuptools.command.test import test as TestCommand
+from setuptools import setup, Command
 import subprocess
 
 ## CONFIG
@@ -64,18 +62,18 @@ else:
 with io.open('README.md', 'r', encoding='utf-8') as fh:
     long_description = fh.read()
 
-## PyTest
-# This is a plug-in for setuptools that will invoke py.test
-# when you run python setup.py test
-class PyTest(TestCommand):
+## Custom test command to run pytest
+class PyTest(Command):
+    user_options = []
+    def initialize_options(self):
+        pass
     def finalize_options(self):
-        TestCommand.finalize_options(self)
-        self.test_args = []
-        self.test_suite = True
+        pass
+    def run(self):
+        import pytest
+        errno = pytest.main([])
+        sys.exit(errno)
 
-    def run_tests(self):
-        import pytest  # import here, because outside the required eggs aren't loaded yet
-        exit(pytest.main(self.test_args))
 
 
 version = sys.version_info
