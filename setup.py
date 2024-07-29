@@ -30,7 +30,6 @@ import os
 import sys
 from sys import exit
 from setuptools import setup
-from setuptools.command.test import test as TestCommand
 import subprocess
 
 ## CONFIG
@@ -67,16 +66,6 @@ with io.open('README.md', 'r', encoding='utf-8') as fh:
 ## PyTest
 # This is a plug-in for setuptools that will invoke py.test
 # when you run python setup.py test
-class PyTest(TestCommand):
-    def finalize_options(self):
-        TestCommand.finalize_options(self)
-        self.test_args = []
-        self.test_suite = True
-
-    def run_tests(self):
-        import pytest  # import here, because outside the required eggs aren't loaded yet
-        exit(pytest.main(self.test_args))
-
 
 version = sys.version_info
 isPy2 = version.major == 2
@@ -152,5 +141,4 @@ setup(
             else ' < 7.1' if isPy36
             else ''),
     ],
-    cmdclass={'test': PyTest}
 )
