@@ -126,10 +126,10 @@ def write_ivs_data(name, ivs, docstring='', imports=None):
         pprint(data, f)
 
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
 #     ivs = gaps_rand()
 #     write_ivs_data('ivs3', ivs, docstring="""
 # Random integer ranges, with gaps.
 # """
 #     )
-    pprint(ivs)
+    # pprint(ivs)
