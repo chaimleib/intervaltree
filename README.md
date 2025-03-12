@@ -364,7 +364,7 @@ Licensed under the [Apache License, version 2.0][Apache].
 The source code for this project is at https://github.com/chaimleib/intervaltree
 
 
-[build status badge]: https://github.com/chaimleib/intervaltree/workflows/build/badge.svg
+[build status badge]: https://github.com/chaimleib/intervaltree/workflows/tests/badge.svg
 [build status]: https://github.com/chaimleib/intervaltree/actions
 [GH]: https://github.com/chaimleib/intervaltree
 [issue tracker]: https://github.com/chaimleib/intervaltree/issues
