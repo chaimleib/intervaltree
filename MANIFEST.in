@@ -1,2 +1,2 @@
 include README.md CHANGELOG.md LICENSE.txt
-recursive-include test *
+recursive-include test requirements
