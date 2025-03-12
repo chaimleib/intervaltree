@@ -51,7 +51,23 @@ jobs:
     - name: Test with pytest
       run: |
         coverage run -m pytest
-        coverage report
+        coverage report -m
+
+  pytest-python27:
+    runs-on: ubuntu-latest
+    container: coatldev/six:latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Display Python verison
+      run: python2 -c "import sys; print(sys.version)"
+    - name: Install dependencies
+      run: |
+        python2 -m pip install --upgrade pip
+        pip2 install -r requirements/pytest.txt
+    - name: Test with pytest
+      run: |
+        coverage2 run -m pytest
+        coverage2 report -m
 
   flake8:
     runs-on: ubuntu-latest
