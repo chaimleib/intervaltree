@@ -1,5 +1,14 @@
 # Change log
 
+## Version 3.2.0
+- Added:
+  - `pyproject.toml`, which modernizes the build and dependency system.
+  - `requirements/*.txt`: If you are not using `pyproject.toml`,
+    use `pip install -r` on `requirements/common.txt`
+- Maintainers:
+  - Use GitHub Actions for CI testing.
+  - GHA workflows include test coverage reports.
+
 ## Version 3.1.0
 - Dropped support for Python 3.4, added Python 3.8
 - Add `__slots__` optimization in Node class, should give performance improvement
