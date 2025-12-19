@@ -26,7 +26,7 @@ pip install intervaltree
 Features
 --------
 
-* Supports Python 2.7 and Python 3.6+ (Tested under 2.7, and 3.6 thru 3.11)
+* Supports Python 2.7 and Python 3.5+ (Tested under 2.7, and 3.5 thru 3.14)
 * Initializing
     * blank `tree = IntervalTree()`
     * from an iterable of `Interval` objects (`tree = IntervalTree(intervals)`)
@@ -356,7 +356,7 @@ Based on
 Copyright
 ---------
 
-* [Chaim Leib Halbert][GH], 2013-2023
+* [Chaim Leib Halbert][GH], 2013-2025
 * Modifications, [Konstantin Tretyakov][Konstantin intervaltree], 2014
 
 Licensed under the [Apache License, version 2.0][Apache].
@@ -364,7 +364,7 @@ Licensed under the [Apache License, version 2.0][Apache].
 The source code for this project is at https://github.com/chaimleib/intervaltree
 
 
-[build status badge]: https://github.com/chaimleib/intervaltree/workflows/ci/badge.svg
+[build status badge]: https://github.com/chaimleib/intervaltree/workflows/tests/badge.svg
 [build status]: https://github.com/chaimleib/intervaltree/actions
 [GH]: https://github.com/chaimleib/intervaltree
 [issue tracker]: https://github.com/chaimleib/intervaltree/issues

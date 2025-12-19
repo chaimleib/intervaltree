@@ -25,8 +25,10 @@ from warnings import warn
 from test.optimality.optimality_test_matrix import OptimalityTestMatrix
 from test import data
 
+from intervaltree import IntervalTree
 
-matrix = OptimalityTestMatrix(verbose=1)
+
+matrix = OptimalityTestMatrix(verbose=True)
 matrix.run()
 
 
