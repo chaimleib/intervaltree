@@ -1,7 +1,11 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project]
 name = "intervaltree"
 description='Editable interval tree data structure for Python 2 and 3'
-version = "3.2.0"
+version = "3.2.1"
 authors = [
   { name="Chaim Leib Halbert", email="chaim.leib.halbert@gmail.com" },
   { name="Konstantin Tretyakov" },
@@ -68,9 +72,3 @@ norecursedirs = [
   '.tox',
   '.vscode',
 ]
-
-[tool.hatch]
-
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
