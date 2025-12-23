@@ -123,7 +123,7 @@ pyenv-install-main-env: pyenv-is-installed
 	pip$(MAINPYMINOR) install -U pip || exit 1
 	pip$(MAINPYMINOR) install -r requirements/flake8.txt
 	pip$(MAINPYMINOR) install -r requirements/pytest.txt || exit 1
-	pip$(MAINPYMINOR) install -U hatchling twine
+	pip$(MAINPYMINOR) install -U hatch hatchling twine
 	@echo "Finished setting up venv for main Python $(MAINPY)"
 
 pyenv-install-envs: pyenv-is-installed

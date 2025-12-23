@@ -1,11 +1,18 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "uv-dynamic-versioning"]
 build-backend = "hatchling.build"
+
+[tool.uv-dynamic-versioning]
+dirty = true
+pattern = "default-unprefixed"
+
+[tool.hatch.version]
+source = "uv-dynamic-versioning"
 
 [project]
 name = "intervaltree"
-description='Editable interval tree data structure for Python 2 and 3'
-version = "3.2.1"
+description = 'Editable interval tree data structure for Python 2 and 3'
+dynamic = ['version']
 authors = [
   { name="Chaim Leib Halbert", email="chaim.leib.halbert@gmail.com" },
   { name="Konstantin Tretyakov" },
