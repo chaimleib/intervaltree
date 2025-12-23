@@ -102,29 +102,12 @@ build: clean
 upload: test build
 	source venv/mainpy$(MAINPYMINOR)/bin/activate || exit 1
 	if [[ "$(PYPI)" == pypitest ]]; then \
-		python$(MAINPYMINOR) -m twine upload --repository-url testpypi dist/*; \
+		python$(MAINPYMINOR) -m twine upload --verbose -r testpypi dist/*; \
 	else \
-		python$(MAINPYMINOR) -m twine upload dist/*; \
+		python$(MAINPYMINOR) -m twine upload --verbose dist/*; \
 	fi
 
-install-devtools: \
-	pyenv-install-main-env \
-	install-flake8 \
-	install-hatchling \
-	install-twine \
-	pyenv-install-envs
-
-install-flake8:
-	source venv/mainpy$(MAINPYMINOR)/bin/activate || exit 1
-	pip$(MAINPYMINOR) install -r requirements/flake8.txt
-
-install-twine:
-	source venv/mainpy$(MAINPYMINOR)/bin/activate || exit 1
-	pip$(MAINPYMINOR) install -U twine
-
-install-hatchling:
-	source venv/mainpy$(MAINPYMINOR)/bin/activate || exit 1
-	pip$(MAINPYMINOR) install -U hatchling
+install-devtools: pyenv-install-main-env pyenv-install-envs
 
 pyenv-is-installed:
 	pyenv --version &>/dev/null || (echo "ERROR: pyenv not installed" && false)
@@ -138,7 +121,9 @@ pyenv-install-main-env: pyenv-is-installed
 	python$(MAINPYMINOR) -m venv venv/mainpy$(MAINPYMINOR) || exit 1
 	source venv/mainpy$(MAINPYMINOR)/bin/activate || exit 1
 	pip$(MAINPYMINOR) install -U pip || exit 1
+	pip$(MAINPYMINOR) install -r requirements/flake8.txt
 	pip$(MAINPYMINOR) install -r requirements/pytest.txt || exit 1
+	pip$(MAINPYMINOR) install -U hatchling twine
 	@echo "Finished setting up venv for main Python $(MAINPY)"
 
 pyenv-install-envs: pyenv-is-installed
@@ -199,11 +184,8 @@ env:
 	flake8 \
 	install-develop \
 	install-devtools \
-	install-flake8 \
-	install-hatchling \
 	install-pypi \
 	install-testpypi \
-	install-twine \
 	pyenv-install-envs \
 	pyenv-install-main-env \
 	pyenv-is-installed \
