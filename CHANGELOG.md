@@ -1,7 +1,22 @@
 # Change log
 
+## Version 3.2.1
+- Fixed:
+  - Build system includes sortedcontainers dependency in the wheel again
+- Maintainers:
+  - Local testing happens inside virtual environments,
+    instead of in the system-installed Python environment.
+  - Add uv-dynamic-versioning.
+    This generates automatic version numbers for test.pypi.org,
+    based on the distance from the last tag version.
+  - CI tests "pip install ."
+  - Updated Makefile
+  - Updated HACKING.md
+
 ## Version 3.2.0
+BROKEN: missing sortedcontainers dependency from wheel
 - Added:
+  - Add support for Python 3.9 - 3.14
   - `pyproject.toml`, which modernizes the build and dependency system.
   - `requirements/*.txt`: If you are not using `pyproject.toml`,
     use `pip install -r` on `requirements/common.txt`
