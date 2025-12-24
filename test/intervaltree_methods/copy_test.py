@@ -63,6 +63,12 @@ def test_copy_cast():
     tset = set(t)
     assert tset == t.items()
 
+def test_copy_type():
+    class MyTree(IntervalTree):
+        pass
+    t = MyTree.from_tuples([(0, 1), (1, 2)])
+    c = t.copy()
+    assert isinstance(c, MyTree)
 
 if __name__ == "__main__":
     import pytest

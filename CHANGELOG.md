@@ -1,5 +1,10 @@
 # Change log
 
+## Version 3.2.2
+- Fixed:
+  - Better subclassing support: Determine classes dynamically,
+    so that methods like str() are aware when our types are subclassed.
+
 ## Version 3.2.1
 - Fixed:
   - Build system includes sortedcontainers dependency in the wheel again

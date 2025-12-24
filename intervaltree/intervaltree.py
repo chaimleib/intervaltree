@@ -247,7 +247,7 @@ class IntervalTree(MutableSet):
          where the tuple lists begin, end, and optionally data.
         """
         ivs = [Interval(*t) for t in tups]
-        return IntervalTree(ivs)
+        return cls(ivs)
 
     def __init__(self, intervals=None):
         """
@@ -277,7 +277,7 @@ class IntervalTree(MutableSet):
         Completes in O(n*log n) time.
         :rtype: IntervalTree
         """
-        return IntervalTree(iv.copy() for iv in self)
+        return self.__class__(iv.copy() for iv in self)
 
     def _add_boundaries(self, interval):
         """
@@ -407,7 +407,7 @@ class IntervalTree(MutableSet):
         for iv in self:
             if iv not in other:
                 ivs.add(iv)
-        return IntervalTree(ivs)
+        return self.__class__(ivs)
 
     def difference_update(self, other):
         """
@@ -421,7 +421,7 @@ class IntervalTree(MutableSet):
         Returns a new tree, comprising all intervals from self
         and other.
         """
-        return IntervalTree(set(self).union(other))
+        return self.__class__(set(self).union(other))
 
     def intersection(self, other):
         """
@@ -433,7 +433,7 @@ class IntervalTree(MutableSet):
         for iv in shorter:
             if iv in longer:
                 ivs.add(iv)
-        return IntervalTree(ivs)
+        return self.__class__(ivs)
 
     def intersection_update(self, other):
         """
@@ -452,7 +452,7 @@ class IntervalTree(MutableSet):
         if not isinstance(other, set): other = set(other)
         me = set(self)
         ivs = me.difference(other).union(other.difference(me))
-        return IntervalTree(ivs)
+        return self.__class__(ivs)
 
     def symmetric_difference_update(self, other):
         """
@@ -1193,7 +1193,7 @@ class IntervalTree(MutableSet):
         :rtype: bool
         """
         return (
-            isinstance(other, IntervalTree) and
+            isinstance(other, self.__class__) and
             self.all_intervals == other.all_intervals
         )
 
@@ -1203,9 +1203,9 @@ class IntervalTree(MutableSet):
         """
         ivs = sorted(self)
         if not ivs:
-            return "IntervalTree()"
+            return "{0}()".format(self.__class__.__name__)
         else:
-            return "IntervalTree({0})".format(ivs)
+            return "{0}({1})".format(self.__class__.__name__, ivs)
 
     __str__ = __repr__
 
@@ -1214,5 +1214,5 @@ class IntervalTree(MutableSet):
         For pickle-ing.
         :rtype: tuple
         """
-        return IntervalTree, (sorted(self.all_intervals),)
+        return self.__class__, (sorted(self.all_intervals),)
 
