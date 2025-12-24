@@ -3,8 +3,8 @@ requires = ["hatchling", "uv-dynamic-versioning"]
 build-backend = "hatchling.build"
 
 [tool.uv-dynamic-versioning]
-dirty = true
 pattern = "default-unprefixed"
+format-jinja = "{{ base }}{% if distance > 0%}.post{{ distance }}.{{ commit }}{% endif %}{% if dirty %}+dirty{% endif %}"
 
 [tool.hatch.version]
 source = "uv-dynamic-versioning"
