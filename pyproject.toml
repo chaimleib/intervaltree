@@ -1,7 +1,19 @@
+[build-system]
+requires = ["hatchling", "uv-dynamic-versioning"]
+build-backend = "hatchling.build"
+
+[tool.uv-dynamic-versioning]
+pattern = "default-unprefixed"
+# test.pypi.org won't accept anything after a +, so metadata has to go :(
+metadata = false
+
+[tool.hatch.version]
+source = "uv-dynamic-versioning"
+
 [project]
 name = "intervaltree"
-description='Editable interval tree data structure for Python 2 and 3'
-version = "3.2.0"
+description = 'Editable interval tree data structure for Python 2 and 3'
+dynamic = ['version']
 authors = [
   { name="Chaim Leib Halbert", email="chaim.leib.halbert@gmail.com" },
   { name="Konstantin Tretyakov" },
@@ -68,9 +80,3 @@ norecursedirs = [
   '.tox',
   '.vscode',
 ]
-
-[tool.hatch]
-
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"

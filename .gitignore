@@ -19,6 +19,7 @@ pyandoc/
 pandoc
 docutils/
 bin/
+venv/
 
 # Developer eggs
 *.egg-info
