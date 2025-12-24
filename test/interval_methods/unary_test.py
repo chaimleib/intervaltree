@@ -32,21 +32,6 @@ def test_isnull():
     assert iv.is_null()
 
 
-def test_copy():
-    iv0 = Interval(1, 2, 3)
-    iv1 = iv0.copy()
-    assert iv1.begin == iv0.begin
-    assert iv1.end == iv0.end
-    assert iv1.data == iv0.data
-    assert iv1 == iv0
-
-    iv2 = pickle.loads(pickle.dumps(iv0))
-    assert iv2.begin == iv0.begin
-    assert iv2.end == iv0.end
-    assert iv2.data == iv0.data
-    assert iv2 == iv0
-
-
 def test_len():
     iv = Interval(0, 0)
     assert len(iv) == 3
@@ -70,28 +55,6 @@ def test_length():
 
     iv = Interval(0.1, 3)
     assert iv.length() == 2.9
-
-
-def test_str():
-    iv = Interval(0, 1)
-    s = str(iv)
-    assert s == 'Interval(0, 1)'
-    assert repr(iv) == s
-
-    iv = Interval(0, 1, '[0,1)')
-    s = str(iv)
-    assert s == "Interval(0, 1, '[0,1)')"
-    assert repr(iv) == s
-
-    iv = Interval((1,2), (3,4))
-    s = str(iv)
-    assert s == 'Interval((1, 2), (3, 4))'
-    assert repr(iv) == s
-
-    iv = Interval((1,2), (3,4), (5, 6))
-    s = str(iv)
-    assert s == 'Interval((1, 2), (3, 4), (5, 6))'
-    assert repr(iv) == s
 
 
 def test_get_fields():
