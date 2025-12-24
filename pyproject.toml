@@ -4,7 +4,8 @@ build-backend = "hatchling.build"
 
 [tool.uv-dynamic-versioning]
 pattern = "default-unprefixed"
-format-jinja = "{{ base }}{% if distance > 0%}.post{{ distance }}.{{ commit }}{% endif %}{% if dirty %}+dirty{% endif %}"
+# test.pypi.org won't accept anything after a +, so metadata has to go :(
+metadata = false
 
 [tool.hatch.version]
 source = "uv-dynamic-versioning"
