@@ -27,7 +27,6 @@ from .node import Node
 from numbers import Number
 from sortedcontainers import SortedDict
 from copy import copy
-from warnings import warn
 
 try:
     from collections.abc import MutableSet  # Python 3?
