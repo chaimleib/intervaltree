@@ -59,11 +59,21 @@ class OptimalityTestMatrix(object):
             self.test_types[key] = test_function
 
         # set ivs
-        self.ivs = {
-            key: [Interval(*tup) for tup in value.data]
-            for key, value in data.__dict__.items()
-            if 'copy_structure' not in key and hasattr(value, 'data')
+        self.ivs = {}
+        # Python tuples
+        modules = {
+            key: module for key, module in data.__dict__.items()
+            if 'copy_structure' not in key
         }
+        for key, module in modules.items():
+            if not hasattr(module, 'data'):
+                continue
+            self.ivs[key] = [Interval(*tup) for tup in module.data]
+        # Load nested list from file
+        for key, module in modules.items():
+            if not hasattr(module, 'load'):
+                continue
+            self.ivs[key] = [Interval(*tup) for tup in module.load()]
 
         # initialize result matrix
         self.result_matrix = {

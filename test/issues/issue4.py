@@ -8,9 +8,6 @@ from __future__ import absolute_import
 from intervaltree import IntervalTree
 from test.progress_bar import ProgressBar
 from test import data
-items = data.issue4.data
-MAX = data.issue4.MAX
-from test.intervals import write_ivs_data
 from test.optimality.optimality_test_matrix import OptimalityTestMatrix
 from pprint import pprint
 import cProfile
@@ -18,6 +15,8 @@ import pstats
 
 
 def test_build_tree():
+    items = data.issue4.load()
+    MAX = data.issue4.MAX
     pbar = ProgressBar(len(items))
 
     tree = IntervalTree()
@@ -59,7 +58,7 @@ def optimality_core():
     #write_result(tree)
     #print(len(tree))
     matrix = OptimalityTestMatrix({
-        'issue4result': IntervalTree.from_tuples(data.issue4_result.data),
+        'issue4result': IntervalTree.from_tuples(data.issue4_result.load()),
     })
     pprint(matrix.summary_matrix)
 
@@ -77,19 +76,6 @@ def profile():
 def print_restats():
     p = pstats.Stats('restats')
     p.sort_stats('cumulative').print_stats()
-
-
-def write_result(tree):
-    write_ivs_data('issue4_result', tree, docstring='''
-Result tree data from test/issue4.py.
-''')
-
-
-def write_items():
-    items = [(begin, end, data) for data, begin, end in items]
-    write_ivs_data('issue4', items, docstring = """
-Source data for test/issue4. Very long!
-""", imports='MAX = %d' % MAX)
 
 
 if __name__ == '__main__':
