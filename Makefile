@@ -9,25 +9,32 @@ TEMPS=$(shell                                                   \
 
 PYTHON_MINORS:=$(shell echo 2.7 3.{5..14})
 PYTHONS:=$(shell echo $(PYTHON_MINORS) | xargs -n1 pyenv latest -k)
+# MAINPY and MAINPYMINOR are the latest python in the list.
+# make install-devtools creates two venvs:
+# - mainpy$(MAINPYMINOR), and
+# - py$(MAINPYMINOR).
+# mainpy is used for uploads to pypi. py is for running tests.
+# All targets using source venv/... must ensure
+# that subsequent lines are run using in the same shell.
 MAINPY=$(shell echo $(PYTHONS) | tr ' ' '\n' | tail -n1)
 MAINPYMINOR=$(shell echo $(PYTHON_MINORS) | tr ' ' '\n' | tail -n1)
 
-# PyPI server name, as specified in ~/.pypirc
-# See http://peterdowns.com/posts/first-time-with-pypi.html
 PYPI=pypitest
 
 # default target
-all: test
+all: test build
 
 test: pytest flake8
 
 quicktest:
-	source venv/mainpy$(MAINPY)/bin/activate
+	source venv/py$(MAINPYMINOR)/bin/activate || true; \
 	python -m pytest
 
 coverage:
-	pytest --cov=intervaltree
-	coverage html | sed -E 's@(Wrote HTML report to) (.*)@\1 file://'"$$PWD"'/\2@'
+	source venv/py$(MAINPYMINOR)/bin/activate || true; \
+	python -m pytest --cov=intervaltree; \
+	python -m coverage html | \
+		sed -E 's@(Wrote HTML report to) (.*)@\1 file:/'"$$PWD"'/\2@'
 
 pytest:
 	unset anyerr; \
@@ -50,13 +57,22 @@ pytest:
 			anyerr=y; \
 			continue; \
 		fi; \
+		deactivate; \
 	done; \
 	if [ -n "$$anyerr" ]; then exit 1; fi
 
 flake8:
-	source venv/mainpy$(MAINPYMINOR)/bin/activate || exit 1
-	flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --extend-exclude=venv,requirements,dist
-	# flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+	source venv/py$(MAINPYMINOR)/bin/activate || true; \
+	python -m flake8 \
+		--count --statistics --select=E9,F63,F7,F82 --show-source \
+		--extend-exclude=venv,requirements,dist \
+		.; \
+	# python -m flake8 \
+	# 	--count --statistics --exit-zero \
+	# 	--max-complexity=10 --max-line-length=127 \
+	# 	--extend-exclude=venv,requirements,dist \
+	# 	.; \
+	deactivate
 
 clean: clean-build clean-eggs clean-temps
 
@@ -74,6 +90,7 @@ clean-env:
 clean-temps:
 	rm -rf $(TEMPS)
 
+# Project install/uninstall targets
 install-testpypi:
 	pip install \
 		--no-cache-dir \
@@ -90,45 +107,57 @@ install-develop:
 uninstall:
 	pip uninstall intervaltree sortedcontainers
 
-# Setup for live upload
-release:
+# Setup for production upload
+prod:
 	$(eval PYPI=pypi)
 
-# Build dist distribution
+# Build wheel and sdist distribution
 build: clean
-	source venv/mainpy$(MAINPYMINOR)/bin/activate || exit 1
-	python$(MAINPYMINOR) -m hatch build
+	source venv/mainpy$(MAINPYMINOR)/bin/activate; \
+	python$(MAINPYMINOR) -m hatch build; \
+	deactivate
 
 upload: test build
-	source venv/mainpy$(MAINPYMINOR)/bin/activate || exit 1
+	source venv/mainpy$(MAINPYMINOR)/bin/activate; \
 	if [[ "$(PYPI)" == pypitest ]]; then \
-		python$(MAINPYMINOR) -m twine upload --verbose -r testpypi dist/*; \
+		python$(MAINPYMINOR) -m twine upload --verbose \
+			--repository testpypi \
+			dist/*; \
 	else \
-		python$(MAINPYMINOR) -m twine upload --verbose dist/*; \
-	fi
+		python$(MAINPYMINOR) -m twine upload --verbose \
+			dist/*; \
+	fi; \
+	deactivate
 
 install-devtools: pyenv-install-main-env pyenv-install-envs
 
 pyenv-is-installed:
 	pyenv --version &>/dev/null || (echo "ERROR: pyenv not installed" && false)
 
+# Set up an environment for running upload commands.
 pyenv-install-main-env: pyenv-is-installed
 	@# echo N: Do not recompile a python interpreter if it is already present.
 	echo N | pyenv install $(MAINPY) || true
 	@echo "Setting up venv for main Python version $(MAINPY)"
 	export PYENV_VERSION=$(MAINPY)
 	unset CFLAGS;
-	python$(MAINPYMINOR) -m venv venv/mainpy$(MAINPYMINOR) || exit 1
-	source venv/mainpy$(MAINPYMINOR)/bin/activate || exit 1
-	pip$(MAINPYMINOR) install -U pip || exit 1
-	pip$(MAINPYMINOR) install -r requirements/flake8.txt
-	pip$(MAINPYMINOR) install -r requirements/pytest.txt || exit 1
-	pip$(MAINPYMINOR) install -U hatch hatchling twine
-	@echo "Finished setting up venv for main Python $(MAINPY)"
+	python$(MAINPYMINOR) -m venv venv/mainpy$(MAINPYMINOR)
+	source venv/mainpy$(MAINPYMINOR)/bin/activate; \
+	pip$(MAINPYMINOR) install -U pip; \
+	pip$(MAINPYMINOR) install -U hatch twine; \
+	echo "Finished setting up venv for main Python $(MAINPY)"; \
+	deactivate
 
+# Set up environments for running tests.
 pyenv-install-envs: pyenv-is-installed
 	@# echo N: Do not recompile a python interpreter if it is already present.
-	for pyver in $(PYTHONS); do echo N | pyenv install $$pyver || true; done
+	for pyver in $(PYTHONS); do \
+		unset CFLAGS; \
+		if [[ "$$pyver" == 2.* ]]; then \
+			export CFLAGS=" -std=c17"; \
+		fi; \
+		echo N | pyenv install $$pyver || true; \
+	done
 	@# Setup virtual environments.
 	@# venv only works on Python 3.3 and later. It will not work for 2.7.
 	@# So, use virtualenv for 2.7.
@@ -137,25 +166,23 @@ pyenv-install-envs: pyenv-is-installed
 		echo "Setting up venv for Python $${pyver}"; \
 		export PYENV_VERSION=$$pyver; \
 		pyminor=$${pyver%.*}; \
-		unset CFLAGS; \
 		if [[ "$$pyver" == 2.* ]]; then \
-			export CFLAGS=" -std=c17"; \
 			pip$${pyminor} install virtualenv || continue; \
 			python$${pyminor} -m virtualenv \
 				--python=python$${pyminor} \
 				venv/py$${pyminor} || continue; \
-			source venv/py$${pyminor}/bin/activate || continue; \
 		else \
 			python$${pyminor} -m venv venv/py$${pyminor} || continue; \
-			source venv/py$${pyminor}/bin/activate || continue; \
 		fi; \
+		source venv/py$${pyminor}/bin/activate || continue; \
 		pip$${pyminor} install -U pip || continue; \
 		pip$${pyminor} install -r requirements/pytest.txt || continue; \
+		if [[ "$${pyminor}" == "$(MAINPYMINOR)" ]]; then \
+			pip$${pyminor} install -r requirements/flake8.txt || continue; \
+		fi; \
 		echo "Finished setting up venv for Python $${pyver}"; \
+		deactivate \
 	done
-
-pyenv-uninstall-envs:
-	rm -rf venv
 
 pyenv-uninstall-versions:
 	for pyver in $(PYTHONS); do (echo y | pyenv uninstall $$pyver) || true; done
@@ -163,20 +190,21 @@ pyenv-uninstall-versions:
 # for debugging the Makefile
 env:
 	@echo
-	@echo TEMPS="\"$(TEMPS)\""
-	@echo PYTHONS="\"$(PYTHONS)\""
-	@echo PYTHON_MINORS="\"$(PYTHON_MINORS)\""
 	@echo MAINPY="\"$(MAINPY)\""
 	@echo MAINPYMINOR="\"$(MAINPYMINOR)\""
-	@echo PYENV_VERSION="\"$(PYENV_VERSION)\""
+	@echo PYTHONS="\"$(PYTHONS)\""
+	@echo PYTHON_MINORS="\"$(PYTHON_MINORS)\""
+	@echo CFLAGS="\"${CFLAGS}\""
+	@echo TEMPS="\"$(TEMPS)\""
+	@echo PYENV_VERSION="\"$${PYENV_VERSION}\""
 	@echo PYPI="\"$(PYPI)\""
-
 
 .PHONY: all \
 	build \
 	clean \
 	clean-build \
 	clean-eggs \
+	clean-env \
 	clean-temps \
 	coverage \
 	distclean \
@@ -186,15 +214,13 @@ env:
 	install-devtools \
 	install-pypi \
 	install-testpypi \
+	prod \
 	pyenv-install-envs \
 	pyenv-install-main-env \
 	pyenv-is-installed \
-	pyenv-uninstall-envs \
 	pyenv-uninstall-versions \
 	pytest \
 	quicktest \
-	release \
 	test \
 	uninstall \
 	upload
-
