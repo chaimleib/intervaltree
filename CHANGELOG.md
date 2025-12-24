@@ -4,6 +4,8 @@
 - Fixed:
   - Better subclassing support: Determine classes dynamically,
     so that methods like str() are aware when our types are subclassed.
+- Maintainers:
+  - Load issue4 test data via JSON to save on compilation and collection time.
 
 ## Version 3.2.1
 - Fixed:
