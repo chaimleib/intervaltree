@@ -305,9 +305,18 @@ class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
             s_begin = repr(self.begin)
             s_end = repr(self.end)
         if self.data is None:
-            return "Interval({0}, {1})".format(s_begin, s_end)
+            return "{0}({1}, {2})".format(
+                self.__class__.__name__,
+                s_begin,
+                s_end,
+            )
         else:
-            return "Interval({0}, {1}, {2})".format(s_begin, s_end, repr(self.data))
+            return "{0}({1}, {2}, {3})".format(
+                self.__class__.__name__,
+                s_begin,
+                s_end,
+                repr(self.data),
+            )
 
     __str__ = __repr__
 
@@ -317,12 +326,12 @@ class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
         :return: copy of self
         :rtype: Interval
         """
-        return Interval(self.begin, self.end, self.data)
-    
+        return self.__class__(self.begin, self.end, self.data)
+
     def __reduce__(self):
         """
         For pickle-ing.
         :return: pickle data
         :rtype: tuple
         """
-        return Interval, self._get_fields()
+        return self.__class__, self._get_fields()

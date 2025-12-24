@@ -62,7 +62,7 @@ class Node(object):
         :rtype : Node
         """
         center = interval.begin
-        return Node(center, [interval])
+        return cls(center, [interval])
 
     @classmethod
     def from_intervals(cls, intervals):
@@ -71,7 +71,7 @@ class Node(object):
         """
         if not intervals:
             return None
-        return Node.from_sorted_intervals(sorted(intervals))
+        return cls.from_sorted_intervals(sorted(intervals))
 
     @classmethod
     def from_sorted_intervals(cls, intervals):
@@ -80,7 +80,7 @@ class Node(object):
         """
         if not intervals:
             return None
-        node = Node()
+        node = cls()
         node = node.init_from_sorted(intervals)
         return node
 
@@ -99,8 +99,8 @@ class Node(object):
                 s_right.append(k)
             else:
                 self.s_center.add(k)
-        self.left_node = Node.from_sorted_intervals(s_left)
-        self.right_node = Node.from_sorted_intervals(s_right)
+        self.left_node = self.__class__.from_sorted_intervals(s_left)
+        self.right_node = self.__class__.from_sorted_intervals(s_right)
         return self.rotate()
 
     def center_hit(self, interval):
@@ -212,7 +212,7 @@ class Node(object):
         else:
             direction = self.hit_branch(interval)
             if not self[direction]:
-                self[direction] = Node.from_interval(interval)
+                self[direction] = self.__class__.from_interval(interval)
                 self.refresh_balance()
                 return self
             else:
@@ -392,7 +392,7 @@ class Node(object):
                     if iv.contains_point(new_x_center): yield iv
 
             # Create a new node with the largest x_center possible.
-            child = Node(new_x_center, get_new_s_center())
+            child = self.__class__(new_x_center, get_new_s_center())
             self.s_center -= child.s_center
 
             #print('Pop hit! Returning child   = {}'.format(
@@ -527,7 +527,8 @@ class Node(object):
         user, I'm not bothering to make this copy-paste-executable as a
         constructor.
         """
-        return "Node<{0}, depth={1}, balance={2}>".format(
+        return "{0}<{1}, depth={2}, balance={3}>".format(
+            self.__class__.__name__,
             self.x_center,
             self.depth,
             self.balance
