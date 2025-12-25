@@ -4,6 +4,7 @@
 - Fixed:
   - Better subclassing support: Determine classes dynamically,
     so that methods like str() are aware when our types are subclassed.
+  - Removed no-op check and extra list allocation during chop()
 - Maintainers:
   - Load issue4 test data via JSON to save on compilation and collection time.
 

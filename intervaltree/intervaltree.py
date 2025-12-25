@@ -27,7 +27,6 @@ from .node import Node
 from numbers import Number
 from sortedcontainers import SortedDict
 from copy import copy
-from warnings import warn
 
 try:
     from collections.abc import MutableSet  # Python 3?
@@ -497,10 +496,17 @@ class IntervalTree(MutableSet):
         """
         Like remove_envelop(), but trims back Intervals hanging into
         the chopped area so that nothing overlaps.
+        If specified, uses datafunc(interval, islower=True/False) to
+        set the data field of the new Intervals.
+        :param begin: where to chop
+        :param end: where to chop
+        :param datafunc(interval, isupper): callable returning a new
+        value for the interval's data field, whenever overhangers are
+        replaced.
         """
         insertions = set()
         begin_hits = [iv for iv in self.at(begin) if iv.begin < begin]
-        end_hits = [iv for iv in self.at(end) if iv.end > end]
+        end_hits = self.at(end)
 
         if datafunc:
             for iv in begin_hits:
