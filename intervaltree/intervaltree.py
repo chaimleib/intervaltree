@@ -713,6 +713,59 @@ class IntervalTree(MutableSet):
 
         self.__init__(merged)
 
+    def merge_direct_overlaps(self, data_reducer=None, strict=True):
+        """
+        Finds all intervals with overlapping ranges and merges them
+        seperately into a single interval. If provided, uses 
+        data_reducer with similar semantics to Python's built-in
+        reduce(reducer_func[, initializer]), as follows:
+
+        If data_reducer is set to a function, combines the data
+        fields of the Intervals with
+            current_reduced_data = data_reducer(current_reduced_data, new_data)
+        If data_reducer is None, the merged Interval's data
+        field will be set to None, ignoring all the data fields
+        of the merged Intervals.
+
+        If strict is True (default), intervals are only merged if
+        their ranges actually overlap; adjacent, touching intervals
+        will not be merged. If strict is False, intervals are merged
+        even if they are only end-to-end adjacent.
+
+        Completes in O(n*logn).
+        """
+        if not self:
+            return
+
+        if data_reducer == None:
+            data_reducer = lambda *x: None
+
+        sorted_intervals = sorted(self.all_intervals)  # get sorted intervals
+        merged = [sorted_intervals[0]]
+        li = len(sorted_intervals)
+        highest = sorted_intervals[0][0] # var for checking if interval merged before
+        i = -1
+
+        for inv in sorted_intervals:
+            i += 1
+            j = i + 1
+            while j < li and ( inv.end > sorted_intervals[j].begin or               
+                not strict and inv.end == sorted_intervals[j].begin ):
+                next_inv = sorted_intervals[j]
+                upper = max(inv.end, next_inv.end)
+                if inv.data and next_inv.data: # if an interval has no data, skip data
+                    data = data_reducer(inv.data, next_inv.data)
+                    merged.append(Interval(inv.begin, upper, data))
+                else:
+                    merged.append(Interval(inv.begin, upper))
+                if inv.end > highest:
+                    highest = inv.end
+                j += 1
+            if inv.begin >= highest: # if a variable not merged before, add to tree
+                merged.append(inv)
+
+        self.__init__(merged[1:])
+
     def merge_equals(self, data_reducer=None, data_initializer=None):
         """
         Finds all intervals with equal ranges and merges them

@@ -152,6 +152,54 @@ def test_merge_overlaps_reducer_with_initializer():
         ])
     ]
 
+# -----------------------------------------------------------------------------
+# MERGE_DIRECT_OVERLAPS
+# -----------------------------------------------------------------------------
+def test_merge_direct_overlaps_empty():
+    t = IntervalTree()
+    t.merge_direct_overlaps()
+    t.verify()
+    assert len(t) == 0
+
+
+def test_merge_direct_overlaps_gapless():
+    # default strict=True
+    t = IntervalTree.from_tuples(data.ivs2.data)
+    t.merge_direct_overlaps()
+    t.verify()
+    assert [(iv.begin, iv.end, iv.data) for iv in sorted(t)] == data.ivs2.data
+
+    # strict=False
+    t = IntervalTree.from_tuples(data.ivs2.data)
+    rng = t.range()
+    t.merge_direct_overlaps(strict=False)
+    t.verify()
+    assert len(t) == len(data.ivs2.data)
+
+
+def test_merge_direct_overlaps_with_gap():
+    t = IntervalTree.from_tuples(data.ivs1.data)
+    t.merge_direct_overlaps()
+    t.verify()
+    assert len(t) > 2
+
+
+def test_merge_direct_overlaps_reducer_wo_initializer():
+    def reducer(old, new):
+        return "%s, %s" % (old, new)
+    # empty tree
+    e = IntervalTree()
+    e.merge_direct_overlaps(data_reducer=reducer)
+    e.verify()
+    assert not e
+
+    # one Interval in tree
+    o = IntervalTree.from_tuples([(1, 2, 'hello')])
+    o.merge_direct_overlaps(data_reducer=reducer)
+    o.verify()
+    assert len(o) == 1
+    assert sorted(o) == [Interval(1, 2, 'hello')]
+
 
 # -----------------------------------------------------------------------------
 # MERGE_EQUALS
