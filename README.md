@@ -7,6 +7,12 @@ A mutable, self-balancing interval tree for Python 2 and 3. Queries may be by po
 
 This library was designed to allow tagging text and time intervals, where the intervals include the lower bound but not the upper bound.
 
+> This means that 0-length intervals are null and overlap nothing.
+If you see errors about null intervals,
+make sure `end` is strictly greater than `begin`.
+Our `Interval`s are like string ranges:
+`'hello'[0:0] == ''`, but `'hello'[0:1] == 'h'`.
+
 **Version 3 changes!**
 
 * The `search(begin, end, strict)` method no longer exists. Instead, use one of these:
