@@ -5,6 +5,8 @@
   - Better subclassing support: Determine classes dynamically,
     so that methods like str() are aware when our types are subclassed.
   - Removed no-op check and extra list allocation during chop()
+  - overlaps() on a range no longer scans the entire boundary table;
+    only boundary points inside the queried range are tested (#127)
 - Maintainers:
   - Load issue4 test data via JSON to save on compilation and collection time.
 
