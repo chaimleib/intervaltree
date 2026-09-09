@@ -5,6 +5,9 @@
   - Better subclassing support: Determine classes dynamically,
     so that methods like str() are aware when our types are subclassed.
   - Removed no-op check and extra list allocation during chop()
+  - Fixed unbalanced trees after bulk construction: srotate() now
+    re-balances the new tip after the promotees step, which could
+    prune a subtree and leave the node with a balance of +-2
 - Maintainers:
   - Load issue4 test data via JSON to save on compilation and collection time.
 

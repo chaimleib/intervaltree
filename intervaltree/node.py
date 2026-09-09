@@ -188,8 +188,11 @@ class Node(object):
             # For now, this is the same as augmenting save.s_center, but that may
             # change.
             save.s_center.update(promotees)
-        save.refresh_balance()
-        return save
+        # Promoting intervals out of save[light] can leave it pruned,
+        # which un-balances save after the mechanical rotation above.
+        # Rebalance (a no-op when already balanced) instead of merely
+        # refreshing, so the returned tip respects the balance invariant.
+        return save.rotate()
 
     def drotate(self):
         # First rotation
