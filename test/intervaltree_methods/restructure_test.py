@@ -19,6 +19,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from __future__ import absolute_import
+from datetime import datetime, timedelta
 from intervaltree import Interval, IntervalTree
 import pytest
 from test import data
@@ -459,9 +460,62 @@ def test_merge_neighbors_reducer_with_initializer():
     ]
 
 
-# -----------------------------------------------------------------------------
+def test_merge_neighbors_non_numeric_endpoints():
+    # regression: merge_neighbors crashed with TypeError on non-numeric
+    # endpoints (e.g. datetime) because the default distance was the
+    # int 1 and the strict check compared margin against the int 0
+    def reducer(old, new):
+        return "%s, %s" % (old, new)
+
+    # touching datetime intervals merge by default
+    t = IntervalTree.from_tuples([
+        (datetime(2026, 1, 1), datetime(2026, 1, 2), '[1/1,1/2)'),
+        (datetime(2026, 1, 2), datetime(2026, 1, 3), '[1/2,1/3)'),
+    ])
+    t.merge_neighbors(data_reducer=reducer)
+    t.verify()
+    assert len(t) == 1
+    for begin, end, _data in t.items():
+        assert begin == datetime(2026, 1, 1)
+        assert end == datetime(2026, 1, 3)
+        assert _data == '[1/1,1/2), [1/2,1/3)'
+
+    # a gap wider than the zero default stays unmerged
+    t = IntervalTree.from_tuples([
+        (datetime(2026, 1, 1), datetime(2026, 1, 2), '[1/1,1/2)'),
+        (datetime(2026, 1, 3), datetime(2026, 1, 4), '[1/3,1/4)'),
+    ])
+    t.merge_neighbors()
+    t.verify()
+    assert len(t) == 2
+
+    # an explicit distance of the endpoint type still merges gaps
+    t = IntervalTree.from_tuples([
+        (datetime(2026, 1, 1), datetime(2026, 1, 2), '[1/1,1/2)'),
+        (datetime(2026, 1, 2, 2), datetime(2026, 1, 3), '[1/2,1/3)'),
+    ])
+    t.merge_neighbors(data_reducer=reducer, distance=timedelta(hours=3))
+    t.verify()
+    assert len(t) == 1
+    for begin, end, _data in t.items():
+        assert begin == datetime(2026, 1, 1)
+        assert end == datetime(2026, 1, 3)
+        assert _data == '[1/1,1/2), [1/2,1/3)'
+
+    # overlapping datetime intervals under strict mode keep the split
+    # behavior instead of raising
+    t = IntervalTree.from_tuples([
+        (datetime(2026, 1, 1), datetime(2026, 1, 4), 'a'),
+        (datetime(2026, 1, 3), datetime(2026, 1, 5), 'b'),
+    ])
+    t.merge_neighbors(strict=True)
+    t.verify()
+    assert len(t) == 2
+
+
+# ------------------------------------------------------------------------------
 # CHOP
-# -----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 def test_chop():
     t = IntervalTree([Interval(0, 10)])
     t.chop(3, 7)
