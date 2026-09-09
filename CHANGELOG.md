@@ -5,6 +5,9 @@
   - Better subclassing support: Determine classes dynamically,
     so that methods like str() are aware when our types are subclassed.
   - Removed no-op check and extra list allocation during chop()
+  - Fixed merge_neighbors() TypeError on non-numeric endpoints
+    (e.g. datetime): the default distance is now inferred from
+    the endpoint type instead of being the int 1
 - Maintainers:
   - Load issue4 test data via JSON to save on compilation and collection time.
 

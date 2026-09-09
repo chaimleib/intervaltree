@@ -777,7 +777,7 @@ class IntervalTree(MutableSet):
         self,
         data_reducer=None,
         data_initializer=None,
-        distance=1,
+        distance=None,
         strict=True,
     ):
         """
@@ -806,12 +806,23 @@ class IntervalTree(MutableSet):
         will not be merged. If strict is False, both neighbors and overlapping
         intervals are merged.
 
+        If distance is None (the default), it is inferred from the endpoints:
+        1 for numeric endpoints, or the zero of the endpoint type (e.g.
+        timedelta(0) for datetime endpoints) so that only touching or
+        overlapping intervals are merged.
+
         Completes in O(n*logn) time.
         """
         if not self:
             return
 
         sorted_intervals = sorted(self.all_intervals)  # get sorted intervals
+        zero = sorted_intervals[0].begin - sorted_intervals[0].begin
+        if distance is None:
+            # type-aware default: numeric endpoints keep the historical
+            # default of 1, other endpoint types (e.g. datetime) default
+            # to zero so only touching/overlapping intervals are merged
+            distance = 1 if isinstance(zero, (int, float)) else zero
         merged = []
         # use mutable object to allow new_series() to modify it
         current_reduced = [None]
@@ -832,7 +843,7 @@ class IntervalTree(MutableSet):
                 lower = merged[-1]
                 margin = higher.begin - lower.end
                 if margin <= distance:  # should merge
-                    if strict and margin < 0:
+                    if strict and margin < zero:
                         new_series()
                         continue
                     else:
