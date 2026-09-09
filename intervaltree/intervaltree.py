@@ -619,10 +619,16 @@ class IntervalTree(MutableSet):
             return False
         elif self.overlaps_point(begin):
             return True
+        # only test boundary points inside (begin, end), not the whole
+        # boundary table (#127); boundaries exactly at begin are already
+        # covered by the overlaps_point(begin) check above
+        boundary_table = self.boundary_table
+        bound_begin = boundary_table.bisect_left(begin)
+        bound_end = boundary_table.bisect_left(end)  # up to, but not including end
         return any(
             self.overlaps_point(bound)
-            for bound in self.boundary_table
-            if begin < bound < end
+            for index in xrange(bound_begin, bound_end)
+            for bound in (boundary_table.keys()[index],)
         )
 
     def split_overlaps(self):
