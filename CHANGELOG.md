@@ -1,6 +1,9 @@
 # Change log
 
 ## Version 3.2.2
+- Added:
+  - `IntervalTree.nearest(target, k=None)` finds the interval closest to a point or
+    Interval, or the `k` closest intervals, nearest first.
 - Fixed:
   - Better subclassing support: Determine classes dynamically,
     so that methods like str() are aware when our types are subclassed.

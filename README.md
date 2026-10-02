@@ -63,6 +63,11 @@ Features
 * Envelop queries
     * `tree.envelop(begin, end)`
 
+* Nearest queries
+    * `tree.nearest(point)`                 (the closest `Interval`, or `None` if the tree is empty)
+    * `tree.nearest(interval)`
+    * `tree.nearest(point, k=3)`            (a list of the 3 closest intervals, nearest first)
+
 * Membership queries
     * `interval_obj in tree`              (this is fastest, O(1))
     * `tree.containsi(begin, end, data)`

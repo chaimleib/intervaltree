@@ -24,7 +24,7 @@ limitations under the License.
 """
 from .interval import Interval
 from .node import Node
-from numbers import Number
+from numbers import Integral, Number
 from sortedcontainers import SortedDict
 from copy import copy
 
@@ -943,6 +943,75 @@ class IntervalTree(MutableSet):
             boundary_table.keys()[index] for index in xrange(bound_begin, bound_end)
         ))
         return result
+
+    def nearest(self, target, k=None):
+        """
+        Returns the interval closest to target, or the k closest intervals.
+
+        The target is a point or an Interval. The distance to an interval
+        is given by Interval.distance_to(): 0 when the two overlap or touch,
+        otherwise the size of the gap between them. Ties are broken by the
+        ordering of the intervals themselves (begin, then end, then data).
+
+        If k is None, returns a single Interval, or None if the tree is
+        empty. Otherwise returns a list of at most k intervals, nearest
+        first.
+
+        Completes in O(m + log n) time when the neighbours are close to the
+        target, where:
+          * n = size of the tree
+          * m = number of intervals in the search window, which grows
+            until it holds at least k intervals
+
+        :param target: a point or an Interval
+        :param k: None, or the maximum number of intervals to return
+        :raises ValueError: if target is a null Interval, or k is negative
+        :raises TypeError: if k is neither None nor an integer
+        :rtype: Interval, None, or list of Interval
+        """
+        if isinstance(target, Interval):
+            if target.is_null():
+                raise ValueError(
+                    "Cannot search near a null Interval: {0}".format(target)
+                )
+            begin, end = target.begin, target.end
+        else:
+            begin = end = target
+
+        if k is None:
+            found = self.nearest(target, 1)
+            return found[0] if found else None
+        if isinstance(k, bool) or not isinstance(k, Integral):
+            raise TypeError("k must be an integer or None, not {0!r}".format(k))
+        if k < 0:
+            raise ValueError("k must not be negative, not {0!r}".format(k))
+        if k == 0 or not self:
+            return []
+
+        # Every interval within `radius` of the target has an endpoint in
+        # [begin - radius, end + radius], or spans that whole range. Since
+        # all endpoints are in the boundary table, widening the search to the
+        # neighbouring boundaries turns overlap()'s half-open test into a
+        # closed one, so intervals exactly `radius` away are included too.
+        table = self.boundary_table
+        keys = table.keys()
+        radius = 0
+        while True:
+            i = table.bisect_left(begin - radius)
+            j = table.bisect_right(end + radius)
+            lower = keys[i - 1] if i else keys[0]
+            upper = keys[j] if j < len(keys) else keys[-1]
+            found = self.overlap(lower, upper)
+            if len(found) >= k or len(found) == len(self):
+                break
+            gaps = []
+            if i:
+                gaps.append(begin - keys[i - 1])
+            if j < len(keys):
+                gaps.append(keys[j] - end)
+            radius = max(2 * radius, min(gaps))
+        found = sorted(found, key=lambda iv: (iv.distance_to(target), iv))
+        return found[:k]
 
     def begin(self):
         """
