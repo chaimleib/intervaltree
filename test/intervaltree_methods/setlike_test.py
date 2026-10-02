@@ -21,6 +21,10 @@ limitations under the License.
 from __future__ import absolute_import
 from intervaltree import Interval, IntervalTree
 import pytest
+try:
+    from collections.abc import Set as AbstractSet
+except ImportError:
+    from collections import Set as AbstractSet
 from test import data
 try:
     import cPickle as pickle
@@ -461,3 +465,109 @@ def test_symmetric_difference():
 
 if __name__ == "__main__":
     pytest.main([__file__, '-v'])
+
+
+@pytest.mark.parametrize("method", [
+    "difference", "intersection", "intersection_update",
+])
+@pytest.mark.parametrize("operand_type", [list, tuple, set, frozenset, IntervalTree, iter])
+def test_set_operations_accept_iterable_operands(method, operand_type):
+    tree = IntervalTree.from_tuples([(0, 1), (2, 3), (4, 5)])
+    original = set(tree)
+    # Reversed iteration forces membership checks to reuse the operand.
+    operand = operand_type(list(reversed(list(tree))))
+    expected = (original.difference(original) if method == "difference"
+                else original.intersection(original))
+
+    result = getattr(tree, method)(operand)
+
+    if method == "intersection_update":
+        assert result is None
+        result = tree
+    else:
+        assert set(tree) == original
+    assert isinstance(result, IntervalTree)
+    assert set(result) == expected
+    result.verify()
+
+
+@pytest.mark.parametrize("method", [
+    "difference", "intersection", "intersection_update",
+])
+def test_set_operations_accept_generator_operands(method):
+    tree = IntervalTree.from_tuples([(0, 1), (2, 3), (4, 5)])
+    original = set(tree)
+    other = set([Interval(2, 3), Interval(6, 7)])
+    operand = (iv for iv in other)
+    expected = (original.difference(other) if method == "difference"
+                else original.intersection(other))
+
+    result = getattr(tree, method)(operand)
+
+    if method == "intersection_update":
+        assert result is None
+        result = tree
+    else:
+        assert set(tree) == original
+    assert set(result) == expected
+    result.verify()
+
+
+def test_difference_update_with_self():
+    tree = IntervalTree.from_tuples([(0, 1), (2, 3), (4, 5)])
+
+    assert tree.difference_update(tree) is None
+
+    assert not tree
+    tree.verify()
+
+
+class CountingAbstractSet(AbstractSet):
+    def __init__(self, items):
+        self.items = set(items)
+        self.contains_calls = 0
+        self.iter_calls = 0
+
+    def __len__(self):
+        return len(self.items)
+
+    def __contains__(self, item):
+        self.contains_calls += 1
+        return item in self.items
+
+    def __iter__(self):
+        self.iter_calls += 1
+        return iter(self.items)
+
+
+class CountingIntervalTree(IntervalTree):
+    def __init__(self, items):
+        self.iter_calls = 0
+        super(CountingIntervalTree, self).__init__(items)
+
+    def __iter__(self):
+        self.iter_calls += 1
+        return super(CountingIntervalTree, self).__iter__()
+
+
+@pytest.mark.parametrize("method", [
+    "difference", "intersection", "intersection_update",
+])
+@pytest.mark.parametrize("operand_type", [
+    CountingAbstractSet, CountingIntervalTree,
+])
+def test_set_operations_preserve_set_operands(method, operand_type):
+    interval = Interval(0, 1)
+    tree = IntervalTree([interval])
+    other = operand_type([interval, Interval(2, 3)])
+
+    result = getattr(tree, method)(other)
+
+    if method == "intersection_update":
+        result = tree
+    expected = set() if method == "difference" else set([interval])
+    assert set(result) == expected
+    assert other.iter_calls == 0
+    if isinstance(other, CountingAbstractSet):
+        assert other.contains_calls == 1
+    result.verify()

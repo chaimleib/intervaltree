@@ -29,9 +29,9 @@ from sortedcontainers import SortedDict
 from copy import copy
 
 try:
-    from collections.abc import MutableSet  # Python 3?
+    from collections.abc import MutableSet, Set as AbstractSet  # Python 3?
 except ImportError:
-    from collections import MutableSet
+    from collections import MutableSet, Set as AbstractSet
 
 try:
     xrange  # Python 2?
@@ -402,6 +402,8 @@ class IntervalTree(MutableSet):
         Returns a new tree, comprising all intervals in self but not
         in other.
         """
+        if not isinstance(other, AbstractSet):
+            other = set(other)
         ivs = set()
         for iv in self:
             if iv not in other:
@@ -412,6 +414,7 @@ class IntervalTree(MutableSet):
         """
         Removes all intervals in other from self.
         """
+        other = set(other)
         for iv in other:
             self.discard(iv)
 
@@ -427,6 +430,8 @@ class IntervalTree(MutableSet):
         Returns a new tree of all intervals common to both self and
         other.
         """
+        if not isinstance(other, AbstractSet):
+            other = set(other)
         ivs = set()
         shorter, longer = sorted([self, other], key=len)
         for iv in shorter:
@@ -438,6 +443,8 @@ class IntervalTree(MutableSet):
         """
         Removes intervals from self unless they also exist in other.
         """
+        if not isinstance(other, AbstractSet):
+            other = set(other)
         ivs = list(self)
         for iv in ivs:
             if iv not in other:
