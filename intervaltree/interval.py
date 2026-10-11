@@ -47,7 +47,10 @@ class Interval(namedtuple('IntervalBase', ['begin', 'end', 'data'])):
             # and
             #   self.begin <= C < self.end
             # See https://stackoverflow.com/questions/3269434/whats-the-most-efficient-way-to-test-two-integer-ranges-for-overlap/3269471#3269471
-            return begin < self.end and end > self.begin
+            return (
+                begin < end and self.begin < self.end and
+                begin < self.end and end > self.begin
+            )
         try:
             return self.overlaps(begin.begin, begin.end)
         except:
