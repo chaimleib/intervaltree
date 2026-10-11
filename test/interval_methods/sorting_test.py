@@ -288,6 +288,19 @@ def test_interval_sort_interval():
         assert sort[0].__cmp__(sort[1]) in (-1, 0)
 
 
+@pytest.mark.parametrize('bounds', [(5, 5), (8, 2)])
+def test_null_intervals_do_not_overlap(bounds):
+    iv = Interval(0, 10)
+    null = Interval(*bounds)
+
+    assert not iv.overlaps(*bounds)
+    assert not iv.overlaps(null)
+    assert not null.overlaps(iv)
+    assert not null.overlaps(iv.begin, iv.end)
+    assert iv.overlap_size(null) == 0
+    assert null.overlap_size(iv) == 0
+
+
 if __name__ == "__main__":
     import pytest
     pytest.main([__file__, '-v'])
