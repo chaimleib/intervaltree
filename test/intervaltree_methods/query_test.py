@@ -19,6 +19,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from __future__ import absolute_import
+from datetime import datetime, timedelta
 from intervaltree import Interval, IntervalTree
 import pytest
 from test import data, match
@@ -155,6 +156,33 @@ def test_overlaps():
     assert not t.overlaps(2, 4)
     assert not t.overlaps(4, 2)
     assert not t.overlaps(3, 0)
+
+
+def test_overlaps_datetime_point():
+    start = datetime(2026, 1, 1, 9, 0)
+    end = start + timedelta(hours=1)
+    t = IntervalTree([Interval(start, end)])
+
+    assert t.overlaps(start + timedelta(minutes=30))
+    assert not t.overlaps(end)
+    assert not t.overlaps(start - timedelta(minutes=1))
+
+
+def test_overlaps_number_with_range_metadata():
+    class NumberWithRangeMetadata(int):
+        begin = 100
+        end = 200
+
+    t = IntervalTree([Interval(0, 10)])
+
+    assert t.overlaps(NumberWithRangeMetadata(5))
+
+
+def test_overlaps_string_point():
+    t = IntervalTree([Interval('alpha', 'omega')])
+
+    assert t.overlaps('mu')
+    assert not t.overlaps('zeta')
 
 
 def test_span():
