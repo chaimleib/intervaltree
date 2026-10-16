@@ -589,8 +589,10 @@ class IntervalTree(MutableSet):
             return self.overlaps_range(begin, end)
         elif isinstance(begin, Number):
             return self.overlaps_point(begin)
-        else:
+        elif hasattr(begin, 'begin') and hasattr(begin, 'end'):
             return self.overlaps_range(begin.begin, begin.end)
+        else:
+            return self.overlaps_point(begin)
 
     def overlaps_point(self, p):
         """
