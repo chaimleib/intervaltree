@@ -504,6 +504,9 @@ class IntervalTree(MutableSet):
         value for the interval's data field, whenever overhangers are
         replaced.
         """
+        if begin >= end:
+            return
+
         insertions = set()
         begin_hits = [iv for iv in self.at(begin) if iv.begin < begin]
         end_hits = self.at(end)

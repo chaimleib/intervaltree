@@ -488,6 +488,24 @@ def test_chop():
     assert len(t) == 0
 
 
+def test_chop_degenerate_range():
+    # Chopping an empty or inverted range must be a no-op:
+    # nothing overlaps an empty range, so nothing is trimmed,
+    # and the tree is left completely unchanged.
+    t = IntervalTree([Interval(0, 10), Interval(20, 30)])
+    before = IntervalTree(t.items())
+    t.chop(5, 5)
+    assert t == before
+    assert Interval(0, 10) in t
+
+    t.chop(9, 5)
+    assert t == before
+
+    t = IntervalTree()
+    t.chop(5, 5)
+    assert t == IntervalTree()
+
+
 def test_chop_datafunc():
     def datafunc(iv, islower):
         oldlimit = iv[islower]
