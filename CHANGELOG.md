@@ -5,6 +5,10 @@
   - Better subclassing support: Determine classes dynamically,
     so that methods like str() are aware when our types are subclassed.
   - Removed no-op check and extra list allocation during chop()
+  - overlap() and envelop() walk the tree once, instead of running
+    one point search per boundary point inside the queried range (#120).
+    remove_overlap(), remove_envelop(), chop() and tree[a:b] use them
+    and get faster too.
 - Maintainers:
   - Load issue4 test data via JSON to save on compilation and collection time.
 
