@@ -319,6 +319,76 @@ class Node(object):
             return self[1].search_point(point, result)
         return result
 
+    def search_range(self, begin, end, result):
+        """
+        Adds all intervals that overlap the range [begin, end) to
+        result, and returns result. Assumes begin < end.
+
+        Visits each Node at most once. A branch is skipped when the
+        range lies entirely on the other side of x_center, since
+        everything in the left branch ends at or before x_center and
+        everything in the right branch begins after it.
+        """
+        stack = [self]
+        while stack:
+            node = stack.pop()
+            x_center = node.x_center
+            if x_center < begin:
+                # s_center begins before the range; the left branch
+                # ends before it.
+                for iv in node.s_center:
+                    if iv.end > begin:
+                        result.add(iv)
+                if node.right_node:
+                    stack.append(node.right_node)
+            elif x_center < end:
+                # x_center is inside the range, and every interval in
+                # s_center contains x_center.
+                result.update(node.s_center)
+                if node.right_node:
+                    stack.append(node.right_node)
+                if node.left_node and begin < x_center:
+                    stack.append(node.left_node)
+            else:
+                # s_center ends after the range; the right branch
+                # begins after it.
+                for iv in node.s_center:
+                    if iv.begin < end:
+                        result.add(iv)
+                if node.left_node:
+                    stack.append(node.left_node)
+        return result
+
+    def search_enveloped(self, begin, end, result):
+        """
+        Adds all intervals that lie completely inside the range
+        [begin, end) to result, and returns result. Assumes
+        begin < end.
+
+        Like search_range(), visits each Node at most once.
+        """
+        stack = [self]
+        while stack:
+            node = stack.pop()
+            x_center = node.x_center
+            if x_center < begin:
+                # s_center begins before the range.
+                if node.right_node:
+                    stack.append(node.right_node)
+            elif x_center < end:
+                for iv in node.s_center:
+                    if iv.begin >= begin and iv.end <= end:
+                        result.add(iv)
+                if node.right_node:
+                    stack.append(node.right_node)
+                if node.left_node and begin < x_center:
+                    stack.append(node.left_node)
+            else:
+                # s_center ends after the range.
+                if node.left_node:
+                    stack.append(node.left_node)
+        return result
+
     def prune(self):
         """
         On a subtree where the root node's s_center is empty,

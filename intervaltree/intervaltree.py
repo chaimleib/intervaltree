@@ -886,10 +886,9 @@ class IntervalTree(MutableSet):
         Returns the set of all intervals fully contained in the range
         [begin, end).
 
-        Completes in O(m + k*log n) time, where:
+        Completes in O(m + log n) time, where:
           * n = size of the tree
-          * m = number of matches
-          * k = size of the search range
+          * m = number of intervals overlapping the range
         :rtype: set of Interval
         """
         root = self.top_node
@@ -900,30 +899,15 @@ class IntervalTree(MutableSet):
             return self.envelop(iv.begin, iv.end)
         elif begin >= end:
             return set()
-        result = root.search_point(begin, set()) # bound_begin might be greater
-        boundary_table = self.boundary_table
-        bound_begin = boundary_table.bisect_left(begin)
-        bound_end = boundary_table.bisect_left(end)  # up to, but not including end
-        result.update(root.search_overlap(
-            # slice notation is slightly slower
-            boundary_table.keys()[index] for index in xrange(bound_begin, bound_end)
-        ))
-
-        # TODO: improve envelop() to use node info instead of less-efficient filtering
-        result = set(
-            iv for iv in result
-            if iv.begin >= begin and iv.end <= end
-        )
-        return result
+        return root.search_enveloped(begin, end, set())
 
     def overlap(self, begin, end=None):
         """
         Returns a set of all intervals overlapping the given range.
 
-        Completes in O(m + k*log n) time, where:
+        Completes in O(m + log n) time, where:
           * n = size of the tree
           * m = number of matches
-          * k = size of the search range
         :rtype: set of Interval
         """
         root = self.top_node
@@ -934,15 +918,7 @@ class IntervalTree(MutableSet):
             return self.overlap(iv.begin, iv.end)
         elif begin >= end:
             return set()
-        result = root.search_point(begin, set())  # bound_begin might be greater
-        boundary_table = self.boundary_table
-        bound_begin = boundary_table.bisect_left(begin)
-        bound_end = boundary_table.bisect_left(end)  # up to, but not including end
-        result.update(root.search_overlap(
-            # slice notation is slightly slower
-            boundary_table.keys()[index] for index in xrange(bound_begin, bound_end)
-        ))
-        return result
+        return root.search_range(begin, end, set())
 
     def begin(self):
         """
